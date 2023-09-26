@@ -87,7 +87,7 @@ public abstract class StandardDrawerGroup extends TileDataShim implements IDrawe
 
         NBTTagList itemList = tag.getTagList("Drawers", Constants.NBT.TAG_COMPOUND);
         for (int i = 0; i < itemList.tagCount(); i++) {
-            if (i >= 0 && i < slots.length)
+            if (i < slots.length)
                 slots[i].deserializeNBT(itemList.getCompoundTagAt(i));
         }
     }
