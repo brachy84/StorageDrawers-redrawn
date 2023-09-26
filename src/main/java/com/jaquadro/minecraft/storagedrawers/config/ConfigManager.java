@@ -84,6 +84,7 @@ public class ConfigManager {
         public boolean registerExtraCompRules;
         public boolean defaultQuantify;
         public boolean keepContentsOnBreak;
+        public int renderRange;
         public String[] compRules;
         public String[] oreWhitelist;
         public String[] oreBlacklist;
@@ -165,6 +166,7 @@ public class ConfigManager {
                 .setLanguageKey(LANG_PREFIX + "prop.enableDebugLogging").getBoolean();
         cache.defaultQuantify = config.get(Configuration.CATEGORY_GENERAL, "defaultQuantify", false).setLanguageKey(LANG_PREFIX + "prop.defaultQuantify").getBoolean();
         cache.keepContentsOnBreak = config.get(Configuration.CATEGORY_GENERAL, "keepContentsOnBreak", true).setLanguageKey(LANG_PREFIX + "prop.keepContentsOnBreak").getBoolean();
+        cache.renderRange = config.get(Configuration.CATEGORY_GENERAL, "renderRange", 20, "Range at which drawers should render their items. Default = 20 blocks", 4, 128).setLanguageKey(LANG_PREFIX + "prop.renderRange").getInt();
 
         //cache.enableAE2Integration = config.get(sectionIntegration.getQualifiedName(), "enableAE2", true).setLanguageKey(LANG_PREFIX + "integration.enableAE2").setRequiresMcRestart(true).getBoolean();
         cache.enableWailaIntegration = config.get(sectionIntegration.getQualifiedName(), "enableWaila", true,

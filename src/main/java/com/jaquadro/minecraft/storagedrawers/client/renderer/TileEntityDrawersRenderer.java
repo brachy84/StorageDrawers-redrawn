@@ -24,6 +24,7 @@ import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
@@ -44,14 +45,18 @@ public class TileEntityDrawersRenderer extends TileEntitySpecialRenderer<TileEnt
 
     @Override
     public void render(TileEntityDrawers tile, double x, double y, double z, float partialTickTime, int destroyStage, float par7) {
-        if (tile == null)
+        // DrawerFPS mod start
+        EntityPlayer player = Minecraft.getMinecraft().player;
+        BlockPos blockPos = tile.getPos();
+        int renderRange = StorageDrawers.config.cache.renderRange;
+        if (player != null && blockPos.distanceSqToCenter(player.posX, player.posY, player.posZ) > renderRange * renderRange) {
             return;
+        }
+        // DrawerFPS mod end
 
         float depth = 1;
 
         IBlockState state = tile.getWorld().getBlockState(tile.getPos());
-        if (state == null)
-            return;
 
         Block block = state.getBlock();
         if (block instanceof BlockDrawers) {
