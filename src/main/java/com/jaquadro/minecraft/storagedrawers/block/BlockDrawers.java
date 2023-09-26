@@ -9,8 +9,8 @@ import com.jaquadro.minecraft.storagedrawers.block.dynamic.StatusModelData;
 import com.jaquadro.minecraft.storagedrawers.block.modeldata.DrawerStateModelData;
 import com.jaquadro.minecraft.storagedrawers.block.tile.TileEntityDrawers;
 import com.jaquadro.minecraft.storagedrawers.capabilities.CapabilityDrawerAttributes;
-import com.jaquadro.minecraft.storagedrawers.config.ConfigManager;
 import com.jaquadro.minecraft.storagedrawers.config.PlayerConfigSetting;
+import com.jaquadro.minecraft.storagedrawers.config.SDConfig;
 import com.jaquadro.minecraft.storagedrawers.core.ModCreativeTabs;
 import com.jaquadro.minecraft.storagedrawers.core.ModItems;
 import com.jaquadro.minecraft.storagedrawers.core.handlers.GuiHandler;
@@ -228,8 +228,8 @@ public abstract class BlockDrawers extends BlockContainer implements INetworked 
     }
 
     private boolean isInvertedHand(EntityPlayer player) {
-        Map<String, PlayerConfigSetting<?>> configSettings = ConfigManager.serverPlayerConfigSettings.get(player.getUniqueID());
-        boolean invertHand = StorageDrawers.config.cache.invertClick;
+        Map<String, PlayerConfigSetting<?>> configSettings = SDConfig.serverPlayerConfigSettings.get(player.getUniqueID());
+        boolean invertHand = SDConfig.general.invertClick;
         if (configSettings != null) {
             PlayerConfigSetting<Boolean> setting = (PlayerConfigSetting<Boolean>) configSettings.get("invertClick");
             if (setting != null) {
@@ -256,7 +256,7 @@ public abstract class BlockDrawers extends BlockContainer implements INetworked 
     public void onBlockClicked(World worldIn, BlockPos pos, EntityPlayer playerIn) {
         if (worldIn.isRemote)
             return;
-        if (StorageDrawers.config.cache.debugTrace)
+        if (SDConfig.general.enableDebugLogging)
             StorageDrawers.log.info("onBlockClicked");
 
         RayTraceResult rayResult = net.minecraftforge.common.ForgeHooks.rayTraceEyes(playerIn, ((EntityPlayerMP) playerIn).interactionManager.getBlockReachDistance() + 1);
@@ -290,7 +290,7 @@ public abstract class BlockDrawers extends BlockContainer implements INetworked 
         if (!SecurityManager.hasAccess(player.getGameProfile(), tileDrawers))
             return false;
 
-        if (StorageDrawers.config.cache.debugTrace) {
+        if (SDConfig.general.enableDebugLogging) {
             StorageDrawers.log.info("BlockDrawers.onBlockActivated");
             StorageDrawers.log.info((item.isEmpty()) ? "  null item" : "  " + item);
         }
@@ -353,7 +353,7 @@ public abstract class BlockDrawers extends BlockContainer implements INetworked 
             if (tileDrawers.isSealed()) {
                 tileDrawers.setIsSealed(false);
                 return true;
-            } else if (StorageDrawers.config.cache.enableDrawerUI) {
+            } else if (SDConfig.general.enableDrawerUI) {
                 player.openGui(StorageDrawers.instance, GuiHandler.drawersGuiID, world, pos.getX(), pos.getY(), pos.getZ());
                 return true;
             }
@@ -407,7 +407,7 @@ public abstract class BlockDrawers extends BlockContainer implements INetworked 
         IDrawer drawer = tileDrawers.getDrawer(slot);
 
         ItemStack item;
-        Map<String, PlayerConfigSetting<?>> configSettings = ConfigManager.serverPlayerConfigSettings.get(playerIn.getUniqueID());
+        Map<String, PlayerConfigSetting<?>> configSettings = SDConfig.serverPlayerConfigSettings.get(playerIn.getUniqueID());
         boolean invertShift = false;
         if (configSettings != null) {
             PlayerConfigSetting<Boolean> setting = (PlayerConfigSetting<Boolean>) configSettings.get("invertShift");
@@ -420,7 +420,7 @@ public abstract class BlockDrawers extends BlockContainer implements INetworked 
         else
             item = tileDrawers.takeItemsFromSlot(slot, 1);
 
-        if (StorageDrawers.config.cache.debugTrace)
+        if (SDConfig.general.enableDebugLogging)
             StorageDrawers.log.info((item.isEmpty()) ? "  null item" : "  " + item);
 
         IBlockState state = worldIn.getBlockState(pos);
@@ -511,7 +511,7 @@ public abstract class BlockDrawers extends BlockContainer implements INetworked 
     public void breakBlock(World world, BlockPos pos, IBlockState state) {
         TileEntityDrawers tile = getTileEntity(world, pos);
 
-        if (tile != null && !tile.isSealed() && !StorageDrawers.config.cache.keepContentsOnBreak) {
+        if (tile != null && !tile.isSealed() && !SDConfig.general.keepContentsOnBreak) {
             for (int i = 0; i < tile.upgrades().getSlotCount(); i++) {
                 ItemStack stack = tile.upgrades().getUpgrade(i);
                 if (!stack.isEmpty()) {
@@ -545,7 +545,7 @@ public abstract class BlockDrawers extends BlockContainer implements INetworked 
             data = new NBTTagCompound();
 
         boolean hasContents = false;
-        if (StorageDrawers.config.cache.keepContentsOnBreak) {
+        if (SDConfig.general.keepContentsOnBreak) {
             for (int i = 0; i < tile.getGroup().getDrawerCount(); i++) {
                 IDrawer drawer = tile.getGroup().getDrawer(i);
                 if (drawer != null && !drawer.isEmpty())
@@ -557,7 +557,7 @@ public abstract class BlockDrawers extends BlockContainer implements INetworked 
             }
         }
 
-        if (tile.isSealed() || (StorageDrawers.config.cache.keepContentsOnBreak && hasContents)) {
+        if (tile.isSealed() || (SDConfig.general.keepContentsOnBreak && hasContents)) {
             NBTTagCompound tiledata = new NBTTagCompound();
             tile.writeToNBT(tiledata);
             data.setTag("tile", tiledata);

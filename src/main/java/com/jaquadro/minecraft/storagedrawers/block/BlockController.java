@@ -5,6 +5,7 @@ import com.jaquadro.minecraft.storagedrawers.api.security.ISecurityProvider;
 import com.jaquadro.minecraft.storagedrawers.api.storage.INetworked;
 import com.jaquadro.minecraft.storagedrawers.api.storage.attribute.LockAttribute;
 import com.jaquadro.minecraft.storagedrawers.block.tile.TileEntityController;
+import com.jaquadro.minecraft.storagedrawers.config.SDConfig;
 import com.jaquadro.minecraft.storagedrawers.core.ModCreativeTabs;
 import com.jaquadro.minecraft.storagedrawers.core.ModItems;
 import net.minecraft.block.BlockContainer;
@@ -114,7 +115,7 @@ public class BlockController extends BlockContainer implements INetworked {
             return false;
 
         if (!world.isRemote) {
-            if (StorageDrawers.config.cache.debugTrace && item.isEmpty())
+            if (SDConfig.general.enableDebugLogging && item.isEmpty())
                 te.printDebugInfo();
 
             te.interactPutItemsIntoInventory(player);

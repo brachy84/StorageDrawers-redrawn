@@ -9,7 +9,7 @@ import com.jaquadro.minecraft.storagedrawers.block.tile.*;
 import com.jaquadro.minecraft.storagedrawers.client.model.*;
 import com.jaquadro.minecraft.storagedrawers.client.renderer.TileEntityDrawersRenderer;
 import com.jaquadro.minecraft.storagedrawers.client.renderer.TileEntityFramingRenderer;
-import com.jaquadro.minecraft.storagedrawers.config.ConfigManager;
+import com.jaquadro.minecraft.storagedrawers.config.SDConfig;
 import com.jaquadro.minecraft.storagedrawers.item.*;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockPlanks;
@@ -62,7 +62,6 @@ public class ModBlocks {
         @SubscribeEvent
         public static void registerBlocks(RegistryEvent.Register<Block> event) {
             IForgeRegistry<Block> registry = event.getRegistry();
-            ConfigManager config = StorageDrawers.config;
 
             registry.registerAll(
                     new BlockVariantDrawers("basicdrawers", StorageDrawers.MOD_ID + ".basicDrawers"),
@@ -76,30 +75,30 @@ public class ModBlocks {
 
             GameRegistry.registerTileEntity(TileEntityKeyButton.class, StorageDrawers.MOD_ID + ":keybutton");
 
-            if (config.isBlockEnabled("compdrawers")) {
+            if (SDConfig.blocks.compdrawers.enabled) {
                 registry.register(new BlockCompDrawers("compdrawers", StorageDrawers.MOD_ID + ".compDrawers"));
                 GameRegistry.registerTileEntity(TileEntityDrawersComp.class, StorageDrawers.MOD_ID + ":compdrawers");
             }
-            if (config.isBlockEnabled("controller")) {
+            if (SDConfig.blocks.controller.enabled) {
                 registry.register(new BlockController("controller", StorageDrawers.MOD_ID + ".controller"));
                 GameRegistry.registerTileEntity(TileEntityController.class, StorageDrawers.MOD_ID + ":controller");
             }
-            if (config.isBlockEnabled("controllerSlave")) {
+            if (SDConfig.blocks.controllerslave.enabled) {
                 registry.register(new BlockSlave("controllerslave", StorageDrawers.MOD_ID + ".controllerSlave"));
                 GameRegistry.registerTileEntity(TileEntitySlave.class, StorageDrawers.MOD_ID + ":controllerslave");
             }
-            if (config.isBlockEnabled("trim")) {
+            if (SDConfig.blocks.trim.enabled) {
                 registry.register(new BlockTrim("trim", StorageDrawers.MOD_ID + ".trim"));
             }
 
-            if (config.cache.enableFramedDrawers) {
+            if (SDConfig.blocks.framedblocks.enableFramedDrawers) {
                 registry.register(new BlockDrawersCustom("customdrawers", StorageDrawers.MOD_ID + ".customDrawers"));
             }
-            if (config.cache.enableFramedTrims) {
+            if (SDConfig.blocks.framedblocks.enableFramedTrims) {
                 registry.register(new BlockTrimCustom("customtrim", StorageDrawers.MOD_ID + ".customTrim"));
                 GameRegistry.registerTileEntity(TileEntityTrim.class, StorageDrawers.MOD_ID + ":trim");
             }
-            if (config.cache.enableFramingTable) {
+            if (SDConfig.blocks.framedblocks.enableFramingTable) {
                 registry.register(new BlockFramingTable("framingtable", StorageDrawers.MOD_ID + ".framingTable"));
                 GameRegistry.registerTileEntity(TileEntityFramingTable.class, StorageDrawers.MOD_ID + ":framingtable");
             }
@@ -108,29 +107,28 @@ public class ModBlocks {
         @SubscribeEvent
         public static void registerItems(RegistryEvent.Register<Item> event) {
             IForgeRegistry<Item> registry = event.getRegistry();
-            ConfigManager config = StorageDrawers.config;
 
             registry.registerAll(
                     new ItemBasicDrawers(basicDrawers).setRegistryName(basicDrawers.getRegistryName()),
                     new ItemKeyButton(keyButton).setRegistryName(keyButton.getRegistryName())
             );
 
-            if (config.isBlockEnabled("compdrawers"))
+            if (SDConfig.blocks.compdrawers.enabled)
                 registry.register(new ItemCompDrawers(compDrawers).setRegistryName(compDrawers.getRegistryName()));
-            if (config.isBlockEnabled("controller"))
+            if (SDConfig.blocks.controller.enabled)
                 registry.register(new ItemController(controller).setRegistryName(controller.getRegistryName()));
-            if (config.isBlockEnabled("controllerSlave"))
+            if (SDConfig.blocks.controllerslave.enabled)
                 registry.register(new ItemBlock(controllerSlave).setRegistryName(controllerSlave.getRegistryName()));
-            if (config.isBlockEnabled("trim"))
+            if (SDConfig.blocks.trim.enabled)
                 registry.register(new ItemTrim(trim).setRegistryName(trim.getRegistryName()));
 
-            if (config.cache.enableFramedDrawers) {
+            if (SDConfig.blocks.framedblocks.enableFramedDrawers) {
                 registry.register(new ItemCustomDrawers(customDrawers).setRegistryName(customDrawers.getRegistryName()));
             }
-            if (config.cache.enableFramedTrims) {
+            if (SDConfig.blocks.framedblocks.enableFramedTrims) {
                 registry.register(new ItemCustomTrim(customTrim).setRegistryName(customTrim.getRegistryName()));
             }
-            if (config.cache.enableFramingTable) {
+            if (SDConfig.blocks.framedblocks.enableFramingTable) {
                 registry.register(new ItemFramingTable(framingTable).setRegistryName(framingTable.getRegistryName()));
             }
 
@@ -156,39 +154,35 @@ public class ModBlocks {
         @SubscribeEvent
         public static void registerRecipes(RegistryEvent.Register<IRecipe> event) {
             IForgeRegistry<IRecipe> registry = event.getRegistry();
-            ConfigManager config = StorageDrawers.config;
 
             for (BlockPlanks.EnumType material : BlockPlanks.EnumType.values()) {
-                ItemStack pl = new ItemStack(Blocks.PLANKS, 1, material.getMetadata());
-                ItemStack sl = new ItemStack(Blocks.WOODEN_SLAB, 1, material.getMetadata());
-
-                if (config.isBlockEnabled(EnumBasicDrawer.FULL1.getUnlocalizedName())) {
-                    ItemStack result = makeBasicDrawerItemStack(EnumBasicDrawer.FULL1, material.getName(), config.getBlockRecipeOutput(EnumBasicDrawer.FULL1.getUnlocalizedName()));
+                if (EnumBasicDrawer.FULL1.isEnabled()) {
+                    ItemStack result = makeBasicDrawerItemStack(EnumBasicDrawer.FULL1, material.getName(), EnumBasicDrawer.FULL1.getOutput());
                     registry.register(new ShapedOreRecipe(EMPTY_GROUP, result, "xxx", " y ", "xxx", 'x', new ItemStack(Blocks.PLANKS, 1, material.getMetadata()), 'y', "chestWood")
                             .setRegistryName(result.getItem().getRegistryName() + "_" + EnumBasicDrawer.FULL1.getUnlocalizedName() + "_" + material));
                 }
-                if (config.isBlockEnabled(EnumBasicDrawer.FULL2.getUnlocalizedName())) {
-                    ItemStack result = makeBasicDrawerItemStack(EnumBasicDrawer.FULL2, material.getName(), config.getBlockRecipeOutput(EnumBasicDrawer.FULL2.getUnlocalizedName()));
+                if (EnumBasicDrawer.FULL2.isEnabled()) {
+                    ItemStack result = makeBasicDrawerItemStack(EnumBasicDrawer.FULL2, material.getName(), EnumBasicDrawer.FULL2.getOutput());
                     registry.register(new ShapedOreRecipe(EMPTY_GROUP, result, "xyx", "xxx", "xyx", 'x', new ItemStack(Blocks.PLANKS, 1, material.getMetadata()), 'y', "chestWood")
                             .setRegistryName(result.getItem().getRegistryName() + "_" + EnumBasicDrawer.FULL2.getUnlocalizedName() + "_" + material));
                 }
-                if (config.isBlockEnabled(EnumBasicDrawer.FULL4.getUnlocalizedName())) {
-                    ItemStack result = makeBasicDrawerItemStack(EnumBasicDrawer.FULL4, material.getName(), config.getBlockRecipeOutput(EnumBasicDrawer.FULL4.getUnlocalizedName()));
+                if (EnumBasicDrawer.FULL4.isEnabled()) {
+                    ItemStack result = makeBasicDrawerItemStack(EnumBasicDrawer.FULL4, material.getName(), EnumBasicDrawer.FULL4.getOutput());
                     registry.register(new ShapedOreRecipe(EMPTY_GROUP, result, "yxy", "xxx", "yxy", 'x', new ItemStack(Blocks.PLANKS, 1, material.getMetadata()), 'y', "chestWood")
                             .setRegistryName(result.getItem().getRegistryName() + "_" + EnumBasicDrawer.FULL4.getUnlocalizedName() + "_" + material));
                 }
-                if (config.isBlockEnabled(EnumBasicDrawer.HALF2.getUnlocalizedName())) {
-                    ItemStack result = makeBasicDrawerItemStack(EnumBasicDrawer.HALF2, material.getName(), config.getBlockRecipeOutput(EnumBasicDrawer.HALF2.getUnlocalizedName()));
+                if (EnumBasicDrawer.HALF2.isEnabled()) {
+                    ItemStack result = makeBasicDrawerItemStack(EnumBasicDrawer.HALF2, material.getName(), EnumBasicDrawer.HALF2.getOutput());
                     registry.register(new ShapedOreRecipe(EMPTY_GROUP, result, "xyx", "xxx", "xyx", 'x', new ItemStack(Blocks.WOODEN_SLAB, 1, material.getMetadata()), 'y', "chestWood")
                             .setRegistryName(result.getItem().getRegistryName() + "_" + EnumBasicDrawer.HALF2.getUnlocalizedName() + "_" + material));
                 }
-                if (config.isBlockEnabled(EnumBasicDrawer.HALF4.getUnlocalizedName())) {
-                    ItemStack result = makeBasicDrawerItemStack(EnumBasicDrawer.HALF4, material.getName(), config.getBlockRecipeOutput(EnumBasicDrawer.HALF4.getUnlocalizedName()));
+                if (EnumBasicDrawer.HALF4.isEnabled()) {
+                    ItemStack result = makeBasicDrawerItemStack(EnumBasicDrawer.HALF4, material.getName(), EnumBasicDrawer.HALF4.getOutput());
                     registry.register(new ShapedOreRecipe(EMPTY_GROUP, result, "yxy", "xxx", "yxy", 'x', new ItemStack(Blocks.WOODEN_SLAB, 1, material.getMetadata()), 'y', "chestWood")
                             .setRegistryName(result.getItem().getRegistryName() + "_" + EnumBasicDrawer.HALF4.getUnlocalizedName() + "_" + material));
                 }
-                if (config.isBlockEnabled("trim")) {
-                    ItemStack result = new ItemStack(ModBlocks.trim, config.getBlockRecipeOutput("trim"), material.getMetadata());
+                if (SDConfig.blocks.trim.enabled) {
+                    ItemStack result = new ItemStack(ModBlocks.trim, SDConfig.blocks.trim.recipeOutput, material.getMetadata());
                     registry.register(new ShapedOreRecipe(EMPTY_GROUP, result, "xyx", "yyy", "xyx", 'x', "stickWood", 'y', new ItemStack(Blocks.PLANKS, 1, material.getMetadata()))
                             .setRegistryName(result.getItem().getRegistryName() + "_" + material));
                 }

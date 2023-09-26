@@ -1,13 +1,12 @@
 package com.jaquadro.minecraft.storagedrawers.item;
 
-import com.jaquadro.minecraft.storagedrawers.StorageDrawers;
 import com.jaquadro.minecraft.storagedrawers.api.storage.EnumBasicDrawer;
 import com.jaquadro.minecraft.storagedrawers.api.storage.IDrawerAttributes;
 import com.jaquadro.minecraft.storagedrawers.api.storage.IDrawerAttributesModifiable;
 import com.jaquadro.minecraft.storagedrawers.block.BlockStandardDrawers;
 import com.jaquadro.minecraft.storagedrawers.block.tile.TileEntityDrawers;
 import com.jaquadro.minecraft.storagedrawers.block.tile.TileEntityDrawersStandard;
-import com.jaquadro.minecraft.storagedrawers.config.ConfigManager;
+import com.jaquadro.minecraft.storagedrawers.config.SDConfig;
 import com.jaquadro.minecraft.storagedrawers.core.ModBlocks;
 import com.mojang.realmsclient.gui.ChatFormatting;
 import net.minecraft.block.Block;
@@ -59,7 +58,7 @@ public class ItemDrawers extends ItemBlock {
                 tile.setIsSealed(false);
             }
 
-            if (StorageDrawers.config.cache.defaultQuantify) {
+            if (SDConfig.general.defaultQuantify) {
                 IDrawerAttributes attributes = tile.getDrawerAttributes();
                 if (attributes instanceof IDrawerAttributesModifiable)
                     ((IDrawerAttributesModifiable) attributes).setIsShowingQuantity(true);
@@ -89,21 +88,13 @@ public class ItemDrawers extends ItemBlock {
     }
 
     private int getCapacityForBlock(@Nonnull ItemStack itemStack) {
-        ConfigManager config = StorageDrawers.config;
         Block block = Block.getBlockFromItem(itemStack.getItem());
 
         if (block instanceof BlockStandardDrawers) {
             EnumBasicDrawer info = EnumBasicDrawer.byMetadata(itemStack.getMetadata());
-            return switch (info) {
-                case FULL1 -> config.getBlockBaseStorage("fulldrawers1");
-                case FULL2 -> config.getBlockBaseStorage("fulldrawers2");
-                case FULL4 -> config.getBlockBaseStorage("fulldrawers4");
-                case HALF2 -> config.getBlockBaseStorage("halfdrawers2");
-                case HALF4 -> config.getBlockBaseStorage("halfdrawers4");
-                default -> 0;
-            };
+            return info.getBaseStorage();
         } else if (block == ModBlocks.compDrawers) {
-            return config.getBlockBaseStorage("compDrawers");
+            return SDConfig.blocks.compdrawers.baseStorage;
         }
 
         return 0;

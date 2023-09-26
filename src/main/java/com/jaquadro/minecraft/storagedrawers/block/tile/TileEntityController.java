@@ -9,6 +9,7 @@ import com.jaquadro.minecraft.storagedrawers.api.storage.attribute.LockAttribute
 import com.jaquadro.minecraft.storagedrawers.block.BlockSlave;
 import com.jaquadro.minecraft.storagedrawers.capabilities.DrawerItemHandler;
 import com.jaquadro.minecraft.storagedrawers.capabilities.DrawerItemRepository;
+import com.jaquadro.minecraft.storagedrawers.config.SDConfig;
 import com.jaquadro.minecraft.storagedrawers.core.ModBlocks;
 import com.jaquadro.minecraft.storagedrawers.security.SecurityManager;
 import com.jaquadro.minecraft.storagedrawers.util.ItemStackMapHelper;
@@ -104,7 +105,7 @@ public class TileEntityController extends TileEntity implements IDrawerGroup {
 
     private final ObjectList<BlockPos> searchQueue = ObjectList.create();
     private final Set<BlockPos> searchDiscovered = new ObjectOpenHashSet<>();
-    private final Comparator<SlotRecord> slotRecordComparator = (o1, o2) -> o1.priority - o2.priority;
+    private final Comparator<SlotRecord> slotRecordComparator = Comparator.comparingInt(o -> o.priority);
 
     private IDrawerAttributes getAttributes(Object obj) {
         IDrawerAttributes attrs = null;
@@ -163,7 +164,7 @@ public class TileEntityController extends TileEntity implements IDrawerGroup {
     private UUID lastClickUUID;
 
     public TileEntityController() {
-        range = StorageDrawers.config.getControllerRange();
+        range = SDConfig.blocks.controller.range;
     }
 
     public void printDebugInfo() {

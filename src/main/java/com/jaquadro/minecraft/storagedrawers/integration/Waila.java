@@ -12,6 +12,7 @@ import com.jaquadro.minecraft.storagedrawers.block.BlockDrawers;
 import com.jaquadro.minecraft.storagedrawers.block.BlockTrim;
 import com.jaquadro.minecraft.storagedrawers.block.tile.TileEntityDrawers;
 import com.jaquadro.minecraft.storagedrawers.capabilities.CapabilityDrawerAttributes;
+import com.jaquadro.minecraft.storagedrawers.config.SDConfig;
 import com.jaquadro.minecraft.storagedrawers.security.SecurityManager;
 import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaDataAccessor;
@@ -126,14 +127,14 @@ public class Waila extends IntegrationModule {
                         if (!stack.isEmpty()) {
                             String stackName = stack.getDisplayName();
                             List<IWailaTooltipHandler> handlers = StorageDrawers.wailaRegistry.getTooltipHandlers();
-                            for (int j = 0, n = handlers.size(); j < n; j++)
-                                stackName = handlers.get(j).transformItemName(drawer, stackName);
+                            for (IWailaTooltipHandler handler : handlers)
+                                stackName = handler.transformItemName(drawer, stackName);
 
                             if (drawer.getStoredItemCount() == Integer.MAX_VALUE)
                                 name = stackName + " [\u221E]";
                             else if (drawer instanceof IFractionalDrawer && ((IFractionalDrawer) drawer).getConversionRate() > 1)
                                 name = stackName + ((i == 0) ? " [" : " [+") + ((IFractionalDrawer) drawer).getStoredItemRemainder() + "]";
-                            else if (StorageDrawers.config.cache.stackRemainderWaila) {
+                            else if (SDConfig.general.isStackRemainder()) {
                                 int stacks = drawer.getStoredItemCount() / drawer.getStoredItemStackSize();
                                 int remainder = drawer.getStoredItemCount() - (stacks * drawer.getStoredItemStackSize());
                                 if (stacks > 0 && remainder > 0)

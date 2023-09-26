@@ -1,16 +1,15 @@
 package com.jaquadro.minecraft.storagedrawers.network;
 
-import com.google.common.collect.Maps;
-import com.jaquadro.minecraft.storagedrawers.config.ConfigManager;
 import com.jaquadro.minecraft.storagedrawers.config.PlayerConfigSetting;
+import com.jaquadro.minecraft.storagedrawers.config.SDConfig;
 import io.netty.buffer.ByteBuf;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import net.minecraftforge.fml.relauncher.Side;
 
-import java.util.Map;
 import java.util.UUID;
 
 public class BoolConfigUpdateMessage implements IMessage {
@@ -54,15 +53,9 @@ public class BoolConfigUpdateMessage implements IMessage {
                     return null;
                 }
 
-                Map<String, PlayerConfigSetting<?>> clientMap = ConfigManager.serverPlayerConfigSettings.get(playerUniqueId);
-                if (clientMap == null) {
-                    clientMap = Maps.newHashMap();
-                }
-
-                clientMap.put(message.key, new PlayerConfigSetting<>(message.key, message.value, playerUniqueId));
-                ConfigManager.serverPlayerConfigSettings.put(playerUniqueId, clientMap);
+                SDConfig.serverPlayerConfigSettings.computeIfAbsent(playerUniqueId, key -> new Object2ObjectOpenHashMap<>())
+                        .put(message.key, new PlayerConfigSetting<>(message.key, message.value, playerUniqueId));
             }
-
             return null;
         }
     }

@@ -1,8 +1,8 @@
 package com.jaquadro.minecraft.storagedrawers.block;
 
-import com.jaquadro.minecraft.storagedrawers.StorageDrawers;
 import com.jaquadro.minecraft.storagedrawers.api.storage.EnumBasicDrawer;
 import com.jaquadro.minecraft.storagedrawers.block.tile.TileEntityDrawers;
+import com.jaquadro.minecraft.storagedrawers.config.SDConfig;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockPlanks;
 import net.minecraft.block.properties.IProperty;
@@ -62,7 +62,7 @@ public class BlockVariantDrawers extends BlockStandardDrawers {
                 data.setString("material", material.getName());
                 stack.setTagCompound(data);
 
-                if (StorageDrawers.config.cache.creativeTabVanillaWoods || material == BlockPlanks.EnumType.OAK)
+                if (SDConfig.general.creativeTabVanillaWoods || material == BlockPlanks.EnumType.OAK)
                     list.add(stack);
             }
         }

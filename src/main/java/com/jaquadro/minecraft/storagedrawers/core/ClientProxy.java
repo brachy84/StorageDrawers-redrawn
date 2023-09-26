@@ -3,6 +3,7 @@ package com.jaquadro.minecraft.storagedrawers.core;
 import com.jaquadro.minecraft.chameleon.Chameleon;
 import com.jaquadro.minecraft.chameleon.resources.IconRegistry;
 import com.jaquadro.minecraft.storagedrawers.StorageDrawers;
+import com.jaquadro.minecraft.storagedrawers.config.SDConfig;
 import com.jaquadro.minecraft.storagedrawers.network.BoolConfigUpdateMessage;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.fml.client.FMLClientHandler;
@@ -31,6 +32,6 @@ public class ClientProxy extends CommonProxy {
             return;
 
         if (event.getEntity().getEntityId() == FMLClientHandler.instance().getClientPlayerEntity().getEntityId())
-            StorageDrawers.network.sendToServer(new BoolConfigUpdateMessage(FMLClientHandler.instance().getClientPlayerEntity().getUniqueID().toString(), "invertShift", StorageDrawers.config.cache.invertShift));
+            StorageDrawers.network.sendToServer(new BoolConfigUpdateMessage(FMLClientHandler.instance().getClientPlayerEntity().getUniqueID().toString(), "invertShift", SDConfig.general.invertShift));
     }
 }

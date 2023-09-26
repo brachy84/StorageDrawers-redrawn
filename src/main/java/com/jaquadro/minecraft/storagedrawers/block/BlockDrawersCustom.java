@@ -1,12 +1,12 @@
 package com.jaquadro.minecraft.storagedrawers.block;
 
 import com.jaquadro.minecraft.chameleon.block.properties.UnlistedModelData;
-import com.jaquadro.minecraft.storagedrawers.StorageDrawers;
 import com.jaquadro.minecraft.storagedrawers.api.storage.BlockType;
 import com.jaquadro.minecraft.storagedrawers.api.storage.EnumBasicDrawer;
 import com.jaquadro.minecraft.storagedrawers.api.storage.IDrawer;
 import com.jaquadro.minecraft.storagedrawers.block.modeldata.MaterialModelData;
 import com.jaquadro.minecraft.storagedrawers.block.tile.TileEntityDrawers;
+import com.jaquadro.minecraft.storagedrawers.config.SDConfig;
 import com.jaquadro.minecraft.storagedrawers.item.ItemCustomDrawers;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.state.BlockStateContainer;
@@ -81,7 +81,7 @@ public class BlockDrawersCustom extends BlockStandardDrawers {
             data = new NBTTagCompound();
 
         boolean hasContents = false;
-        if (StorageDrawers.config.cache.keepContentsOnBreak) {
+        if (SDConfig.general.keepContentsOnBreak) {
             for (int i = 0; i < tile.getGroup().getDrawerCount(); i++) {
                 IDrawer drawer = tile.getGroup().getDrawer(i);
                 if (drawer != null && !drawer.isEmpty())
@@ -93,7 +93,7 @@ public class BlockDrawersCustom extends BlockStandardDrawers {
             }
         }
 
-        if (tile.isSealed() || (StorageDrawers.config.cache.keepContentsOnBreak && hasContents)) {
+        if (tile.isSealed() || (SDConfig.general.keepContentsOnBreak && hasContents)) {
             NBTTagCompound tiledata = new NBTTagCompound();
             tile.writeToNBT(tiledata);
             data.setTag("tile", tiledata);

@@ -1,7 +1,6 @@
 package com.jaquadro.minecraft.storagedrawers.config;
 
 import com.jaquadro.minecraft.chameleon.util.ItemResourceLocation;
-import com.jaquadro.minecraft.storagedrawers.StorageDrawers;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
@@ -39,7 +38,7 @@ public class CompTierRegistry {
     public void initialize() {
         initialized = true;
 
-        if (StorageDrawers.config.cache.registerExtraCompRules) {
+        if (SDConfig.registries.registerExtraCompactingRules) {
             register(new ItemStack(Blocks.CLAY), new ItemStack(Items.CLAY_BALL), 4);
             register(new ItemStack(Blocks.SNOW), new ItemStack(Items.SNOWBALL), 4);
             register(new ItemStack(Blocks.GLOWSTONE), new ItemStack(Items.GLOWSTONE_DUST), 4);
@@ -55,8 +54,8 @@ public class CompTierRegistry {
             }
         }
 
-        if (StorageDrawers.config.cache.compRules != null) {
-            for (String rule : StorageDrawers.config.cache.compRules)
+        if (SDConfig.registries.compRules != null) {
+            for (String rule : SDConfig.registries.compRules)
                 register(rule);
         }
 

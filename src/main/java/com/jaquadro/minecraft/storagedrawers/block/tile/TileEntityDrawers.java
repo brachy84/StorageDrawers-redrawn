@@ -15,6 +15,7 @@ import com.jaquadro.minecraft.storagedrawers.block.tile.tiledata.ControllerData;
 import com.jaquadro.minecraft.storagedrawers.block.tile.tiledata.MaterialData;
 import com.jaquadro.minecraft.storagedrawers.block.tile.tiledata.UpgradeData;
 import com.jaquadro.minecraft.storagedrawers.capabilities.BasicDrawerAttributes;
+import com.jaquadro.minecraft.storagedrawers.config.SDConfig;
 import com.jaquadro.minecraft.storagedrawers.core.ModItems;
 import com.jaquadro.minecraft.storagedrawers.item.EnumUpgradeRedstone;
 import com.jaquadro.minecraft.storagedrawers.item.EnumUpgradeStorage;
@@ -100,7 +101,7 @@ public abstract class TileEntityDrawers extends ChamTileEntity implements ISeala
             ItemStack upgrade = getUpgrade(slot);
             if (upgrade.getItem() == ModItems.upgradeStorage) {
                 int storageLevel = EnumUpgradeStorage.byMetadata(upgrade.getMetadata()).getLevel();
-                int storageMult = StorageDrawers.config.getStorageUpgradeMultiplier(storageLevel);
+                int storageMult = SDConfig.getStorageUpgradeMultiplier(storageLevel);
                 int effectiveStorageMult = upgradeData.getStorageMultiplier();
                 if (effectiveStorageMult == storageMult)
                     storageMult--;
@@ -131,7 +132,7 @@ public abstract class TileEntityDrawers extends ChamTileEntity implements ISeala
             // New item is a downgrade
             int currentUpgradeMult = upgradeData.getStorageMultiplier();
             int storageLevel = EnumUpgradeStorage.byMetadata(upgrade.getMetadata()).getLevel();
-            int storageMult = StorageDrawers.config.getStorageUpgradeMultiplier(storageLevel);
+            int storageMult = SDConfig.getStorageUpgradeMultiplier(storageLevel);
 
             // The below first calculates the amount of stacks to remove if the multiplier stayed the same, then adds the removed multiplier,
             // which results in the amount of stacks (storage) to remove. The addition would be multiplied by
@@ -229,7 +230,7 @@ public abstract class TileEntityDrawers extends ChamTileEntity implements ISeala
 
     @Override
     public UUID getOwner() {
-        if (!StorageDrawers.config.cache.enablePersonalUpgrades)
+        if (!SDConfig.general.enablePersonalUpgrades)
             return null;
 
         return owner;
@@ -237,7 +238,7 @@ public abstract class TileEntityDrawers extends ChamTileEntity implements ISeala
 
     @Override
     public boolean setOwner(UUID owner) {
-        if (!StorageDrawers.config.cache.enablePersonalUpgrades)
+        if (!SDConfig.general.enablePersonalUpgrades)
             return false;
 
         if ((this.owner != null && !this.owner.equals(owner)) || (owner != null && !owner.equals(this.owner))) {
@@ -259,7 +260,7 @@ public abstract class TileEntityDrawers extends ChamTileEntity implements ISeala
 
     @Override
     public boolean setSecurityProvider(ISecurityProvider provider) {
-        if (!StorageDrawers.config.cache.enablePersonalUpgrades)
+        if (!SDConfig.general.enablePersonalUpgrades)
             return false;
 
         String newKey = (provider == null) ? null : provider.getProviderID();
@@ -279,14 +280,14 @@ public abstract class TileEntityDrawers extends ChamTileEntity implements ISeala
     }
 
     public boolean isSealed() {
-        if (!StorageDrawers.config.cache.enableTape)
+        if (!SDConfig.general.enableTape)
             return false;
 
         return taped;
     }
 
     public boolean setIsSealed(boolean sealed) {
-        if (!StorageDrawers.config.cache.enableTape)
+        if (!SDConfig.general.enableTape)
             return false;
 
         if (this.taped != sealed) {
@@ -302,7 +303,7 @@ public abstract class TileEntityDrawers extends ChamTileEntity implements ISeala
     }
 
     public boolean isRedstone() {
-        if (!StorageDrawers.config.cache.enableRedstoneUpgrades)
+        if (!SDConfig.general.enableRedstoneUpgrades)
             return false;
 
         return upgradeData.getRedstoneType() != null;

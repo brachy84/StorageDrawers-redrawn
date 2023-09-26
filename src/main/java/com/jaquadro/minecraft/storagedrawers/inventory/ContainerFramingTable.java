@@ -1,8 +1,8 @@
 package com.jaquadro.minecraft.storagedrawers.inventory;
 
-import com.jaquadro.minecraft.storagedrawers.StorageDrawers;
 import com.jaquadro.minecraft.storagedrawers.api.storage.attribute.IFrameable;
 import com.jaquadro.minecraft.storagedrawers.block.tile.TileEntityFramingTable;
+import com.jaquadro.minecraft.storagedrawers.config.SDConfig;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
@@ -170,7 +170,7 @@ public class ContainerFramingTable extends Container {
         @Nonnull
         @Override
         public ItemStack onTake(EntityPlayer player, @Nonnull ItemStack stack) {
-            if (StorageDrawers.config.cache.consumeDecorationItems)
+            if (SDConfig.blocks.framedblocks.consumeDecorationItems)
                 return super.onTake(player, stack);
 
             FMLCommonHandler.instance().firePlayerCraftingEvent(player, stack, inputInventory);

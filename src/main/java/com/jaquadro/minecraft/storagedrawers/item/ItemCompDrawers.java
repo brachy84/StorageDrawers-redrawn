@@ -5,7 +5,7 @@ import com.jaquadro.minecraft.chameleon.resources.IItemVariantProvider;
 import com.jaquadro.minecraft.storagedrawers.StorageDrawers;
 import com.jaquadro.minecraft.storagedrawers.block.EnumCompDrawer;
 import com.jaquadro.minecraft.storagedrawers.block.tile.TileEntityDrawers;
-import com.jaquadro.minecraft.storagedrawers.config.ConfigManager;
+import com.jaquadro.minecraft.storagedrawers.config.SDConfig;
 import com.mojang.realmsclient.gui.ChatFormatting;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
@@ -62,9 +62,7 @@ public class ItemCompDrawers extends ItemBlock implements IItemMeshMapper, IItem
     @Override
     @SideOnly(Side.CLIENT)
     public void addInformation(@Nonnull ItemStack itemStack, @Nullable World world, List<String> list, ITooltipFlag advanced) {
-        ConfigManager config = StorageDrawers.config;
-
-        int count = config.getBlockBaseStorage("compdrawers");
+        int count = SDConfig.blocks.compdrawers.baseStorage;
         list.add(I18n.format("storagedrawers.drawers.description", count));
 
         if (itemStack.hasTagCompound() && itemStack.getTagCompound().hasKey("tile")) {

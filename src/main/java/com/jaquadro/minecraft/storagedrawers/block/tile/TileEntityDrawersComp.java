@@ -4,7 +4,7 @@ import com.jaquadro.minecraft.storagedrawers.StorageDrawers;
 import com.jaquadro.minecraft.storagedrawers.api.storage.IDrawerAttributes;
 import com.jaquadro.minecraft.storagedrawers.api.storage.IDrawerGroup;
 import com.jaquadro.minecraft.storagedrawers.block.tile.tiledata.FractionalDrawerGroup;
-import com.jaquadro.minecraft.storagedrawers.config.ConfigManager;
+import com.jaquadro.minecraft.storagedrawers.config.SDConfig;
 import com.jaquadro.minecraft.storagedrawers.network.CountUpdateMessage;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.EnumFacing;
@@ -58,7 +58,7 @@ public class TileEntityDrawersComp extends TileEntityDrawers {
 
         @Override
         protected void log(String message) {
-            if (!getWorld().isRemote && StorageDrawers.config.cache.debugTrace)
+            if (!getWorld().isRemote && SDConfig.general.enableDebugLogging)
                 StorageDrawers.log.info(message);
         }
 
@@ -110,8 +110,7 @@ public class TileEntityDrawersComp extends TileEntityDrawers {
             return super.getDrawerCapacity();
 
         if (capacity == 0) {
-            ConfigManager config = StorageDrawers.config;
-            capacity = config.getBlockBaseStorage("compdrawers");
+            capacity = SDConfig.blocks.compdrawers.baseStorage;
 
             if (capacity <= 0)
                 capacity = 1;

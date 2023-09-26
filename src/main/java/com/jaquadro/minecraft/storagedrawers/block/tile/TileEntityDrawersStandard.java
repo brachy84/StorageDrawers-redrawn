@@ -7,7 +7,6 @@ import com.jaquadro.minecraft.storagedrawers.api.storage.IDrawerAttributes;
 import com.jaquadro.minecraft.storagedrawers.api.storage.IDrawerGroup;
 import com.jaquadro.minecraft.storagedrawers.block.BlockStandardDrawers;
 import com.jaquadro.minecraft.storagedrawers.block.tile.tiledata.StandardDrawerGroup;
-import com.jaquadro.minecraft.storagedrawers.config.ConfigManager;
 import com.jaquadro.minecraft.storagedrawers.core.ModBlocks;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.nbt.NBTTagCompound;
@@ -155,16 +154,7 @@ public class TileEntityDrawersStandard extends TileEntityDrawers {
                 return 1;
 
             EnumBasicDrawer type = blockState.getValue(BlockStandardDrawers.BLOCK);
-            ConfigManager config = StorageDrawers.config;
-
-            switch (type) {
-                case FULL1 -> capacity = config.getBlockBaseStorage("fulldrawers1");
-                case FULL2 -> capacity = config.getBlockBaseStorage("fulldrawers2");
-                case FULL4 -> capacity = config.getBlockBaseStorage("fulldrawers4");
-                case HALF2 -> capacity = config.getBlockBaseStorage("halfdrawers2");
-                case HALF4 -> capacity = config.getBlockBaseStorage("halfdrawers4");
-                default -> capacity = 1;
-            }
+            capacity = type.getBaseStorage();
 
             if (capacity <= 0)
                 capacity = 1;

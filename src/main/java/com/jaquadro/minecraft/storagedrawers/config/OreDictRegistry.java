@@ -1,6 +1,5 @@
 package com.jaquadro.minecraft.storagedrawers.config;
 
-import com.jaquadro.minecraft.storagedrawers.StorageDrawers;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import it.unimi.dsi.fastutil.ints.IntSet;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
@@ -66,12 +65,12 @@ public class OreDictRegistry {
                 addWhitelist(type + ore);
         }
 
-        for (String item : StorageDrawers.config.cache.oreBlacklist) {
+        for (String item : SDConfig.registries.oreBlacklist) {
             removeWhitelist(item);
             addBlacklist(item);
         }
 
-        for (String item : StorageDrawers.config.cache.oreWhitelist) {
+        for (String item : SDConfig.registries.oreWhitelist) {
             removeBlacklist(item);
             addWhitelist(item);
         }

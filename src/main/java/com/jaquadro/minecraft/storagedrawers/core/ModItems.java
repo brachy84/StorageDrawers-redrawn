@@ -3,7 +3,7 @@ package com.jaquadro.minecraft.storagedrawers.core;
 import com.jaquadro.minecraft.chameleon.Chameleon;
 import com.jaquadro.minecraft.chameleon.resources.ModelRegistry;
 import com.jaquadro.minecraft.storagedrawers.StorageDrawers;
-import com.jaquadro.minecraft.storagedrawers.config.ConfigManager;
+import com.jaquadro.minecraft.storagedrawers.config.SDConfig;
 import com.jaquadro.minecraft.storagedrawers.item.*;
 import net.minecraft.item.Item;
 import net.minecraftforge.client.event.ModelRegistryEvent;
@@ -48,34 +48,33 @@ public class ModItems {
         @SubscribeEvent
         public static void registerItems(RegistryEvent.Register<Item> event) {
             IForgeRegistry<Item> itemRegistry = event.getRegistry();
-            ConfigManager config = StorageDrawers.config;
 
             itemRegistry.register(new Item().setTranslationKey(makeName("upgradeTemplate")).setRegistryName("upgrade_template").setCreativeTab(ModCreativeTabs.tabStorageDrawers));
 
-            if (config.cache.enableStorageUpgrades) {
+            if (SDConfig.general.enableStorageUpgrades) {
                 itemRegistry.register(new ItemUpgradeStorage("upgrade_storage", makeName("upgradeStorage")));
                 itemRegistry.register(new ItemUpgrade("upgrade_one_stack", makeName("upgradeOneStack")));
             }
 
-            if (StorageDrawers.config.cache.enableIndicatorUpgrades)
+            if (SDConfig.general.enableIndicatorUpgrades)
                 itemRegistry.register(new ItemUpgradeStatus("upgrade_status", makeName("upgradeStatus")));
-            if (StorageDrawers.config.cache.enableVoidUpgrades)
+            if (SDConfig.general.enableVoidUpgrades)
                 itemRegistry.register(new ItemUpgrade("upgrade_void", makeName("upgradeVoid")));
-            if (StorageDrawers.config.cache.enableItemConversion)
+            if (SDConfig.general.enableItemConversion)
                 itemRegistry.register(new ItemUpgrade("upgrade_conversion", makeName("upgradeConversion")));
-            if (StorageDrawers.config.cache.enableCreativeUpgrades)
+            if (SDConfig.general.enableCreativeUpgrades)
                 itemRegistry.register(new ItemUpgradeCreative("upgrade_creative", makeName("upgradeCreative")));
-            if (StorageDrawers.config.cache.enableRedstoneUpgrades)
+            if (SDConfig.general.enableRedstoneUpgrades)
                 itemRegistry.register(new ItemUpgradeRedstone("upgrade_redstone", makeName("upgradeRedstone")));
-            if (StorageDrawers.config.cache.enableLockUpgrades)
+            if (SDConfig.general.enableLockUpgrades)
                 itemRegistry.register(new ItemDrawerKey("drawer_key", makeName("drawerKey")));
-            if (StorageDrawers.config.cache.enableShroudUpgrades)
+            if (SDConfig.general.enableShroudUpgrades)
                 itemRegistry.register(new ItemShroudKey("shroud_key", makeName("shroudKey")));
-            if (StorageDrawers.config.cache.enablePersonalUpgrades)
+            if (SDConfig.general.enablePersonalUpgrades)
                 itemRegistry.register(new ItemPersonalKey("personal_key", makeName("personalKey")));
-            if (StorageDrawers.config.cache.enableQuantifiableUpgrades)
+            if (SDConfig.general.enableQuantifiableUpgrades)
                 itemRegistry.register(new ItemQuantifyKey("quantify_key", makeName("quantifyKey")));
-            if (StorageDrawers.config.cache.enableTape)
+            if (SDConfig.general.enableTape)
                 itemRegistry.register(new ItemTape("tape", makeName("tape")));
         }
 

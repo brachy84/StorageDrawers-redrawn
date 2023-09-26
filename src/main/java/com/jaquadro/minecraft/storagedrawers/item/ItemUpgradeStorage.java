@@ -1,7 +1,7 @@
 package com.jaquadro.minecraft.storagedrawers.item;
 
 import com.jaquadro.minecraft.chameleon.resources.IItemMeshMapper;
-import com.jaquadro.minecraft.storagedrawers.StorageDrawers;
+import com.jaquadro.minecraft.storagedrawers.config.SDConfig;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
@@ -41,7 +41,7 @@ public class ItemUpgradeStorage extends ItemUpgrade implements IItemMeshMapper {
     public void addInformation(@Nonnull ItemStack itemStack, @Nullable World world, List<String> list, ITooltipFlag advanced) {
         EnumUpgradeStorage upgrade = EnumUpgradeStorage.byMetadata(itemStack.getMetadata());
         if (upgrade != null) {
-            int mult = StorageDrawers.config.getStorageUpgradeMultiplier(upgrade.getLevel());
+            int mult = SDConfig.getStorageUpgradeMultiplier(upgrade.getLevel());
             list.add(I18n.format("storagedrawers.upgrade.description", mult));
         }
     }

@@ -2,6 +2,7 @@ package com.jaquadro.minecraft.storagedrawers.util;
 
 import com.jaquadro.minecraft.storagedrawers.StorageDrawers;
 import com.jaquadro.minecraft.storagedrawers.config.CompTierRegistry;
+import com.jaquadro.minecraft.storagedrawers.config.SDConfig;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
@@ -53,12 +54,12 @@ public class CompactingHelper {
 
     @Nonnull
     public Result findHigherTier(@Nonnull ItemStack stack) {
-        if (!world.isRemote && StorageDrawers.config.cache.debugTrace)
+        if (!world.isRemote && SDConfig.general.enableDebugLogging)
             StorageDrawers.log.info("Finding ascending candidates for " + stack);
 
         CompTierRegistry.Record record = StorageDrawers.compRegistry.findHigherTier(stack);
         if (record != null) {
-            if (!world.isRemote && StorageDrawers.config.cache.debugTrace)
+            if (!world.isRemote && SDConfig.general.enableDebugLogging)
                 StorageDrawers.log.info("Found " + record.upper + " in registry with conv=" + record.convRate);
 
             return new Result(record.upper, record.convRate);
@@ -87,7 +88,7 @@ public class CompactingHelper {
                         continue;
 
                     candidates.add(match);
-                    if (!world.isRemote && StorageDrawers.config.cache.debugTrace)
+                    if (!world.isRemote && SDConfig.general.enableDebugLogging)
                         StorageDrawers.log.info("Found ascending candidate for " + stack + ": " + match + " size=" + lookupSize + ", inverse=" + comp);
 
                     break;
@@ -102,7 +103,7 @@ public class CompactingHelper {
         if (candidates.size() > 0)
             return new Result(candidates.get(0), lookupSize);
 
-        if (!world.isRemote && StorageDrawers.config.cache.debugTrace)
+        if (!world.isRemote && SDConfig.general.enableDebugLogging)
             StorageDrawers.log.info("No candidates found");
 
         return new Result(ItemStack.EMPTY, 0);
@@ -110,12 +111,12 @@ public class CompactingHelper {
 
     @Nonnull
     public Result findLowerTier(@Nonnull ItemStack stack) {
-        if (!world.isRemote && StorageDrawers.config.cache.debugTrace)
+        if (!world.isRemote && SDConfig.general.enableDebugLogging)
             StorageDrawers.log.info("Finding descending candidates for " + stack);
 
         CompTierRegistry.Record record = StorageDrawers.compRegistry.findLowerTier(stack);
         if (record != null) {
-            if (!world.isRemote && StorageDrawers.config.cache.debugTrace)
+            if (!world.isRemote && SDConfig.general.enableDebugLogging)
                 StorageDrawers.log.info("Found " + record.lower + " in registry with conv=" + record.convRate);
 
             return new Result(record.lower, record.convRate);
@@ -139,9 +140,9 @@ public class CompactingHelper {
                         candidates.add(match);
                         candidatesRate.put(match, recipeSize);
 
-                        if (!world.isRemote && StorageDrawers.config.cache.debugTrace)
+                        if (!world.isRemote && SDConfig.general.enableDebugLogging)
                             StorageDrawers.log.info("Found descending candidate for " + stack + ": " + match + " size=" + recipeSize + ", inverse=" + comp);
-                    } else if (!world.isRemote && StorageDrawers.config.cache.debugTrace)
+                    } else if (!world.isRemote && SDConfig.general.enableDebugLogging)
                         StorageDrawers.log.info("Back-check failed for " + match + " size=" + lookupSize + ", inverse=" + comp);
                 }
             }
@@ -156,7 +157,7 @@ public class CompactingHelper {
             return new Result(match, candidatesRate.getInt(match));
         }
 
-        if (!world.isRemote && StorageDrawers.config.cache.debugTrace)
+        if (!world.isRemote && SDConfig.general.enableDebugLogging)
             StorageDrawers.log.info("No candidates found");
 
         return new Result(ItemStack.EMPTY, 0);

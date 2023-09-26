@@ -14,6 +14,7 @@ import com.jaquadro.minecraft.storagedrawers.block.dynamic.StatusModelData;
 import com.jaquadro.minecraft.storagedrawers.block.tile.TileEntityDrawers;
 import com.jaquadro.minecraft.storagedrawers.block.tile.TileEntityDrawersComp;
 import com.jaquadro.minecraft.storagedrawers.client.model.component.DrawerSealedModel;
+import com.jaquadro.minecraft.storagedrawers.config.SDConfig;
 import com.jaquadro.minecraft.storagedrawers.item.EnumUpgradeStatus;
 import com.jaquadro.minecraft.storagedrawers.util.CountFormatter;
 import net.minecraft.block.Block;
@@ -48,7 +49,7 @@ public class TileEntityDrawersRenderer extends TileEntitySpecialRenderer<TileEnt
         // DrawerFPS mod start
         EntityPlayer player = Minecraft.getMinecraft().player;
         BlockPos blockPos = tile.getPos();
-        int renderRange = StorageDrawers.config.cache.renderRange;
+        int renderRange = SDConfig.general.renderRange;
         if (player != null && blockPos.distanceSqToCenter(player.posX, player.posY, player.posZ) > renderRange * renderRange) {
             return;
         }

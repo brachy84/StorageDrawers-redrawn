@@ -13,6 +13,7 @@ import com.jaquadro.minecraft.storagedrawers.network.BoolConfigUpdateMessage;
 import com.jaquadro.minecraft.storagedrawers.network.CountUpdateMessage;
 import com.jaquadro.minecraft.storagedrawers.security.SecurityRegistry;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.config.Config;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -29,12 +30,9 @@ import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.minecraftforge.fml.relauncher.Side;
 import org.apache.logging.log4j.Logger;
 
-import java.io.File;
-
 // This will stop erroring once you run the build task once. Or, if you really hate the error message and don't want to build, run `./gradlew injectTags`.
 @Mod(modid = StorageDrawers.MOD_ID, name = StorageDrawers.MOD_NAME, version = Version.VERSION,
         dependencies = "required-after:forge@[14.21.0.2362,);required-after:chameleon;",
-        guiFactory = StorageDrawers.SOURCE_PATH + "core.ModGuiFactory",
         acceptedMinecraftVersions = "[1.12,1.13)")
 public class StorageDrawers {
 
@@ -46,7 +44,6 @@ public class StorageDrawers {
 
     public static Logger log;
     public static SimpleNetworkWrapper network;
-    public static ConfigManager config;
     public static CompTierRegistry compRegistry;
     public static OreDictRegistry oreDictRegistry;
 
@@ -63,7 +60,6 @@ public class StorageDrawers {
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {
         log = event.getModLog();
-        config = new ConfigManager(new File(event.getModConfigurationDirectory(), MOD_ID + ".cfg"));
 
         CapabilityDrawerGroup.register();
         CapabilityItemRepository.register();
@@ -109,17 +105,30 @@ public class StorageDrawers {
 
     @SubscribeEvent
     public void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent event) {
-        boolean preShiftValue = config.cache.invertShift;
-        if (event.getModID().equals(MOD_ID))
-            config.syncConfig();
-        if (event.isWorldRunning() && preShiftValue != config.cache.invertShift) {
-            StorageDrawers.network.sendToServer(new BoolConfigUpdateMessage(FMLClientHandler.instance().getClientPlayerEntity().getUniqueID().toString(), "invertShift", config.cache.invertShift));
-            StorageDrawers.network.sendToServer(new BoolConfigUpdateMessage(FMLClientHandler.instance().getClientPlayerEntity().getUniqueID().toString(), "invertClick", config.cache.invertClick));
+        boolean preShiftValue = SDConfig.general.invertShift;
+        if (event.getModID().equals(MOD_ID)) {
+            net.minecraftforge.common.config.ConfigManager.sync(MOD_ID, Config.Type.INSTANCE);
+            for (String rule : SDConfig.registries.compRules)
+                StorageDrawers.compRegistry.register(rule);
+            if (StorageDrawers.oreDictRegistry != null) {
+                for (String item : SDConfig.registries.oreBlacklist) {
+                    StorageDrawers.oreDictRegistry.removeWhitelist(item);
+                    StorageDrawers.oreDictRegistry.addBlacklist(item);
+                }
+                for (String item : SDConfig.registries.oreWhitelist) {
+                    StorageDrawers.oreDictRegistry.removeBlacklist(item);
+                    StorageDrawers.oreDictRegistry.addWhitelist(item);
+                }
+            }
+        }
+        if (event.isWorldRunning() && preShiftValue != SDConfig.general.invertShift) {
+            StorageDrawers.network.sendToServer(new BoolConfigUpdateMessage(FMLClientHandler.instance().getClientPlayerEntity().getUniqueID().toString(), "invertShift", SDConfig.general.invertShift));
+            StorageDrawers.network.sendToServer(new BoolConfigUpdateMessage(FMLClientHandler.instance().getClientPlayerEntity().getUniqueID().toString(), "invertClick", SDConfig.general.invertClick));
         }
     }
 
     @SubscribeEvent
     public void onPlayerDisconnect(PlayerLoggedOutEvent event) {
-        ConfigManager.serverPlayerConfigSettings.remove(event.player.getUniqueID());
+        SDConfig.serverPlayerConfigSettings.remove(event.player.getUniqueID());
     }
 }

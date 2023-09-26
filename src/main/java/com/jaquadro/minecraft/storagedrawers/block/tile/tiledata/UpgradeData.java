@@ -1,9 +1,8 @@
 package com.jaquadro.minecraft.storagedrawers.block.tile.tiledata;
 
 import com.jaquadro.minecraft.chameleon.block.tiledata.TileDataShim;
-import com.jaquadro.minecraft.storagedrawers.StorageDrawers;
 import com.jaquadro.minecraft.storagedrawers.api.storage.IDrawerAttributesModifiable;
-import com.jaquadro.minecraft.storagedrawers.config.ConfigManager;
+import com.jaquadro.minecraft.storagedrawers.config.SDConfig;
 import com.jaquadro.minecraft.storagedrawers.core.ModItems;
 import com.jaquadro.minecraft.storagedrawers.item.*;
 import net.minecraft.item.Item;
@@ -207,18 +206,17 @@ public class UpgradeData extends TileDataShim {
     }
 
     private void syncStorageMultiplier() {
-        ConfigManager config = StorageDrawers.config;
         storageMultiplier = 0;
 
         for (ItemStack stack : upgrades) {
             if (stack.getItem() == ModItems.upgradeStorage) {
                 int level = EnumUpgradeStorage.byMetadata(stack.getMetadata()).getLevel();
-                storageMultiplier += config.getStorageUpgradeMultiplier(level);
+                storageMultiplier += SDConfig.getStorageUpgradeMultiplier(level);
             }
         }
 
         if (storageMultiplier == 0)
-            storageMultiplier = config.getStorageUpgradeMultiplier(1);
+            storageMultiplier = SDConfig.getStorageUpgradeMultiplier(1);
     }
 
     private void syncStatusLevel() {
