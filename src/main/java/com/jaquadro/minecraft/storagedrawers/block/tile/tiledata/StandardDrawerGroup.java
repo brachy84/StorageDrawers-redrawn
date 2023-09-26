@@ -9,6 +9,7 @@ import com.jaquadro.minecraft.storagedrawers.capabilities.DrawerItemRepository;
 import com.jaquadro.minecraft.storagedrawers.inventory.ItemStackHelper;
 import com.jaquadro.minecraft.storagedrawers.util.ItemStackMatcher;
 import com.jaquadro.minecraft.storagedrawers.util.ItemStackOreMatcher;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -23,7 +24,6 @@ import net.minecraftforge.items.IItemHandler;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Predicate;
 
@@ -483,7 +483,7 @@ public abstract class StandardDrawerGroup extends TileDataShim implements IDrawe
         @Override
         public void setExtendedData(String key, Object data) {
             if (auxData == null)
-                auxData = new HashMap<>();
+                auxData = new Object2ObjectOpenHashMap<>();
 
             auxData.put(key, data);
         }

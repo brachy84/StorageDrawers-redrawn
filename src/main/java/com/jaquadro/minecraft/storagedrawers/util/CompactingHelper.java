@@ -2,6 +2,7 @@ package com.jaquadro.minecraft.storagedrawers.util;
 
 import com.jaquadro.minecraft.storagedrawers.StorageDrawers;
 import com.jaquadro.minecraft.storagedrawers.config.CompTierRegistry;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
@@ -12,8 +13,11 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
 import javax.annotation.Nonnull;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
+// TODO WTF
 public class CompactingHelper {
 
     private static final InventoryLookup lookup1 = new InventoryLookup(1, 1);
@@ -118,7 +122,7 @@ public class CompactingHelper {
         }
 
         List<ItemStack> candidates = new ArrayList<>();
-        Map<ItemStack, Integer> candidatesRate = new HashMap<>();
+        Object2IntOpenHashMap<ItemStack> candidatesRate = new Object2IntOpenHashMap<>();
 
         for (IRecipe recipe : CraftingManager.REGISTRY) {
             ItemStack output = recipe.getRecipeOutput();
@@ -145,11 +149,11 @@ public class CompactingHelper {
 
         ItemStack modMatch = findMatchingModCandidate(stack, candidates);
         if (!modMatch.isEmpty())
-            return new Result(modMatch, candidatesRate.get(modMatch));
+            return new Result(modMatch, candidatesRate.getInt(modMatch));
 
-        if (candidates.size() > 0) {
+        if (!candidates.isEmpty()) {
             ItemStack match = candidates.get(0);
-            return new Result(match, candidatesRate.get(match));
+            return new Result(match, candidatesRate.getInt(match));
         }
 
         if (!world.isRemote && StorageDrawers.config.cache.debugTrace)

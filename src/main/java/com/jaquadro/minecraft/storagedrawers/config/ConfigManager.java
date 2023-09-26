@@ -2,11 +2,15 @@ package com.jaquadro.minecraft.storagedrawers.config;
 
 import com.google.common.collect.Maps;
 import com.jaquadro.minecraft.storagedrawers.StorageDrawers;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraftforge.common.config.ConfigCategory;
 import net.minecraftforge.common.config.Configuration;
 
 import java.io.File;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 public class ConfigManager {
 
@@ -120,7 +124,7 @@ public class ConfigManager {
     public final ConfigSection sectionBlocksSlave = new ConfigSection(blockSections, sectionBlocks, "controllerslave", "blocks.controllerSlave");
     public final ConfigSection sectionFramedBlocks = new ConfigSection(blockSections, sectionBlocks, "framedblocks", "blocks.framedBlocks");
 
-    public Map<String, ConfigSection> blockSectionsMap = new HashMap<String, ConfigSection>();
+    public Map<String, ConfigSection> blockSectionsMap = new Object2ObjectOpenHashMap<>();
 
     public ConfigManager(File file) {
         config = new Configuration(file);

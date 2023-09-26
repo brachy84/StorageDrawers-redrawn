@@ -1,23 +1,25 @@
 package com.jaquadro.minecraft.storagedrawers.config;
 
 import com.jaquadro.minecraft.storagedrawers.StorageDrawers;
+import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
+import it.unimi.dsi.fastutil.ints.IntSet;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 public class OreDictRegistry {
 
-    private final Set<String> blacklist = new HashSet<>();
-    private final Set<String> whitelist = new HashSet<>();
+    private final Set<String> blacklist = new ObjectOpenHashSet<>();
+    private final Set<String> whitelist = new ObjectOpenHashSet<>();
     private final List<String> blacklistPrefix = new ArrayList<>();
 
-    private final Set<String> blacklistCache = new HashSet<>();
-    private final Set<String> graylistCache = new HashSet<>();
+    private final Set<String> blacklistCache = new ObjectOpenHashSet<>();
+    private final Set<String> graylistCache = new ObjectOpenHashSet<>();
 
     public OreDictRegistry() {
         addBlacklist("logWood");
@@ -164,19 +166,18 @@ public class OreDictRegistry {
 
     private boolean isValidForEquiv(String oreName) {
         List<ItemStack> oreList = OreDictionary.getOres(oreName);
-        if (oreList.size() == 0)
+        if (oreList.isEmpty())
             return false;
 
         // Fail entries that have any wildcard items registered to them.
 
-        HashSet<String> modIds = new HashSet<>();
+        Set<String> modIds = new ObjectOpenHashSet<>();
         for (ItemStack anOreList : oreList) {
             if (anOreList.getItemDamage() == OreDictionary.WILDCARD_VALUE)
                 return false;
 
             String modId = getModId(anOreList.getItem());
-            if (modId != null)
-                modIds.add(modId);
+            modIds.add(modId);
         }
 
         // Fail entries that have multiple instances of an item registered, differing by metadata or other
@@ -188,7 +189,7 @@ public class OreDictRegistry {
         // Fail entries where the keys in at least one stack are not the super-set of all other stacks.
         // Can be determined by merging all keys and testing cardinality.
 
-        HashSet<Integer> mergedIds = new HashSet<>();
+        IntSet mergedIds = new IntOpenHashSet();
         int maxKeyCount = 0;
 
         for (ItemStack anOreList : oreList) {

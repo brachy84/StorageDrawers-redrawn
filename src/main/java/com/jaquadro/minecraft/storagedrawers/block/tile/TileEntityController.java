@@ -11,8 +11,14 @@ import com.jaquadro.minecraft.storagedrawers.capabilities.DrawerItemHandler;
 import com.jaquadro.minecraft.storagedrawers.capabilities.DrawerItemRepository;
 import com.jaquadro.minecraft.storagedrawers.core.ModBlocks;
 import com.jaquadro.minecraft.storagedrawers.security.SecurityManager;
-import com.jaquadro.minecraft.storagedrawers.util.ItemMetaCollectionRegistry;
+import com.jaquadro.minecraft.storagedrawers.util.ItemStackMapHelper;
+import com.jaquadro.minecraft.storagedrawers.util.ObjectList;
 import com.mojang.authlib.GameProfile;
+import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
+import it.unimi.dsi.fastutil.ints.IntSet;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenCustomHashMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
@@ -96,8 +102,8 @@ public class TileEntityController extends TileEntity implements IDrawerGroup {
         }
     }
 
-    private final Queue<BlockPos> searchQueue = new LinkedList<>();
-    private final Set<BlockPos> searchDiscovered = new HashSet<>();
+    private final ObjectList<BlockPos> searchQueue = ObjectList.create();
+    private final Set<BlockPos> searchDiscovered = new ObjectOpenHashSet<>();
     private final Comparator<SlotRecord> slotRecordComparator = (o1, o2) -> o1.priority - o2.priority;
 
     private IDrawerAttributes getAttributes(Object obj) {
@@ -144,10 +150,10 @@ public class TileEntityController extends TileEntity implements IDrawerGroup {
         return PRI_NORMAL;
     }
 
-    private final Map<BlockPos, StorageRecord> storage = new HashMap<>();
+    private final Map<BlockPos, StorageRecord> storage = new Object2ObjectOpenHashMap<>();
     protected List<SlotRecord> drawerSlotList = new ArrayList<>();
 
-    private final ItemMetaCollectionRegistry<SlotRecord> drawerPrimaryLookup = new ItemMetaCollectionRegistry<>();
+    private final Object2ObjectOpenCustomHashMap<ItemStack, Collection<SlotRecord>> drawerPrimaryLookup = ItemStackMapHelper.createItemMetaMap();
 
     protected int[] drawerSlots = new int[0];
     private final int range;
@@ -380,7 +386,7 @@ public class TileEntityController extends TileEntity implements IDrawerGroup {
         return slotMap;
     }
 
-    private void rebuildPrimaryLookup(ItemMetaCollectionRegistry<SlotRecord> lookup, List<SlotRecord> records) {
+    private void rebuildPrimaryLookup(Object2ObjectOpenCustomHashMap<ItemStack, Collection<SlotRecord>> lookup, List<SlotRecord> records) {
         lookup.clear();
 
         for (SlotRecord record : records) {
@@ -394,7 +400,7 @@ public class TileEntityController extends TileEntity implements IDrawerGroup {
                 continue;
 
             ItemStack item = drawer.getStoredItemPrototype();
-            lookup.register(item.getItem(), item.getMetadata(), record);
+            lookup.computeIfAbsent(item.copy(), key -> new TreeSet<>()).add(record);
         }
     }
 
@@ -490,6 +496,7 @@ public class TileEntityController extends TileEntity implements IDrawerGroup {
         }
     }
 
+    // TODO: optimize the shit out of this
     private void populateNodes(BlockPos root) {
 
         searchQueue.clear();
@@ -499,7 +506,7 @@ public class TileEntityController extends TileEntity implements IDrawerGroup {
         searchDiscovered.add(root);
 
         while (!searchQueue.isEmpty()) {
-            BlockPos coord = searchQueue.remove();
+            BlockPos coord = searchQueue.removeFirst();
             int depth = Math.max(Math.max(Math.abs(coord.getX() - root.getX()), Math.abs(coord.getY() - root.getY())), Math.abs(coord.getZ() - root.getZ()));
             if (depth > range)
                 continue;
@@ -677,8 +684,8 @@ public class TileEntityController extends TileEntity implements IDrawerGroup {
         @Nonnull
         @Override
         public ItemStack insertItem(@Nonnull ItemStack stack, boolean simulate, Predicate<ItemStack> predicate) {
-            Collection<SlotRecord> primaryRecords = drawerPrimaryLookup.getEntries(stack.getItem(), stack.getMetadata());
-            Set<Integer> checkedSlots = (simulate) ? new HashSet<>() : null;
+            Collection<SlotRecord> primaryRecords = drawerPrimaryLookup.get(stack);
+            IntSet checkedSlots = (simulate) ? new IntOpenHashSet() : null;
 
             int amount = stack.getCount();
             if (primaryRecords != null) {
@@ -736,8 +743,8 @@ public class TileEntityController extends TileEntity implements IDrawerGroup {
         @Nonnull
         @Override
         public ItemStack extractItem(@Nonnull ItemStack stack, int amount, boolean simulate, Predicate<ItemStack> predicate) {
-            Collection<SlotRecord> primaryRecords = drawerPrimaryLookup.getEntries(stack.getItem(), stack.getMetadata());
-            Set<Integer> checkedSlots = (simulate) ? new HashSet<>() : null;
+            Collection<SlotRecord> primaryRecords = drawerPrimaryLookup.get(stack);
+            IntSet checkedSlots = (simulate) ? new IntOpenHashSet() : null;
 
             int remaining = amount;
             if (primaryRecords != null) {

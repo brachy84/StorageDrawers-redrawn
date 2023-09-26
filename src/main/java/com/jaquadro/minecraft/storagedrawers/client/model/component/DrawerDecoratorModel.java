@@ -9,6 +9,7 @@ import com.jaquadro.minecraft.storagedrawers.api.storage.IDrawerGeometry;
 import com.jaquadro.minecraft.storagedrawers.block.BlockDrawers;
 import com.jaquadro.minecraft.storagedrawers.block.dynamic.StatusModelData;
 import com.jaquadro.minecraft.storagedrawers.block.modeldata.DrawerStateModelData;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.IBakedModel;
@@ -22,7 +23,6 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.common.property.IExtendedBlockState;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -48,7 +48,7 @@ public class DrawerDecoratorModel implements IBakedModel {
         this.dir = dir;
         this.modelData = modelData;
 
-        this.renderLayers = new HashSet<>();
+        this.renderLayers = new ObjectOpenHashSet<>();
         this.renderLayers.add(BlockRenderLayer.CUTOUT_MIPPED);
     }
 
