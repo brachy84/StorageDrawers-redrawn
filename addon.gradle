@@ -1,4 +1,0 @@
-// Change Dev Jar Name to DeObf
-jar {
-    archiveClassifier.set "deobf"
-}
