@@ -12,29 +12,31 @@ import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CompTierRegistry
-{
+public class CompTierRegistry {
+
     public class Record {
+
         @Nonnull
         public final ItemStack upper;
         @Nonnull
         public final ItemStack lower;
         public final int convRate;
 
-        public Record (@Nonnull ItemStack upper, @Nonnull ItemStack lower, int convRate) {
+        public Record(@Nonnull ItemStack upper, @Nonnull ItemStack lower, int convRate) {
             this.upper = upper;
             this.lower = lower;
             this.convRate = convRate;
         }
     }
 
-    private List<Record> records = new ArrayList<Record>();
+    private final List<Record> records = new ArrayList<Record>();
     private List<String> pendingRules = new ArrayList<String>();
     private boolean initialized;
 
-    public CompTierRegistry () { }
+    public CompTierRegistry() {
+    }
 
-    public void initialize () {
+    public void initialize() {
         initialized = true;
 
         if (StorageDrawers.config.cache.registerExtraCompRules) {
@@ -65,7 +67,7 @@ public class CompTierRegistry
         pendingRules = null;
     }
 
-    public boolean register (@Nonnull ItemStack upper, @Nonnull ItemStack lower, int convRate) {
+    public boolean register(@Nonnull ItemStack upper, @Nonnull ItemStack lower, int convRate) {
         if (upper.isEmpty() || lower.isEmpty())
             return false;
 
@@ -81,7 +83,7 @@ public class CompTierRegistry
         return true;
     }
 
-    public boolean register (String rule) {
+    public boolean register(String rule) {
         if (!initialized) {
             pendingRules.add(rule);
             return true;
@@ -108,13 +110,12 @@ public class CompTierRegistry
         try {
             int conv = Integer.parseInt(parts[2]);
             return register(upperItem, lowerItem, conv);
-        }
-        catch (NumberFormatException e) {
+        } catch (NumberFormatException e) {
             return false;
         }
     }
 
-    public boolean unregisterUpperTarget (@Nonnull ItemStack stack) {
+    public boolean unregisterUpperTarget(@Nonnull ItemStack stack) {
         for (Record r : records) {
             if (ItemStack.areItemStacksEqual(stack, r.upper)) {
                 records.remove(r);
@@ -125,7 +126,7 @@ public class CompTierRegistry
         return false;
     }
 
-    public boolean unregisterLowerTarget (@Nonnull ItemStack stack) {
+    public boolean unregisterLowerTarget(@Nonnull ItemStack stack) {
         for (Record r : records) {
             if (ItemStack.areItemStacksEqual(stack, r.lower)) {
                 records.remove(r);
@@ -136,7 +137,7 @@ public class CompTierRegistry
         return false;
     }
 
-    public Record findHigherTier (@Nonnull ItemStack stack) {
+    public Record findHigherTier(@Nonnull ItemStack stack) {
         if (stack.isEmpty())
             return null;
 
@@ -148,7 +149,7 @@ public class CompTierRegistry
         return null;
     }
 
-    public Record findLowerTier (@Nonnull ItemStack stack) {
+    public Record findLowerTier(@Nonnull ItemStack stack) {
         if (stack.isEmpty())
             return null;
 

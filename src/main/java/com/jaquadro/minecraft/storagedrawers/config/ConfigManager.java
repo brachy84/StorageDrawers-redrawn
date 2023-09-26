@@ -6,24 +6,21 @@ import net.minecraftforge.common.config.ConfigCategory;
 import net.minecraftforge.common.config.Configuration;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
-public class ConfigManager
-{
+public class ConfigManager {
+
     public static final Map<UUID, Map<String, PlayerConfigSetting<?>>> serverPlayerConfigSettings = Maps.newHashMap();
 
     public class ConfigSection {
+
         public final ConfigSection parent;
         public final String name;
         public final String lang;
 
         private ConfigCategory category;
 
-        public ConfigSection (List<ConfigSection> list, ConfigSection parent, String name, String lang) {
+        public ConfigSection(List<ConfigSection> list, ConfigSection parent, String name, String lang) {
             this.parent = parent;
             this.name = name;
             this.lang = lang;
@@ -31,13 +28,13 @@ public class ConfigManager
             list.add(this);
         }
 
-        public ConfigSection (List<ConfigSection> list, String name, String lang) {
+        public ConfigSection(List<ConfigSection> list, String name, String lang) {
             this(list, null, name, lang);
         }
 
-        public ConfigCategory getCategory () {
+        public ConfigCategory getCategory() {
             if (category != null)
-                return  category;
+                return category;
 
             if (parent != null)
                 category = config.getCategory(parent.getCategory().getQualifiedName() + "." + name.toLowerCase());
@@ -48,12 +45,13 @@ public class ConfigManager
             return category;
         }
 
-        public String getQualifiedName () {
+        public String getQualifiedName() {
             return getCategory().getQualifiedName();
         }
     }
 
     public class ConfigCache {
+
         public boolean enableIndicatorUpgrades;
         public boolean enableStorageUpgrades;
         public boolean enableLockUpgrades;
@@ -123,7 +121,7 @@ public class ConfigManager
 
     public Map<String, ConfigSection> blockSectionsMap = new HashMap<String, ConfigSection>();
 
-    public ConfigManager (File file) {
+    public ConfigManager(File file) {
         config = new Configuration(file);
         cache = new ConfigCache();
 
@@ -138,7 +136,7 @@ public class ConfigManager
         syncConfig();
     }
 
-    public void syncConfig () {
+    public void syncConfig() {
         cache.enableIndicatorUpgrades = config.get(Configuration.CATEGORY_GENERAL, "enableIndicatorUpgrades", true).setLanguageKey(LANG_PREFIX + "prop.enableIndicatorUpgrades").setRequiresMcRestart(true).getBoolean();
         cache.enableStorageUpgrades = config.get(Configuration.CATEGORY_GENERAL, "enableStorageUpgrades", true).setLanguageKey(LANG_PREFIX + "prop.enableStorageUpgrades").setRequiresMcRestart(true).getBoolean();
         cache.enableLockUpgrades = config.get(Configuration.CATEGORY_GENERAL, "enableLockUpgrades", true).setLanguageKey(LANG_PREFIX + "prop.enableLockUpgrades").setRequiresMcRestart(true).getBoolean();
@@ -157,30 +155,30 @@ public class ConfigManager
         cache.enableFallbackRecipes = config.get(Configuration.CATEGORY_GENERAL, "enableFallbackRecipes", true).setLanguageKey(LANG_PREFIX + "prop.enableFallbackRecipes").setRequiresMcRestart(true).getBoolean();
         cache.stackRemainderWaila = !config.get(Configuration.CATEGORY_GENERAL, "wailaStackRemainder", "stack + remainder", null, new String[]{"exact", "stack + remainder"}).setLanguageKey(LANG_PREFIX + "prop.wailaStackRemainder").getString().equals("exact");
         cache.invertShift = config.get(Configuration.CATEGORY_GENERAL, "invertShift", false,
-            "Inverts how shift works with drawers. If this is true, shifting will only give one item, where regular clicks will give a full stack. Leave false for default behavior.")
-            .setLanguageKey(LANG_PREFIX + "prop.invertShift").getBoolean();
+                        "Inverts how shift works with drawers. If this is true, shifting will only give one item, where regular clicks will give a full stack. Leave false for default behavior.")
+                .setLanguageKey(LANG_PREFIX + "prop.invertShift").getBoolean();
         cache.invertClick = config.get(Configuration.CATEGORY_GENERAL, "invertClick", false,
-            "Inverts left and right click action on drawers.  If this is true, left click will insert items and right click will extract items.  Leave false for default behavior.")
-            .setLanguageKey(LANG_PREFIX + "prop.invertClick").getBoolean();
+                        "Inverts left and right click action on drawers.  If this is true, left click will insert items and right click will extract items.  Leave false for default behavior.")
+                .setLanguageKey(LANG_PREFIX + "prop.invertClick").getBoolean();
         cache.debugTrace = config.get(Configuration.CATEGORY_GENERAL, "enableDebugLogging", false,
-            "Writes additional log messages while using the mod.  Mainly for debug purposes.  Should be kept disabled unless instructed otherwise.")
-            .setLanguageKey(LANG_PREFIX + "prop.enableDebugLogging").getBoolean();
+                        "Writes additional log messages while using the mod.  Mainly for debug purposes.  Should be kept disabled unless instructed otherwise.")
+                .setLanguageKey(LANG_PREFIX + "prop.enableDebugLogging").getBoolean();
         cache.defaultQuantify = config.get(Configuration.CATEGORY_GENERAL, "defaultQuantify", false).setLanguageKey(LANG_PREFIX + "prop.defaultQuantify").getBoolean();
         cache.keepContentsOnBreak = config.get(Configuration.CATEGORY_GENERAL, "keepContentsOnBreak", true).setLanguageKey(LANG_PREFIX + "prop.keepContentsOnBreak").getBoolean();
 
         //cache.enableAE2Integration = config.get(sectionIntegration.getQualifiedName(), "enableAE2", true).setLanguageKey(LANG_PREFIX + "integration.enableAE2").setRequiresMcRestart(true).getBoolean();
         cache.enableWailaIntegration = config.get(sectionIntegration.getQualifiedName(), "enableWaila", true,
-                "Whether to enable What Am I Looking At integration, which overrides the displayed block for Storage Drawers related blocks, and adds several Storage Drawers related options to the config. Warning: Turning this off will make Waila display some Storage Drawers blocks incorrectly.")
+                        "Whether to enable What Am I Looking At integration, which overrides the displayed block for Storage Drawers related blocks, and adds several Storage Drawers related options to the config. Warning: Turning this off will make Waila display some Storage Drawers blocks incorrectly.")
                 .setLanguageKey(LANG_PREFIX + "integration.enableWaila").setRequiresMcRestart(true).getBoolean();
         cache.enableTOPIntegration = config.get(sectionIntegration.getQualifiedName(), "enableTOP", true,
-                "Whether to enable The One Probe integration, which overrides the displayed block for Storage Drawers related blocks. Warning: Turning this off will make TOP display some Storage Drawers blocks incorrectly.")
+                        "Whether to enable The One Probe integration, which overrides the displayed block for Storage Drawers related blocks. Warning: Turning this off will make TOP display some Storage Drawers blocks incorrectly.")
                 .setLanguageKey(LANG_PREFIX + "integration.enableTOP").setRequiresMcRestart(true).getBoolean();
         cache.enableThaumcraftIntegration = config.get(sectionIntegration.getQualifiedName(), "enableThaumcraft", true,
-                "Whether to enable Thaumcraft integration, which adding icons on drawers if the item stored has an Aspect.")
+                        "Whether to enable Thaumcraft integration, which adding icons on drawers if the item stored has an Aspect.")
                 .setLanguageKey(LANG_PREFIX + "integration.enableThaumcraft").setRequiresMcRestart(true).getBoolean();
         cache.enableMineTweakerIntegration = config.get(sectionIntegration.getQualifiedName(), "enableMineTweaker", true).setLanguageKey(LANG_PREFIX + "integration.enableMineTweaker").setRequiresMcRestart(true).getBoolean();
 
-        cache.compRules = config.getStringList("compactingRules", sectionRegistries.getQualifiedName(), new String[] { "minecraft:clay, minecraft:clay_ball, 4" }, "Items should be in form domain:item or domain:item:meta.", null, LANG_PREFIX + "registries.compRules");
+        cache.compRules = config.getStringList("compactingRules", sectionRegistries.getQualifiedName(), new String[]{"minecraft:clay, minecraft:clay_ball, 4"}, "Items should be in form domain:item or domain:item:meta.", null, LANG_PREFIX + "registries.compRules");
         if (StorageDrawers.compRegistry != null) {
             for (String rule : cache.compRules)
                 StorageDrawers.compRegistry.register(rule);
@@ -240,7 +238,7 @@ public class ConfigManager
         cache.enableFramedTrims = config.get(sectionFramedBlocks.getQualifiedName(), "enableFramedTrims", true).setLanguageKey(LANG_PREFIX + "framedBlocks.enableFramedTrims").setRequiresMcRestart(true).getBoolean();
         cache.enableFramingTable = config.get(sectionFramedBlocks.getQualifiedName(), "enableFramingTable", true).setLanguageKey(LANG_PREFIX + "framedBlocks.enableFramingTable").setRequiresMcRestart(true).getBoolean();
         cache.consumeDecorationItems = config.get(sectionFramedBlocks.getQualifiedName(), "consumeDecorationItems", true,
-                "Changes whether items used for decoration in the Framing Table gets consumed. Leave true to consume items (default behaviour).")
+                        "Changes whether items used for decoration in the Framing Table gets consumed. Leave true to consume items (default behaviour).")
                 .setLanguageKey(LANG_PREFIX + "framedBlocks.consumeDecorationItems").getBoolean();
 
         cache.level2Mult = config.get(sectionUpgrades.getQualifiedName(), "level2Mult", 2).setLanguageKey(LANG_PREFIX + "upgrades.level2Mult").setRequiresWorldRestart(true).getInt();
@@ -255,11 +253,11 @@ public class ConfigManager
             config.save();
     }
 
-    public String getPath () {
+    public String getPath() {
         return config.toString();
     }
 
-    public boolean isBlockEnabled (String blockName) {
+    public boolean isBlockEnabled(String blockName) {
         blockName = blockName.toLowerCase();
         if (!blockSectionsMap.containsKey(blockName))
             return false;
@@ -268,7 +266,7 @@ public class ConfigManager
         return section.getCategory().get("enabled").getBoolean();
     }
 
-    public int getBlockBaseStorage (String blockName) {
+    public int getBlockBaseStorage(String blockName) {
         if (!blockSectionsMap.containsKey(blockName))
             return 0;
 
@@ -276,7 +274,7 @@ public class ConfigManager
         return section.getCategory().get("baseStorage").getInt();
     }
 
-    public int getBlockRecipeOutput (String blockName) {
+    public int getBlockRecipeOutput(String blockName) {
         if (!blockSectionsMap.containsKey(blockName))
             return 0;
 
@@ -284,12 +282,12 @@ public class ConfigManager
         return section.getCategory().get("recipeOutput").getInt();
     }
 
-    public int getControllerRange () {
+    public int getControllerRange() {
         ConfigSection section = blockSectionsMap.get("controller");
         return section.getCategory().get("range").getInt();
     }
 
-    public int getStorageUpgradeMultiplier (int level) {
+    public int getStorageUpgradeMultiplier(int level) {
         return switch (level) {
             case 2 -> cache.level2Mult;
             case 3 -> cache.level3Mult;

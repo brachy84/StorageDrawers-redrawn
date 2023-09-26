@@ -16,8 +16,8 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.logging.log4j.Level;
 
-public class CountUpdateMessage implements IMessage
-{
+public class CountUpdateMessage implements IMessage {
+
     private int x;
     private int y;
     private int z;
@@ -26,9 +26,10 @@ public class CountUpdateMessage implements IMessage
 
     private boolean failed;
 
-    public CountUpdateMessage () { }
+    public CountUpdateMessage() {
+    }
 
-    public CountUpdateMessage (BlockPos pos, int slot, int count) {
+    public CountUpdateMessage(BlockPos pos, int slot, int count) {
         this.x = pos.getX();
         this.y = pos.getY();
         this.z = pos.getZ();
@@ -37,22 +38,21 @@ public class CountUpdateMessage implements IMessage
     }
 
     @Override
-    public void fromBytes (ByteBuf buf) {
+    public void fromBytes(ByteBuf buf) {
         try {
             x = buf.readInt();
             y = buf.readShort();
             z = buf.readInt();
             slot = buf.readByte();
             count = buf.readInt();
-        }
-        catch (IndexOutOfBoundsException e) {
+        } catch (IndexOutOfBoundsException e) {
             failed = true;
             StorageDrawers.log.error("CountUpdateMessage: Unexpected end of packet.\nMessage: " + ByteBufUtil.hexDump(buf, 0, buf.writerIndex()), e);
         }
     }
 
     @Override
-    public void toBytes (ByteBuf buf) {
+    public void toBytes(ByteBuf buf) {
         buf.writeInt(x);
         buf.writeShort(y);
         buf.writeInt(z);
@@ -61,10 +61,10 @@ public class CountUpdateMessage implements IMessage
     }
 
     @SideOnly(Side.CLIENT)
-    public static class Handler implements IMessageHandler<CountUpdateMessage, IMessage>
-    {
+    public static class Handler implements IMessageHandler<CountUpdateMessage, IMessage> {
+
         @Override
-        public IMessage onMessage (CountUpdateMessage message, MessageContext ctx) {
+        public IMessage onMessage(CountUpdateMessage message, MessageContext ctx) {
             if (!message.failed && ctx.side == Side.CLIENT) {
                 World world = Minecraft.getMinecraft().world;
                 if (world != null) {
@@ -80,10 +80,10 @@ public class CountUpdateMessage implements IMessage
         }
     }
 
-    public static class HandlerStub implements IMessageHandler<CountUpdateMessage, IMessage>
-    {
+    public static class HandlerStub implements IMessageHandler<CountUpdateMessage, IMessage> {
+
         @Override
-        public IMessage onMessage (CountUpdateMessage message, MessageContext ctx) {
+        public IMessage onMessage(CountUpdateMessage message, MessageContext ctx) {
             FMLLog.log(StorageDrawers.MOD_ID, Level.WARN, "CountUpdateMessage stub handler called.");
             return null;
         }

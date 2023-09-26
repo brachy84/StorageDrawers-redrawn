@@ -8,9 +8,10 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nonnull;
 
-public final class ModCreativeTabs
-{
-    private ModCreativeTabs () { }
+public final class ModCreativeTabs {
+
+    private ModCreativeTabs() {
+    }
 
     public static final CreativeTabs tabStorageDrawers = new CreativeTabs("storagedrawers") {
         @Override

@@ -11,8 +11,8 @@ import net.minecraftforge.common.capabilities.CapabilityInject;
 import java.util.Arrays;
 import java.util.UUID;
 
-public final class DrawerStateModelData extends ModelData
-{
+public final class DrawerStateModelData extends ModelData {
+
     @CapabilityInject(IDrawerAttributes.class)
     public static Capability<IDrawerAttributes> DRAWER_ATTRIBUTES_CAPABILITY = null;
 
@@ -23,7 +23,7 @@ public final class DrawerStateModelData extends ModelData
 
     private final boolean[] emptyFlags;
 
-    public DrawerStateModelData (TileEntityDrawers tile) {
+    public DrawerStateModelData(TileEntityDrawers tile) {
         IDrawerAttributes attr = null;
         if (tile != null)
             attr = tile.getCapability(DRAWER_ATTRIBUTES_CAPABILITY, null);
@@ -40,8 +40,7 @@ public final class DrawerStateModelData extends ModelData
                 IDrawer drawer = tile.getDrawer(i);
                 emptyFlags[i] = (drawer == null) || drawer.isEmpty();
             }
-        }
-        else {
+        } else {
             shroudedFlag = false;
             lockedFlag = false;
             voidFlag = false;
@@ -50,36 +49,36 @@ public final class DrawerStateModelData extends ModelData
         }
     }
 
-    public boolean isShrouded () {
+    public boolean isShrouded() {
         return shroudedFlag;
     }
 
-    public boolean isItemLocked () {
+    public boolean isItemLocked() {
         return lockedFlag;
     }
 
-    public boolean isVoid () {
+    public boolean isVoid() {
         return voidFlag;
     }
 
-    public UUID getOwner () {
+    public UUID getOwner() {
         return owner;
     }
 
-    public int getDrawerCount () {
+    public int getDrawerCount() {
         return emptyFlags.length;
     }
 
-    public boolean isDrawerEmpty (int slot) {
+    public boolean isDrawerEmpty(int slot) {
         return slot < 0 || slot >= emptyFlags.length || emptyFlags[slot];
     }
 
     @Override
-    public boolean equals (Object obj) {
+    public boolean equals(Object obj) {
         if (obj == null || obj.getClass() != this.getClass())
             return false;
 
-        DrawerStateModelData other = (DrawerStateModelData)obj;
+        DrawerStateModelData other = (DrawerStateModelData) obj;
         if (shroudedFlag != other.shroudedFlag || lockedFlag != other.lockedFlag || voidFlag != other.voidFlag)
             return false;
 
@@ -90,7 +89,7 @@ public final class DrawerStateModelData extends ModelData
     }
 
     @Override
-    public int hashCode () {
+    public int hashCode() {
         int c = shroudedFlag ? 1 : 0;
         c = 37 * c + (lockedFlag ? 1 : 0);
         c = 37 * c + (voidFlag ? 1 : 0);

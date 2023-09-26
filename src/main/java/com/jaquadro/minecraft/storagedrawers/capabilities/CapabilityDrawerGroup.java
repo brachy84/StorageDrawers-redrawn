@@ -13,20 +13,20 @@ import net.minecraftforge.common.util.INBTSerializable;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public class CapabilityDrawerGroup
-{
+public class CapabilityDrawerGroup {
+
     @CapabilityInject(IDrawerGroup.class)
     public static Capability<IDrawerGroup> DRAWER_GROUP_CAPABILITY = null;
 
-    public static void register () {
+    public static void register() {
         CapabilityManager.INSTANCE.register(IDrawerGroup.class, new DefaultStorage(), DefaultImplementation::new);
     }
 
-    private static class DefaultStorage implements Capability.IStorage<IDrawerGroup>
-    {
+    private static class DefaultStorage implements Capability.IStorage<IDrawerGroup> {
+
         @Nullable
         @Override
-        public NBTBase writeNBT (Capability<IDrawerGroup> capability, IDrawerGroup instance, EnumFacing side) {
+        public NBTBase writeNBT(Capability<IDrawerGroup> capability, IDrawerGroup instance, EnumFacing side) {
             if (instance instanceof INBTSerializable serializable)
                 return serializable.serializeNBT();
 
@@ -34,7 +34,7 @@ public class CapabilityDrawerGroup
         }
 
         @Override
-        public void readNBT (Capability<IDrawerGroup> capability, IDrawerGroup instance, EnumFacing side, NBTBase nbt) {
+        public void readNBT(Capability<IDrawerGroup> capability, IDrawerGroup instance, EnumFacing side, NBTBase nbt) {
             if (instance instanceof INBTSerializable serializable) {
                 @SuppressWarnings("unchecked")
                 INBTSerializable<NBTBase> serializer = serializable;
@@ -43,15 +43,15 @@ public class CapabilityDrawerGroup
         }
     }
 
-    private static class DefaultImplementation extends StandardDrawerGroup
-    {
-        public DefaultImplementation () {
+    private static class DefaultImplementation extends StandardDrawerGroup {
+
+        public DefaultImplementation() {
             super(1);
         }
 
         @Nonnull
         @Override
-        protected DrawerData createDrawer (int slot) {
+        protected DrawerData createDrawer(int slot) {
             return new StandardDrawerGroup.DrawerData(this);
         }
     }

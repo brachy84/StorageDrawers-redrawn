@@ -1,12 +1,8 @@
 package com.jaquadro.minecraft.storagedrawers.network;
 
-import java.util.Map;
-import java.util.UUID;
-
 import com.google.common.collect.Maps;
-import com.jaquadro.minecraft.storagedrawers.config.PlayerConfigSetting;
 import com.jaquadro.minecraft.storagedrawers.config.ConfigManager;
-
+import com.jaquadro.minecraft.storagedrawers.config.PlayerConfigSetting;
 import io.netty.buffer.ByteBuf;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
@@ -14,13 +10,17 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import net.minecraftforge.fml.relauncher.Side;
 
+import java.util.Map;
+import java.util.UUID;
+
 public class BoolConfigUpdateMessage implements IMessage {
 
     private String uuid;
     private String key;
     private boolean value;
 
-    public BoolConfigUpdateMessage() { }
+    public BoolConfigUpdateMessage() {
+    }
 
     public BoolConfigUpdateMessage(String uuid, String key, boolean value) {
         this.uuid = uuid;
@@ -42,10 +42,10 @@ public class BoolConfigUpdateMessage implements IMessage {
         buf.writeBoolean(this.value);
     }
 
-    public static class Handler implements IMessageHandler<BoolConfigUpdateMessage, IMessage>
-    {
+    public static class Handler implements IMessageHandler<BoolConfigUpdateMessage, IMessage> {
+
         @Override
-        public IMessage onMessage (BoolConfigUpdateMessage message, MessageContext ctx) {
+        public IMessage onMessage(BoolConfigUpdateMessage message, MessageContext ctx) {
             if (ctx.side == Side.SERVER) {
                 UUID playerUniqueId;
                 try {

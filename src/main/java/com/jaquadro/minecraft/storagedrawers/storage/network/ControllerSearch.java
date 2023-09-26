@@ -12,18 +12,18 @@ import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Set;
 
-public class ControllerSearch
-{
+public class ControllerSearch {
+
     private final Queue<BlockPos> searchQueue = new LinkedList<BlockPos>();
     private final Set<BlockPos> searchDiscovered = new HashSet<BlockPos>();
 
     private final int range;
 
-    public ControllerSearch (int range) {
+    public ControllerSearch(int range) {
         this.range = range;
     }
 
-    public BlockPos search (TileEntity tile) {
+    public BlockPos search(TileEntity tile) {
         BlockPos root = tile.getPos();
 
         searchQueue.clear();
@@ -48,7 +48,7 @@ public class ControllerSearch
                 return coord;
 
             BlockPos[] neighbors = new BlockPos[]{
-                coord.west(), coord.east(), coord.south(), coord.north(), coord.up(), coord.down()
+                    coord.west(), coord.east(), coord.south(), coord.north(), coord.up(), coord.down()
             };
 
             for (BlockPos n : neighbors) {
@@ -62,7 +62,7 @@ public class ControllerSearch
         return null;
     }
 
-    private int maxAxisDistance (BlockPos coord1, BlockPos coord2) {
+    private int maxAxisDistance(BlockPos coord1, BlockPos coord2) {
         return Math.max(Math.max(Math.abs(coord1.getX() - coord2.getX()), Math.abs(coord1.getY() - coord2.getY())), Math.abs(coord1.getZ() - coord2.getZ()));
     }
 }

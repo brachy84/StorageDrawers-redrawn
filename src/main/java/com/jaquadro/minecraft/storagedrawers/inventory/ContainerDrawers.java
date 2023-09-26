@@ -16,8 +16,8 @@ import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ContainerDrawers extends Container
-{
+public class ContainerDrawers extends Container {
+
     private static final int InventoryX = 8;
     private static final int InventoryY = 117;
     private static final int HotbarY = 175;
@@ -25,19 +25,19 @@ public class ContainerDrawers extends Container
     private static final int UpgradeX = 26;
     private static final int UpgradeY = 86;
 
-    private IInventory upgradeInventory;
+    private final IInventory upgradeInventory;
 
-    private List<Slot> storageSlots;
-    private List<Slot> upgradeSlots;
-    private List<Slot> playerSlots;
-    private List<Slot> hotbarSlots;
+    private final List<Slot> storageSlots;
+    private final List<Slot> upgradeSlots;
+    private final List<Slot> playerSlots;
+    private final List<Slot> hotbarSlots;
 
     @SideOnly(Side.CLIENT)
     public StorageRenderItem activeRenderItem;
 
-    private boolean isRemote;
+    private final boolean isRemote;
 
-    public ContainerDrawers (InventoryPlayer playerInventory, TileEntityDrawers tileEntity) {
+    public ContainerDrawers(InventoryPlayer playerInventory, TileEntityDrawers tileEntity) {
         upgradeInventory = new InventoryUpgrade(tileEntity);
 
         storageSlots = new ArrayList<>();
@@ -61,35 +61,35 @@ public class ContainerDrawers extends Container
         isRemote = tileEntity.getWorld().isRemote;
     }
 
-    public void setLastAccessedItem (ItemStack stack) {
+    public void setLastAccessedItem(ItemStack stack) {
         if (isRemote && activeRenderItem != null)
             activeRenderItem.overrideStack = stack;
     }
 
-    protected int getStorageSlotX (int slot) {
+    protected int getStorageSlotX(int slot) {
         return 0;
     }
 
-    protected int getStorageSlotY (int slot) {
+    protected int getStorageSlotY(int slot) {
         return 0;
     }
 
-    public List<Slot> getStorageSlots () {
+    public List<Slot> getStorageSlots() {
         return storageSlots;
     }
 
-    public List<Slot> getUpgradeSlots () {
+    public List<Slot> getUpgradeSlots() {
         return upgradeSlots;
     }
 
     @Override
-    public boolean canInteractWith (EntityPlayer player) {
+    public boolean canInteractWith(EntityPlayer player) {
         return upgradeInventory.isUsableByPlayer(player);
     }
 
     @Override
     @Nonnull
-    public ItemStack transferStackInSlot (EntityPlayer player, int slotIndex) {
+    public ItemStack transferStackInSlot(EntityPlayer player, int slotIndex) {
         ItemStack itemStack = ItemStack.EMPTY;
         Slot slot = inventorySlots.get(slotIndex);
 
@@ -126,8 +126,7 @@ public class ContainerDrawers extends Container
                                 return ItemStack.EMPTY;
                         } else if (slotIndex >= hotbarStart && slotIndex < hotbarEnd && !mergeItemStack(slotStack, inventoryStart, hotbarStart, false))
                             return ItemStack.EMPTY;
-                    }
-                    else {
+                    } else {
                         slotStack.shrink(1);
                         if (slotStack.getCount() == 0)
                             slot.putStack(ItemStack.EMPTY);

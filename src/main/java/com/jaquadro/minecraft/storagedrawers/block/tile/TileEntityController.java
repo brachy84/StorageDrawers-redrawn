@@ -4,13 +4,12 @@ import com.jaquadro.minecraft.storagedrawers.StorageDrawers;
 import com.jaquadro.minecraft.storagedrawers.api.capabilities.IItemRepository;
 import com.jaquadro.minecraft.storagedrawers.api.security.ISecurityProvider;
 import com.jaquadro.minecraft.storagedrawers.api.storage.*;
-
 import com.jaquadro.minecraft.storagedrawers.api.storage.attribute.IProtectable;
 import com.jaquadro.minecraft.storagedrawers.api.storage.attribute.LockAttribute;
 import com.jaquadro.minecraft.storagedrawers.block.BlockSlave;
+import com.jaquadro.minecraft.storagedrawers.capabilities.DrawerItemHandler;
 import com.jaquadro.minecraft.storagedrawers.capabilities.DrawerItemRepository;
 import com.jaquadro.minecraft.storagedrawers.core.ModBlocks;
-import com.jaquadro.minecraft.storagedrawers.capabilities.DrawerItemHandler;
 import com.jaquadro.minecraft.storagedrawers.security.SecurityManager;
 import com.jaquadro.minecraft.storagedrawers.util.ItemMetaCollectionRegistry;
 import com.mojang.authlib.GameProfile;
@@ -35,8 +34,8 @@ import javax.annotation.Nullable;
 import java.util.*;
 import java.util.function.Predicate;
 
-public class TileEntityController extends TileEntity implements IDrawerGroup
-{
+public class TileEntityController extends TileEntity implements IDrawerGroup {
+
     @CapabilityInject(IDrawerAttributes.class)
     public static Capability<IDrawerAttributes> DRAWER_ATTRIBUTES_CAPABILITY = null;
 
@@ -50,15 +49,15 @@ public class TileEntityController extends TileEntity implements IDrawerGroup
     private static final int PRI_LOCKED_EMPTY = 5;
     private static final int PRI_DISABLED = 6;
 
-    private static class StorageRecord
-    {
+    private static class StorageRecord {
+
         public IDrawerGroup storage;
         public boolean mark;
         public int invStorageSize;
         public int drawerStorageSize;
         public int distance = Integer.MAX_VALUE;
 
-        public void clear () {
+        public void clear() {
             storage = null;
             mark = false;
             invStorageSize = 0;
@@ -67,8 +66,8 @@ public class TileEntityController extends TileEntity implements IDrawerGroup
         }
     }
 
-    protected static class SlotRecord implements Comparable<SlotRecord>
-    {
+    protected static class SlotRecord implements Comparable<SlotRecord> {
+
         public BlockPos coord;
         public IDrawerGroup group;
         public int slot;
@@ -76,14 +75,14 @@ public class TileEntityController extends TileEntity implements IDrawerGroup
         public int index;
         public int priority;
 
-        public SlotRecord (IDrawerGroup group, BlockPos coord, int slot) {
+        public SlotRecord(IDrawerGroup group, BlockPos coord, int slot) {
             this.group = group;
             this.coord = coord;
             this.slot = slot;
         }
 
         @Override
-        public int compareTo (SlotRecord other) {
+        public int compareTo(SlotRecord other) {
             int diff = priority - other.priority;
             if (diff == 0) {
                 diff = coord.compareTo(other.coord);
@@ -97,11 +96,11 @@ public class TileEntityController extends TileEntity implements IDrawerGroup
         }
     }
 
-    private Queue<BlockPos> searchQueue = new LinkedList<>();
-    private Set<BlockPos> searchDiscovered = new HashSet<>();
-    private Comparator<SlotRecord> slotRecordComparator = (o1, o2) -> o1.priority - o2.priority;
+    private final Queue<BlockPos> searchQueue = new LinkedList<>();
+    private final Set<BlockPos> searchDiscovered = new HashSet<>();
+    private final Comparator<SlotRecord> slotRecordComparator = (o1, o2) -> o1.priority - o2.priority;
 
-    private IDrawerAttributes getAttributes (Object obj) {
+    private IDrawerAttributes getAttributes(Object obj) {
         IDrawerAttributes attrs = null;
         if (obj instanceof ICapabilityProvider)
             attrs = ((ICapabilityProvider) obj).getCapability(DRAWER_ATTRIBUTES_CAPABILITY, null);
@@ -112,7 +111,7 @@ public class TileEntityController extends TileEntity implements IDrawerGroup
         return attrs;
     }
 
-    private int getSlotPriority (SlotRecord record) {
+    private int getSlotPriority(SlotRecord record) {
         IDrawerGroup group = getGroupForSlotRecord(record);
         if (group == null) {
             return PRI_DISABLED;
@@ -145,23 +144,23 @@ public class TileEntityController extends TileEntity implements IDrawerGroup
         return PRI_NORMAL;
     }
 
-    private Map<BlockPos, StorageRecord> storage = new HashMap<>();
+    private final Map<BlockPos, StorageRecord> storage = new HashMap<>();
     protected List<SlotRecord> drawerSlotList = new ArrayList<>();
 
-    private ItemMetaCollectionRegistry<SlotRecord> drawerPrimaryLookup = new ItemMetaCollectionRegistry<>();
+    private final ItemMetaCollectionRegistry<SlotRecord> drawerPrimaryLookup = new ItemMetaCollectionRegistry<>();
 
     protected int[] drawerSlots = new int[0];
-    private int range;
+    private final int range;
 
     private long lastUpdateTime;
     private long lastClickTime;
     private UUID lastClickUUID;
 
-    public TileEntityController () {
+    public TileEntityController() {
         range = StorageDrawers.config.getControllerRange();
     }
 
-    public void printDebugInfo () {
+    public void printDebugInfo() {
         StorageDrawers.log.info("Controller at " + pos.toString());
         StorageDrawers.log.info("  Range: " + range + " blocks");
         StorageDrawers.log.info("  Stored records: " + storage.size() + ", slot list: " + drawerSlots.length);
@@ -169,7 +168,7 @@ public class TileEntityController extends TileEntity implements IDrawerGroup
     }
 
     @Override
-    public void validate () {
+    public void validate() {
         super.validate();
 
         if (!getWorld().isUpdateScheduled(getPos(), ModBlocks.controller))
@@ -177,11 +176,11 @@ public class TileEntityController extends TileEntity implements IDrawerGroup
     }
 
     @Override
-    public boolean shouldRefresh (World world, BlockPos pos, IBlockState oldState, IBlockState newSate) {
+    public boolean shouldRefresh(World world, BlockPos pos, IBlockState oldState, IBlockState newSate) {
         return oldState.getBlock() != newSate.getBlock();
     }
 
-    public int interactPutItemsIntoInventory (EntityPlayer player) {
+    public int interactPutItemsIntoInventory(EntityPlayer player) {
         boolean dumpInventory = getWorld().getTotalWorldTime() - lastClickTime < 10 && player.getPersistentID().equals(lastClickUUID);
         int count = 0;
 
@@ -192,8 +191,7 @@ public class TileEntityController extends TileEntity implements IDrawerGroup
                 if (currentStack.getCount() == 0)
                     player.inventory.setInventorySlotContents(player.inventory.currentItem, ItemStack.EMPTY);
             }
-        }
-        else {
+        } else {
             for (int i = 0, n = player.inventory.getSizeInventory(); i < n; i++) {
                 ItemStack subStack = player.inventory.getStackInSlot(i);
                 if (!subStack.isEmpty()) {
@@ -213,7 +211,7 @@ public class TileEntityController extends TileEntity implements IDrawerGroup
         return count;
     }
 
-    protected int insertItems (@Nonnull ItemStack stack, GameProfile profile) {
+    protected int insertItems(@Nonnull ItemStack stack, GameProfile profile) {
         int remainder = new ProtectedItemRepository(this, profile).insertItem(stack, false).getCount();
         int added = stack.getCount() - remainder;
 
@@ -221,7 +219,7 @@ public class TileEntityController extends TileEntity implements IDrawerGroup
         return added;
     }
 
-    public void toggleProtection (GameProfile profile, ISecurityProvider provider) {
+    public void toggleProtection(GameProfile profile, ISecurityProvider provider) {
         IProtectable template = null;
         UUID state = null;
 
@@ -250,7 +248,7 @@ public class TileEntityController extends TileEntity implements IDrawerGroup
         }
     }
 
-    public void toggleShroud (GameProfile profile) {
+    public void toggleShroud(GameProfile profile) {
         Boolean template = null;
         boolean state = false;
 
@@ -259,15 +257,14 @@ public class TileEntityController extends TileEntity implements IDrawerGroup
                 continue;
 
             if (record.storage instanceof IProtectable) {
-                if (!SecurityManager.hasAccess(profile, (IProtectable)record.storage))
+                if (!SecurityManager.hasAccess(profile, (IProtectable) record.storage))
                     continue;
             }
 
             IDrawerAttributes attrs = getAttributes(record.storage);
-            if (!(attrs instanceof IDrawerAttributesModifiable))
+            if (!(attrs instanceof IDrawerAttributesModifiable mattrs))
                 continue;
 
-            IDrawerAttributesModifiable mattrs = (IDrawerAttributesModifiable)attrs;
             if (template == null) {
                 template = mattrs.isConcealed();
                 state = !template;
@@ -276,7 +273,7 @@ public class TileEntityController extends TileEntity implements IDrawerGroup
         }
     }
 
-    public void toggleQuantified (GameProfile profile) {
+    public void toggleQuantified(GameProfile profile) {
         Boolean template = null;
         boolean state = false;
 
@@ -285,15 +282,14 @@ public class TileEntityController extends TileEntity implements IDrawerGroup
                 continue;
 
             if (record.storage instanceof IProtectable) {
-                if (!SecurityManager.hasAccess(profile, (IProtectable)record.storage))
+                if (!SecurityManager.hasAccess(profile, (IProtectable) record.storage))
                     continue;
             }
 
             IDrawerAttributes attrs = getAttributes(record.storage);
-            if (!(attrs instanceof IDrawerAttributesModifiable))
+            if (!(attrs instanceof IDrawerAttributesModifiable mattrs))
                 continue;
 
-            IDrawerAttributesModifiable mattrs = (IDrawerAttributesModifiable)attrs;
             if (template == null) {
                 template = mattrs.isShowingQuantity();
                 state = !template;
@@ -302,7 +298,7 @@ public class TileEntityController extends TileEntity implements IDrawerGroup
         }
     }
 
-    public void toggleLock (EnumSet<LockAttribute> attributes, LockAttribute key, GameProfile profile) {
+    public void toggleLock(EnumSet<LockAttribute> attributes, LockAttribute key, GameProfile profile) {
         Boolean template = null;
         boolean state = false;
 
@@ -311,15 +307,14 @@ public class TileEntityController extends TileEntity implements IDrawerGroup
                 continue;
 
             if (record.storage instanceof IProtectable) {
-                if (!SecurityManager.hasAccess(profile, (IProtectable)record.storage))
+                if (!SecurityManager.hasAccess(profile, (IProtectable) record.storage))
                     continue;
             }
 
             IDrawerAttributes attrs = getAttributes(record.storage);
-            if (!(attrs instanceof IDrawerAttributesModifiable))
+            if (!(attrs instanceof IDrawerAttributesModifiable mattrs))
                 continue;
 
-            IDrawerAttributesModifiable mattrs = (IDrawerAttributesModifiable)attrs;
             if (template == null) {
                 template = mattrs.isItemLocked(key);
                 state = !template;
@@ -330,12 +325,12 @@ public class TileEntityController extends TileEntity implements IDrawerGroup
         }
     }
 
-    protected void resetCache () {
+    protected void resetCache() {
         storage.clear();
         drawerSlotList.clear();
     }
 
-    public boolean isValidSlave (BlockPos coord) {
+    public boolean isValidSlave(BlockPos coord) {
         StorageRecord record = storage.get(coord);
         if (record == null || !record.mark)
             return false;
@@ -343,7 +338,7 @@ public class TileEntityController extends TileEntity implements IDrawerGroup
         return record.storage == null;
     }
 
-    public void updateCache () {
+    public void updateCache() {
         lastUpdateTime = getWorld().getTotalWorldTime();
         int preCount = drawerSlots.length;
 
@@ -362,7 +357,7 @@ public class TileEntityController extends TileEntity implements IDrawerGroup
         }
     }
 
-    private void indexSlotRecords (List<SlotRecord> records) {
+    private void indexSlotRecords(List<SlotRecord> records) {
         for (int i = 0, n = records.size(); i < n; i++) {
             SlotRecord record = records.get(i);
             if (record != null) {
@@ -372,7 +367,7 @@ public class TileEntityController extends TileEntity implements IDrawerGroup
         }
     }
 
-    private int[] sortSlotRecords (List<SlotRecord> records) {
+    private int[] sortSlotRecords(List<SlotRecord> records) {
         indexSlotRecords(records);
 
         List<SlotRecord> copied = new ArrayList<>(records);
@@ -385,7 +380,7 @@ public class TileEntityController extends TileEntity implements IDrawerGroup
         return slotMap;
     }
 
-    private void rebuildPrimaryLookup (ItemMetaCollectionRegistry<SlotRecord> lookup, List<SlotRecord> records) {
+    private void rebuildPrimaryLookup(ItemMetaCollectionRegistry<SlotRecord> lookup, List<SlotRecord> records) {
         lookup.clear();
 
         for (SlotRecord record : records) {
@@ -403,7 +398,7 @@ public class TileEntityController extends TileEntity implements IDrawerGroup
         }
     }
 
-    private boolean containsNullEntries (List<SlotRecord> list) {
+    private boolean containsNullEntries(List<SlotRecord> list) {
         int nullCount = 0;
         for (SlotRecord aList : list) {
             if (aList == null)
@@ -413,7 +408,7 @@ public class TileEntityController extends TileEntity implements IDrawerGroup
         return nullCount > 0;
     }
 
-    private void flattenLists () {
+    private void flattenLists() {
         if (containsNullEntries(drawerSlotList)) {
             List<SlotRecord> newDrawerSlotList = new ArrayList<>();
 
@@ -426,7 +421,7 @@ public class TileEntityController extends TileEntity implements IDrawerGroup
         }
     }
 
-    private void clearRecordInfo (BlockPos coord, StorageRecord record) {
+    private void clearRecordInfo(BlockPos coord, StorageRecord record) {
         record.clear();
 
         for (int i = 0; i < drawerSlotList.size(); i++) {
@@ -436,7 +431,7 @@ public class TileEntityController extends TileEntity implements IDrawerGroup
         }
     }
 
-    private void updateRecordInfo (BlockPos coord, StorageRecord record, TileEntity te) {
+    private void updateRecordInfo(BlockPos coord, StorageRecord record, TileEntity te) {
         if (te == null) {
             if (record.storage != null)
                 clearRecordInfo(coord, record);
@@ -452,8 +447,7 @@ public class TileEntityController extends TileEntity implements IDrawerGroup
                 clearRecordInfo(coord, record);
 
             record.storage = null;
-        }
-        else if (te instanceof TileEntitySlave) {
+        } else if (te instanceof TileEntitySlave) {
             if (record.storage == null && record.invStorageSize == 0) {
                 if (((TileEntitySlave) te).getController() == this)
                     return;
@@ -465,8 +459,7 @@ public class TileEntityController extends TileEntity implements IDrawerGroup
             record.storage = null;
 
             ((TileEntitySlave) te).bindController(getPos());
-        }
-        else if (te instanceof TileEntityDrawers) {
+        } else if (te instanceof TileEntityDrawers) {
             IDrawerGroup group = ((TileEntityDrawers) te).getGroup();
             if (record.storage == group)
                 return;
@@ -479,8 +472,7 @@ public class TileEntityController extends TileEntity implements IDrawerGroup
 
             for (int i = 0, n = record.drawerStorageSize; i < n; i++)
                 drawerSlotList.add(new SlotRecord(group, coord, i));
-        }
-        else {
+        } else {
             IDrawerGroup group = te.getCapability(DRAWER_GROUP_CAPABILITY, null);
             if (record.storage == group)
                 return;
@@ -498,7 +490,7 @@ public class TileEntityController extends TileEntity implements IDrawerGroup
         }
     }
 
-    private void populateNodes (BlockPos root) {
+    private void populateNodes(BlockPos root) {
 
         searchQueue.clear();
         searchQueue.add(root);
@@ -534,7 +526,7 @@ public class TileEntityController extends TileEntity implements IDrawerGroup
             record.distance = depth;
 
             BlockPos[] neighbors = new BlockPos[]{
-                coord.west(), coord.east(), coord.south(), coord.north(), coord.up(), coord.down()
+                    coord.west(), coord.east(), coord.south(), coord.north(), coord.up(), coord.down()
             };
 
             for (BlockPos n : neighbors) {
@@ -546,7 +538,7 @@ public class TileEntityController extends TileEntity implements IDrawerGroup
         }
     }
 
-    protected IDrawerGroup getGroupForDrawerSlot (int drawerSlot) {
+    protected IDrawerGroup getGroupForDrawerSlot(int drawerSlot) {
         if (drawerSlot < 0 || drawerSlot >= drawerSlotList.size())
             return null;
 
@@ -557,7 +549,7 @@ public class TileEntityController extends TileEntity implements IDrawerGroup
         return getGroupForSlotRecord(record);
     }
 
-    protected IDrawerGroup getGroupForSlotRecord (SlotRecord record) {
+    protected IDrawerGroup getGroupForSlotRecord(SlotRecord record) {
         IDrawerGroup group = record.group;
         if (group == null)
             return null;
@@ -572,7 +564,7 @@ public class TileEntityController extends TileEntity implements IDrawerGroup
         return group;
     }
 
-    private int getLocalDrawerSlot (int drawerSlot) {
+    private int getLocalDrawerSlot(int drawerSlot) {
         if (drawerSlot >= drawerSlotList.size())
             return 0;
 
@@ -584,7 +576,7 @@ public class TileEntityController extends TileEntity implements IDrawerGroup
     }
 
     @Override
-    public void readFromNBT (NBTTagCompound tag) {
+    public void readFromNBT(NBTTagCompound tag) {
         super.readFromNBT(tag);
 
         if (getWorld() != null && !getWorld().isRemote)
@@ -592,14 +584,14 @@ public class TileEntityController extends TileEntity implements IDrawerGroup
     }
 
     @Override
-    public NBTTagCompound writeToNBT (NBTTagCompound tag) {
+    public NBTTagCompound writeToNBT(NBTTagCompound tag) {
         super.writeToNBT(tag);
 
         return tag;
     }
 
     @Override
-    public NBTTagCompound getUpdateTag () {
+    public NBTTagCompound getUpdateTag() {
         NBTTagCompound tag = new NBTTagCompound();
         writeToNBT(tag);
 
@@ -607,12 +599,12 @@ public class TileEntityController extends TileEntity implements IDrawerGroup
     }
 
     @Override
-    public SPacketUpdateTileEntity getUpdatePacket () {
+    public SPacketUpdateTileEntity getUpdatePacket() {
         return new SPacketUpdateTileEntity(getPos(), getBlockMetadata(), getUpdateTag());
     }
 
     @Override
-    public void onDataPacket (NetworkManager net, SPacketUpdateTileEntity pkt) {
+    public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt) {
         readFromNBT(pkt.getNbtCompound());
         if (getWorld().isRemote) {
             IBlockState state = getWorld().getBlockState(getPos());
@@ -621,13 +613,13 @@ public class TileEntityController extends TileEntity implements IDrawerGroup
     }
 
     @Override
-    public int getDrawerCount () {
+    public int getDrawerCount() {
         return drawerSlotList.size();
     }
 
     @Override
     @Nonnull
-    public IDrawer getDrawer (int slot) {
+    public IDrawer getDrawer(int slot) {
         IDrawerGroup group = getGroupForDrawerSlot(slot);
         if (group == null)
             return Drawers.DISABLED;
@@ -637,11 +629,11 @@ public class TileEntityController extends TileEntity implements IDrawerGroup
 
     @Nonnull
     @Override
-    public int[] getAccessibleDrawerSlots () {
+    public int[] getAccessibleDrawerSlots() {
         return drawerSlots;
     }
 
-    public IItemRepository getItemRepository () {
+    public IItemRepository getItemRepository() {
         return itemRepository;
     }
 
@@ -652,20 +644,20 @@ public class TileEntityController extends TileEntity implements IDrawerGroup
     @CapabilityInject(IDrawerGroup.class)
     static Capability<IDrawerGroup> DRAWER_GROUP_CAPABILITY = null;
 
-    private DrawerItemHandler itemHandler = new DrawerItemHandler(this);
-    private ItemRepository itemRepository = new ItemRepository(this);
+    private final DrawerItemHandler itemHandler = new DrawerItemHandler(this);
+    private final ItemRepository itemRepository = new ItemRepository(this);
 
     @Override
-    public boolean hasCapability (@Nonnull Capability<?> capability, @Nullable EnumFacing facing) {
+    public boolean hasCapability(@Nonnull Capability<?> capability, @Nullable EnumFacing facing) {
         return capability == ITEM_HANDLER_CAPABILITY
-            || capability == ITEM_REPOSITORY_CAPABILITY
-            || capability == DRAWER_GROUP_CAPABILITY
-            || super.hasCapability(capability, facing);
+                || capability == ITEM_REPOSITORY_CAPABILITY
+                || capability == DRAWER_GROUP_CAPABILITY
+                || super.hasCapability(capability, facing);
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public <T> T getCapability (@Nonnull Capability<T> capability, @Nullable EnumFacing facing) {
+    public <T> T getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing) {
         if (capability == ITEM_HANDLER_CAPABILITY)
             return (T) itemHandler;
         if (capability == ITEM_REPOSITORY_CAPABILITY)
@@ -676,15 +668,15 @@ public class TileEntityController extends TileEntity implements IDrawerGroup
         return super.getCapability(capability, facing);
     }
 
-    private class ItemRepository extends DrawerItemRepository
-    {
-        public ItemRepository (IDrawerGroup group) {
+    private class ItemRepository extends DrawerItemRepository {
+
+        public ItemRepository(IDrawerGroup group) {
             super(group);
         }
 
         @Nonnull
         @Override
-        public ItemStack insertItem (@Nonnull ItemStack stack, boolean simulate, Predicate<ItemStack> predicate) {
+        public ItemStack insertItem(@Nonnull ItemStack stack, boolean simulate, Predicate<ItemStack> predicate) {
             Collection<SlotRecord> primaryRecords = drawerPrimaryLookup.getEntries(stack.getItem(), stack.getMetadata());
             Set<Integer> checkedSlots = (simulate) ? new HashSet<>() : null;
 
@@ -704,8 +696,8 @@ public class TileEntityController extends TileEntity implements IDrawerGroup
                         continue;
 
                     amount = (simulate)
-                        ? Math.max(amount - drawer.getAcceptingRemainingCapacity(), 0)
-                        : drawer.adjustStoredItemCount(amount);
+                            ? Math.max(amount - drawer.getAcceptingRemainingCapacity(), 0)
+                            : drawer.adjustStoredItemCount(amount);
 
                     if (amount == 0)
                         return ItemStack.EMPTY;
@@ -731,8 +723,8 @@ public class TileEntityController extends TileEntity implements IDrawerGroup
                     drawer = drawer.setStoredItem(stack);
 
                 amount = (simulate)
-                    ? Math.max(amount - (empty ? drawer.getAcceptingMaxCapacity(stack) : drawer.getAcceptingRemainingCapacity()), 0)
-                    : drawer.adjustStoredItemCount(amount);
+                        ? Math.max(amount - (empty ? drawer.getAcceptingMaxCapacity(stack) : drawer.getAcceptingRemainingCapacity()), 0)
+                        : drawer.adjustStoredItemCount(amount);
 
                 if (amount == 0)
                     return ItemStack.EMPTY;
@@ -743,7 +735,7 @@ public class TileEntityController extends TileEntity implements IDrawerGroup
 
         @Nonnull
         @Override
-        public ItemStack extractItem (@Nonnull ItemStack stack, int amount, boolean simulate, Predicate<ItemStack> predicate) {
+        public ItemStack extractItem(@Nonnull ItemStack stack, int amount, boolean simulate, Predicate<ItemStack> predicate) {
             Collection<SlotRecord> primaryRecords = drawerPrimaryLookup.getEntries(stack.getItem(), stack.getMetadata());
             Set<Integer> checkedSlots = (simulate) ? new HashSet<>() : null;
 
@@ -763,8 +755,8 @@ public class TileEntityController extends TileEntity implements IDrawerGroup
                         continue;
 
                     remaining = (simulate)
-                        ? Math.max(remaining - drawer.getStoredItemCount(), 0)
-                        : drawer.adjustStoredItemCount(-remaining);
+                            ? Math.max(remaining - drawer.getStoredItemCount(), 0)
+                            : drawer.adjustStoredItemCount(-remaining);
 
                     if (remaining == 0)
                         return stackResult(stack, amount);
@@ -784,38 +776,38 @@ public class TileEntityController extends TileEntity implements IDrawerGroup
                     continue;
 
                 remaining = (simulate)
-                    ? Math.max(remaining - drawer.getStoredItemCount(), 0)
-                    : drawer.adjustStoredItemCount(-remaining);
+                        ? Math.max(remaining - drawer.getStoredItemCount(), 0)
+                        : drawer.adjustStoredItemCount(-remaining);
 
                 if (remaining == 0)
                     return stackResult(stack, amount);
             }
 
             return (amount == remaining)
-                ? ItemStack.EMPTY
-                : stackResult(stack, amount - remaining);
+                    ? ItemStack.EMPTY
+                    : stackResult(stack, amount - remaining);
         }
 
-        protected boolean hasAccess (IDrawerGroup group, IDrawer drawer) {
+        protected boolean hasAccess(IDrawerGroup group, IDrawer drawer) {
             return true;
         }
     }
 
-    private class ProtectedItemRepository extends ItemRepository
-    {
-        private GameProfile profile;
+    private class ProtectedItemRepository extends ItemRepository {
 
-        public ProtectedItemRepository (IDrawerGroup group, GameProfile profile) {
+        private final GameProfile profile;
+
+        public ProtectedItemRepository(IDrawerGroup group, GameProfile profile) {
             super(group);
             this.profile = profile;
         }
 
         @Override
-        protected boolean hasAccess (IDrawerGroup group, IDrawer drawer) {
+        protected boolean hasAccess(IDrawerGroup group, IDrawer drawer) {
             if (drawer.isEmpty())
                 return false;
             if (group instanceof IProtectable)
-                return SecurityManager.hasAccess(profile, (IProtectable)group);
+                return SecurityManager.hasAccess(profile, (IProtectable) group);
 
             return true;
         }

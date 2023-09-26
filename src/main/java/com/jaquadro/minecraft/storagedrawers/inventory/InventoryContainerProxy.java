@@ -8,35 +8,35 @@ import net.minecraft.util.text.ITextComponent;
 
 import javax.annotation.Nonnull;
 
-public class InventoryContainerProxy implements IInventory
-{
-    private IInventory parent;
-    private Container container;
+public class InventoryContainerProxy implements IInventory {
 
-    public InventoryContainerProxy (IInventory parentInventory, Container container) {
+    private final IInventory parent;
+    private final Container container;
+
+    public InventoryContainerProxy(IInventory parentInventory, Container container) {
         this.parent = parentInventory;
         this.container = container;
     }
 
     @Override
-    public int getSizeInventory () {
+    public int getSizeInventory() {
         return parent.getSizeInventory();
     }
 
     @Override
-    public boolean isEmpty () {
+    public boolean isEmpty() {
         return parent.isEmpty();
     }
 
     @Override
     @Nonnull
-    public ItemStack getStackInSlot (int slot) {
+    public ItemStack getStackInSlot(int slot) {
         return parent.getStackInSlot(slot);
     }
 
     @Override
     @Nonnull
-    public ItemStack decrStackSize (int slot, int count) {
+    public ItemStack decrStackSize(int slot, int count) {
         ItemStack stack = parent.getStackInSlot(slot);
         if (stack.isEmpty())
             return ItemStack.EMPTY;
@@ -53,7 +53,7 @@ public class InventoryContainerProxy implements IInventory
 
     @Override
     @Nonnull
-    public ItemStack removeStackFromSlot (int index) {
+    public ItemStack removeStackFromSlot(int index) {
         ItemStack stack = parent.removeStackFromSlot(index);
         if (stack.isEmpty())
             return ItemStack.EMPTY;
@@ -63,73 +63,73 @@ public class InventoryContainerProxy implements IInventory
     }
 
     @Override
-    public void setInventorySlotContents (int slot, @Nonnull ItemStack stack) {
+    public void setInventorySlotContents(int slot, @Nonnull ItemStack stack) {
         parent.setInventorySlotContents(slot, stack);
         container.onCraftMatrixChanged(this);
     }
 
     @Override
-    public String getName () {
+    public String getName() {
         return parent.getName();
     }
 
     @Override
-    public ITextComponent getDisplayName () {
+    public ITextComponent getDisplayName() {
         return parent.getDisplayName();
     }
 
     @Override
-    public boolean hasCustomName () {
+    public boolean hasCustomName() {
         return parent.hasCustomName();
     }
 
     @Override
-    public int getInventoryStackLimit () {
+    public int getInventoryStackLimit() {
         return parent.getInventoryStackLimit();
     }
 
     @Override
-    public void markDirty () {
+    public void markDirty() {
         parent.markDirty();
     }
 
     @Override
-    public boolean isUsableByPlayer (EntityPlayer player) {
+    public boolean isUsableByPlayer(EntityPlayer player) {
         return parent.isUsableByPlayer(player);
     }
 
     @Override
-    public void openInventory (EntityPlayer player) {
+    public void openInventory(EntityPlayer player) {
         parent.openInventory(player);
     }
 
     @Override
-    public void closeInventory (EntityPlayer player) {
+    public void closeInventory(EntityPlayer player) {
         parent.closeInventory(player);
     }
 
     @Override
-    public boolean isItemValidForSlot (int slot, @Nonnull ItemStack stack) {
+    public boolean isItemValidForSlot(int slot, @Nonnull ItemStack stack) {
         return parent.isItemValidForSlot(slot, stack);
     }
 
     @Override
-    public int getField (int id) {
+    public int getField(int id) {
         return parent.getField(id);
     }
 
     @Override
-    public void setField (int id, int value) {
+    public void setField(int id, int value) {
         parent.setField(id, value);
     }
 
     @Override
-    public int getFieldCount () {
+    public int getFieldCount() {
         return parent.getFieldCount();
     }
 
     @Override
-    public void clear () {
+    public void clear() {
         parent.clear();
     }
 }

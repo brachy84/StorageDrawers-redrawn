@@ -14,48 +14,48 @@ import net.minecraft.world.World;
 import javax.annotation.Nonnull;
 import java.util.*;
 
-public class CompactingHelper
-{
-    private static InventoryLookup lookup1 = new InventoryLookup(1, 1);
-    private static InventoryLookup lookup2 = new InventoryLookup(2, 2);
-    private static InventoryLookup lookup3 = new InventoryLookup(3, 3);
+public class CompactingHelper {
 
-    private World world;
+    private static final InventoryLookup lookup1 = new InventoryLookup(1, 1);
+    private static final InventoryLookup lookup2 = new InventoryLookup(2, 2);
+    private static final InventoryLookup lookup3 = new InventoryLookup(3, 3);
 
-    public class Result
-    {
+    private final World world;
+
+    public class Result {
+
         @Nonnull
-        private ItemStack stack;
-        private int size;
+        private final ItemStack stack;
+        private final int size;
 
-        public Result (ItemStack stack, int size) {
+        public Result(ItemStack stack, int size) {
             this.stack = stack;
             this.size = size;
         }
 
         @Nonnull
-        public ItemStack getStack () {
+        public ItemStack getStack() {
             return stack;
         }
 
-        public int getSize () {
+        public int getSize() {
             return size;
         }
     }
 
-    public CompactingHelper (World world) {
+    public CompactingHelper(World world) {
         this.world = world;
     }
 
     @Nonnull
-    public Result findHigherTier (@Nonnull ItemStack stack) {
+    public Result findHigherTier(@Nonnull ItemStack stack) {
         if (!world.isRemote && StorageDrawers.config.cache.debugTrace)
-            StorageDrawers.log.info("Finding ascending candidates for " + stack.toString());
+            StorageDrawers.log.info("Finding ascending candidates for " + stack);
 
         CompTierRegistry.Record record = StorageDrawers.compRegistry.findHigherTier(stack);
         if (record != null) {
             if (!world.isRemote && StorageDrawers.config.cache.debugTrace)
-                StorageDrawers.log.info("Found " + record.upper.toString() + " in registry with conv=" + record.convRate);
+                StorageDrawers.log.info("Found " + record.upper + " in registry with conv=" + record.convRate);
 
             return new Result(record.upper, record.convRate);
         }
@@ -84,7 +84,7 @@ public class CompactingHelper
 
                     candidates.add(match);
                     if (!world.isRemote && StorageDrawers.config.cache.debugTrace)
-                        StorageDrawers.log.info("Found ascending candidate for " + stack.toString() + ": " + match.toString() + " size=" + lookupSize + ", inverse=" + comp.toString());
+                        StorageDrawers.log.info("Found ascending candidate for " + stack + ": " + match + " size=" + lookupSize + ", inverse=" + comp);
 
                     break;
                 }
@@ -105,14 +105,14 @@ public class CompactingHelper
     }
 
     @Nonnull
-    public Result findLowerTier (@Nonnull ItemStack stack) {
+    public Result findLowerTier(@Nonnull ItemStack stack) {
         if (!world.isRemote && StorageDrawers.config.cache.debugTrace)
-            StorageDrawers.log.info("Finding descending candidates for " + stack.toString());
+            StorageDrawers.log.info("Finding descending candidates for " + stack);
 
         CompTierRegistry.Record record = StorageDrawers.compRegistry.findLowerTier(stack);
         if (record != null) {
             if (!world.isRemote && StorageDrawers.config.cache.debugTrace)
-                StorageDrawers.log.info("Found " + record.lower.toString() + " in registry with conv=" + record.convRate);
+                StorageDrawers.log.info("Found " + record.lower + " in registry with conv=" + record.convRate);
 
             return new Result(record.lower, record.convRate);
         }
@@ -136,9 +136,9 @@ public class CompactingHelper
                         candidatesRate.put(match, recipeSize);
 
                         if (!world.isRemote && StorageDrawers.config.cache.debugTrace)
-                            StorageDrawers.log.info("Found descending candidate for " + stack.toString() + ": " + match.toString() + " size=" + recipeSize + ", inverse=" + comp.toString());
+                            StorageDrawers.log.info("Found descending candidate for " + stack + ": " + match + " size=" + recipeSize + ", inverse=" + comp);
                     } else if (!world.isRemote && StorageDrawers.config.cache.debugTrace)
-                        StorageDrawers.log.info("Back-check failed for " + match.toString() + " size=" + lookupSize + ", inverse=" + comp.toString());
+                        StorageDrawers.log.info("Back-check failed for " + match + " size=" + lookupSize + ", inverse=" + comp);
                 }
             }
         }
@@ -158,7 +158,7 @@ public class CompactingHelper
         return new Result(ItemStack.EMPTY, 0);
     }
 
-    private List<ItemStack> findAllMatchingRecipes (InventoryCrafting crafting) {
+    private List<ItemStack> findAllMatchingRecipes(InventoryCrafting crafting) {
         List<ItemStack> candidates = new ArrayList<>();
 
         for (IRecipe recipe : CraftingManager.REGISTRY) {
@@ -173,7 +173,7 @@ public class CompactingHelper
     }
 
     @Nonnull
-    private ItemStack findMatchingModCandidate (@Nonnull ItemStack reference, List<ItemStack> candidates) {
+    private ItemStack findMatchingModCandidate(@Nonnull ItemStack reference, List<ItemStack> candidates) {
         ResourceLocation referenceName = reference.getItem().getRegistryName();
         if (referenceName != null) {
             for (ItemStack candidate : candidates) {
@@ -189,7 +189,7 @@ public class CompactingHelper
     }
 
     @Nonnull
-    private ItemStack tryMatch (@Nonnull ItemStack stack, NonNullList<Ingredient> ingredients) {
+    private ItemStack tryMatch(@Nonnull ItemStack stack, NonNullList<Ingredient> ingredients) {
         if (ingredients.size() != 9 && ingredients.size() != 4)
             return ItemStack.EMPTY;
 
@@ -220,18 +220,18 @@ public class CompactingHelper
         return match;
     }
 
-    private int setupLookup (InventoryLookup inv, @Nonnull ItemStack stack) {
+    private int setupLookup(InventoryLookup inv, @Nonnull ItemStack stack) {
         for (int i = 0, n = inv.getSizeInventory(); i < n; i++)
             inv.setInventorySlotContents(i, stack);
 
         return inv.getSizeInventory();
     }
 
-    private static class InventoryLookup extends InventoryCrafting
-    {
-        private ItemStack[] stackList;
+    private static class InventoryLookup extends InventoryCrafting {
 
-        public InventoryLookup (int width, int height) {
+        private final ItemStack[] stackList;
+
+        public InventoryLookup(int width, int height) {
             super(null, width, height);
 
             stackList = new ItemStack[width * height];
@@ -239,32 +239,30 @@ public class CompactingHelper
         }
 
         @Override
-        public int getSizeInventory ()
-        {
+        public int getSizeInventory() {
             return this.stackList.length;
         }
 
         @Override
         @Nonnull
-        public ItemStack getStackInSlot (int slot)
-        {
+        public ItemStack getStackInSlot(int slot) {
             return slot >= this.getSizeInventory() ? ItemStack.EMPTY : this.stackList[slot];
         }
 
         @Override
         @Nonnull
-        public ItemStack removeStackFromSlot (int slot) {
+        public ItemStack removeStackFromSlot(int slot) {
             return ItemStack.EMPTY;
         }
 
         @Override
         @Nonnull
-        public ItemStack decrStackSize (int slot, int count) {
+        public ItemStack decrStackSize(int slot, int count) {
             return ItemStack.EMPTY;
         }
 
         @Override
-        public void setInventorySlotContents (int slot, @Nonnull ItemStack stack) {
+        public void setInventorySlotContents(int slot, @Nonnull ItemStack stack) {
             stackList[slot] = stack;
         }
     }

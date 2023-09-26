@@ -35,8 +35,8 @@ import net.minecraftforge.registries.IForgeRegistry;
 
 import javax.annotation.Nonnull;
 
-public class ModBlocks
-{
+public class ModBlocks {
+
     @ObjectHolder(StorageDrawers.MOD_ID + ":basicdrawers")
     public static BlockDrawers basicDrawers;
     @ObjectHolder(StorageDrawers.MOD_ID + ":compdrawers")
@@ -57,16 +57,16 @@ public class ModBlocks
     public static BlockKeyButton keyButton;
 
     @Mod.EventBusSubscriber(modid = StorageDrawers.MOD_ID)
-    public static class Registration
-    {
+    public static class Registration {
+
         @SubscribeEvent
-        public static void registerBlocks (RegistryEvent.Register<Block> event) {
+        public static void registerBlocks(RegistryEvent.Register<Block> event) {
             IForgeRegistry<Block> registry = event.getRegistry();
             ConfigManager config = StorageDrawers.config;
 
             registry.registerAll(
-                new BlockVariantDrawers("basicdrawers", StorageDrawers.MOD_ID + ".basicDrawers"),
-                new BlockKeyButton("keybutton", StorageDrawers.MOD_ID + ".keyButton")
+                    new BlockVariantDrawers("basicdrawers", StorageDrawers.MOD_ID + ".basicDrawers"),
+                    new BlockKeyButton("keybutton", StorageDrawers.MOD_ID + ".keyButton")
             );
 
             GameRegistry.registerTileEntity(TileEntityDrawersStandard.Legacy.class, StorageDrawers.MOD_ID + ":basicdrawers");
@@ -106,13 +106,13 @@ public class ModBlocks
         }
 
         @SubscribeEvent
-        public static void registerItems (RegistryEvent.Register<Item> event) {
+        public static void registerItems(RegistryEvent.Register<Item> event) {
             IForgeRegistry<Item> registry = event.getRegistry();
             ConfigManager config = StorageDrawers.config;
 
             registry.registerAll(
-                new ItemBasicDrawers(basicDrawers).setRegistryName(basicDrawers.getRegistryName()),
-                new ItemKeyButton(keyButton).setRegistryName(keyButton.getRegistryName())
+                    new ItemBasicDrawers(basicDrawers).setRegistryName(basicDrawers.getRegistryName()),
+                    new ItemKeyButton(keyButton).setRegistryName(keyButton.getRegistryName())
             );
 
             if (config.isBlockEnabled("compdrawers"))
@@ -134,16 +134,16 @@ public class ModBlocks
                 registry.register(new ItemFramingTable(framingTable).setRegistryName(framingTable.getRegistryName()));
             }
 
-            for (String key : new String[] { "drawerBasic" })
+            for (String key : new String[]{"drawerBasic"})
                 OreDictionary.registerOre(key, new ItemStack(basicDrawers, 1, OreDictionary.WILDCARD_VALUE));
-            for (String key : new String[] { "drawerTrim" })
+            for (String key : new String[]{"drawerTrim"})
                 OreDictionary.registerOre(key, new ItemStack(trim, 1, OreDictionary.WILDCARD_VALUE));
         }
 
         private static final ResourceLocation EMPTY_GROUP = new ResourceLocation("", "");
 
         @Nonnull
-        public static ItemStack makeBasicDrawerItemStack (EnumBasicDrawer info, String material, int count) {
+        public static ItemStack makeBasicDrawerItemStack(EnumBasicDrawer info, String material, int count) {
             ItemStack stack = new ItemStack(ModBlocks.basicDrawers, count, info.getMetadata());
 
             NBTTagCompound data = new NBTTagCompound();
@@ -154,7 +154,7 @@ public class ModBlocks
         }
 
         @SubscribeEvent
-        public static void registerRecipes (RegistryEvent.Register<IRecipe> event) {
+        public static void registerRecipes(RegistryEvent.Register<IRecipe> event) {
             IForgeRegistry<IRecipe> registry = event.getRegistry();
             ConfigManager config = StorageDrawers.config;
 
@@ -165,39 +165,39 @@ public class ModBlocks
                 if (config.isBlockEnabled(EnumBasicDrawer.FULL1.getUnlocalizedName())) {
                     ItemStack result = makeBasicDrawerItemStack(EnumBasicDrawer.FULL1, material.getName(), config.getBlockRecipeOutput(EnumBasicDrawer.FULL1.getUnlocalizedName()));
                     registry.register(new ShapedOreRecipe(EMPTY_GROUP, result, "xxx", " y ", "xxx", 'x', new ItemStack(Blocks.PLANKS, 1, material.getMetadata()), 'y', "chestWood")
-                        .setRegistryName(result.getItem().getRegistryName() + "_" + EnumBasicDrawer.FULL1.getUnlocalizedName() + "_" + material.toString()));
+                            .setRegistryName(result.getItem().getRegistryName() + "_" + EnumBasicDrawer.FULL1.getUnlocalizedName() + "_" + material));
                 }
                 if (config.isBlockEnabled(EnumBasicDrawer.FULL2.getUnlocalizedName())) {
                     ItemStack result = makeBasicDrawerItemStack(EnumBasicDrawer.FULL2, material.getName(), config.getBlockRecipeOutput(EnumBasicDrawer.FULL2.getUnlocalizedName()));
                     registry.register(new ShapedOreRecipe(EMPTY_GROUP, result, "xyx", "xxx", "xyx", 'x', new ItemStack(Blocks.PLANKS, 1, material.getMetadata()), 'y', "chestWood")
-                        .setRegistryName(result.getItem().getRegistryName() + "_" + EnumBasicDrawer.FULL2.getUnlocalizedName() + "_" + material.toString()));
+                            .setRegistryName(result.getItem().getRegistryName() + "_" + EnumBasicDrawer.FULL2.getUnlocalizedName() + "_" + material));
                 }
                 if (config.isBlockEnabled(EnumBasicDrawer.FULL4.getUnlocalizedName())) {
                     ItemStack result = makeBasicDrawerItemStack(EnumBasicDrawer.FULL4, material.getName(), config.getBlockRecipeOutput(EnumBasicDrawer.FULL4.getUnlocalizedName()));
                     registry.register(new ShapedOreRecipe(EMPTY_GROUP, result, "yxy", "xxx", "yxy", 'x', new ItemStack(Blocks.PLANKS, 1, material.getMetadata()), 'y', "chestWood")
-                        .setRegistryName(result.getItem().getRegistryName() + "_" + EnumBasicDrawer.FULL4.getUnlocalizedName() + "_" + material.toString()));
+                            .setRegistryName(result.getItem().getRegistryName() + "_" + EnumBasicDrawer.FULL4.getUnlocalizedName() + "_" + material));
                 }
                 if (config.isBlockEnabled(EnumBasicDrawer.HALF2.getUnlocalizedName())) {
                     ItemStack result = makeBasicDrawerItemStack(EnumBasicDrawer.HALF2, material.getName(), config.getBlockRecipeOutput(EnumBasicDrawer.HALF2.getUnlocalizedName()));
                     registry.register(new ShapedOreRecipe(EMPTY_GROUP, result, "xyx", "xxx", "xyx", 'x', new ItemStack(Blocks.WOODEN_SLAB, 1, material.getMetadata()), 'y', "chestWood")
-                        .setRegistryName(result.getItem().getRegistryName() + "_" + EnumBasicDrawer.HALF2.getUnlocalizedName() + "_" + material.toString()));
+                            .setRegistryName(result.getItem().getRegistryName() + "_" + EnumBasicDrawer.HALF2.getUnlocalizedName() + "_" + material));
                 }
                 if (config.isBlockEnabled(EnumBasicDrawer.HALF4.getUnlocalizedName())) {
                     ItemStack result = makeBasicDrawerItemStack(EnumBasicDrawer.HALF4, material.getName(), config.getBlockRecipeOutput(EnumBasicDrawer.HALF4.getUnlocalizedName()));
                     registry.register(new ShapedOreRecipe(EMPTY_GROUP, result, "yxy", "xxx", "yxy", 'x', new ItemStack(Blocks.WOODEN_SLAB, 1, material.getMetadata()), 'y', "chestWood")
-                        .setRegistryName(result.getItem().getRegistryName() + "_" + EnumBasicDrawer.HALF4.getUnlocalizedName() + "_" + material.toString()));
+                            .setRegistryName(result.getItem().getRegistryName() + "_" + EnumBasicDrawer.HALF4.getUnlocalizedName() + "_" + material));
                 }
                 if (config.isBlockEnabled("trim")) {
                     ItemStack result = new ItemStack(ModBlocks.trim, config.getBlockRecipeOutput("trim"), material.getMetadata());
                     registry.register(new ShapedOreRecipe(EMPTY_GROUP, result, "xyx", "yyy", "xyx", 'x', "stickWood", 'y', new ItemStack(Blocks.PLANKS, 1, material.getMetadata()))
-                        .setRegistryName(result.getItem().getRegistryName() + "_" + material.toString()));
+                            .setRegistryName(result.getItem().getRegistryName() + "_" + material));
                 }
             }
         }
 
         @SubscribeEvent
         @SideOnly(Side.CLIENT)
-        public static void registerModels (ModelRegistryEvent event) {
+        public static void registerModels(ModelRegistryEvent event) {
             if (basicDrawers != null)
                 basicDrawers.initDynamic();
             if (compDrawers != null)

@@ -13,8 +13,8 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry.ObjectHolder;
 import net.minecraftforge.registries.IForgeRegistry;
 
-public class ModItems
-{
+public class ModItems {
+
     @ObjectHolder(StorageDrawers.MOD_ID + ":upgrade_template")
     public static Item upgradeTemplate;
     @ObjectHolder(StorageDrawers.MOD_ID + ":upgrade_storage")
@@ -43,10 +43,10 @@ public class ModItems
     public static ItemTape tape;
 
     @Mod.EventBusSubscriber(modid = StorageDrawers.MOD_ID)
-    public static class Registration
-    {
+    public static class Registration {
+
         @SubscribeEvent
-        public static void registerItems (RegistryEvent.Register<Item> event) {
+        public static void registerItems(RegistryEvent.Register<Item> event) {
             IForgeRegistry<Item> itemRegistry = event.getRegistry();
             ConfigManager config = StorageDrawers.config;
 
@@ -80,7 +80,7 @@ public class ModItems
         }
 
         @SubscribeEvent
-        public static void registerModels (ModelRegistryEvent event) {
+        public static void registerModels(ModelRegistryEvent event) {
             ModelRegistry modelRegistry = Chameleon.instance.modelRegistry;
 
             modelRegistry.registerItemVariants(upgradeTemplate);
@@ -99,7 +99,7 @@ public class ModItems
         }
     }
 
-    public static String makeName (String name) {
+    public static String makeName(String name) {
         return StorageDrawers.MOD_ID.toLowerCase() + "." + name;
     }
 }

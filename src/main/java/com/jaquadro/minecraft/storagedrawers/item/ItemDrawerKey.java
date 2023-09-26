@@ -5,9 +5,9 @@ import com.jaquadro.minecraft.storagedrawers.api.storage.attribute.LockAttribute
 import com.jaquadro.minecraft.storagedrawers.core.ModCreativeTabs;
 
 
-public class ItemDrawerKey extends ItemKey
-{
-    public ItemDrawerKey (String registryName, String unlocalizedName) {
+public class ItemDrawerKey extends ItemKey {
+
+    public ItemDrawerKey(String registryName, String unlocalizedName) {
         setRegistryName(registryName);
         setTranslationKey(unlocalizedName);
         setCreativeTab(ModCreativeTabs.tabStorageDrawers);
@@ -15,7 +15,7 @@ public class ItemDrawerKey extends ItemKey
     }
 
     @Override
-    protected void handleDrawerAttributes (IDrawerAttributesModifiable attrs) {
+    protected void handleDrawerAttributes(IDrawerAttributesModifiable attrs) {
         boolean locked = attrs.isItemLocked(LockAttribute.LOCK_POPULATED);
         attrs.setItemLocked(LockAttribute.LOCK_EMPTY, !locked);
         attrs.setItemLocked(LockAttribute.LOCK_POPULATED, !locked);

@@ -27,8 +27,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Random;
 
-public class BlockKeyButton extends Block implements ITileEntityProvider
-{
+public class BlockKeyButton extends Block implements ITileEntityProvider {
+
     public static final PropertyDirection FACING = PropertyDirection.create("facing");
     public static final PropertyBool POWERED = PropertyBool.create("powered");
     public static final PropertyEnum<EnumKeyType> VARIANT = PropertyEnum.create("variant", EnumKeyType.class);
@@ -49,7 +49,7 @@ public class BlockKeyButton extends Block implements ITileEntityProvider
     protected static final AxisAlignedBB AABB_WEST_ON = new AxisAlignedBB(0.937D, U3, U3, 1.0D, U13, U13);
     protected static final AxisAlignedBB AABB_EAST_ON = new AxisAlignedBB(0.0D, U3, U3, 0.0625D, U13, U13);
 
-    public BlockKeyButton (String registryName, String blockName) {
+    public BlockKeyButton(String registryName, String blockName) {
         super(Material.CIRCUITS);
 
         setHardness(5);
@@ -60,47 +60,47 @@ public class BlockKeyButton extends Block implements ITileEntityProvider
         setTickRandomly(true);
 
         setDefaultState(blockState.getBaseState()
-            .withProperty(FACING, EnumFacing.NORTH)
-            .withProperty(POWERED, false)
-            .withProperty(VARIANT, EnumKeyType.DRAWER));
+                .withProperty(FACING, EnumFacing.NORTH)
+                .withProperty(POWERED, false)
+                .withProperty(VARIANT, EnumKeyType.DRAWER));
     }
 
     @Nullable
     @Override
     @SuppressWarnings("deprecation")
-    public AxisAlignedBB getCollisionBoundingBox (IBlockState blockState, IBlockAccess worldIn, BlockPos pos) {
+    public AxisAlignedBB getCollisionBoundingBox(IBlockState blockState, IBlockAccess worldIn, BlockPos pos) {
         return NULL_AABB;
     }
 
     @Override
-    public int tickRate (World worldIn) {
+    public int tickRate(World worldIn) {
         return 5;
     }
 
     @Override
     @SuppressWarnings("deprecation")
-    public boolean isOpaqueCube (IBlockState state) {
+    public boolean isOpaqueCube(IBlockState state) {
         return false;
     }
 
     @Override
     @SuppressWarnings("deprecation")
-    public boolean isFullCube (IBlockState state) {
+    public boolean isFullCube(IBlockState state) {
         return false;
     }
 
     @Override
-    public BlockRenderLayer getRenderLayer () {
+    public BlockRenderLayer getRenderLayer() {
         return BlockRenderLayer.CUTOUT_MIPPED;
     }
 
     @Override
-    public boolean canPlaceBlockOnSide (World worldIn, BlockPos pos, EnumFacing side) {
+    public boolean canPlaceBlockOnSide(World worldIn, BlockPos pos, EnumFacing side) {
         return canPlaceBlock(worldIn, pos, side.getOpposite());
     }
 
     @Override
-    public boolean canPlaceBlockAt (World worldIn, BlockPos pos) {
+    public boolean canPlaceBlockAt(World worldIn, BlockPos pos) {
         for (EnumFacing facing : EnumFacing.values()) {
             if (canPlaceBlock(worldIn, pos, facing))
                 return true;
@@ -109,14 +109,14 @@ public class BlockKeyButton extends Block implements ITileEntityProvider
         return false;
     }
 
-    protected static boolean canPlaceBlock (World world, BlockPos pos, EnumFacing facing) {
+    protected static boolean canPlaceBlock(World world, BlockPos pos, EnumFacing facing) {
         BlockPos blockPos = pos.offset(facing);
         return world.getBlockState(blockPos).isSideSolid(world, blockPos, facing.getOpposite());
     }
 
     @Override
     @SuppressWarnings("deprecation")
-    public IBlockState getStateForPlacement (World world, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer) {
+    public IBlockState getStateForPlacement(World world, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer) {
         if (canPlaceBlock(world, pos, facing.getOpposite()))
             return getStateFromMeta(meta).withProperty(FACING, facing).withProperty(POWERED, false);
 
@@ -124,7 +124,7 @@ public class BlockKeyButton extends Block implements ITileEntityProvider
     }
 
     @Override
-    public void onBlockPlacedBy (World worldIn, BlockPos pos, IBlockState state, EntityLivingBase placer, @Nonnull ItemStack stack) {
+    public void onBlockPlacedBy(World worldIn, BlockPos pos, IBlockState state, EntityLivingBase placer, @Nonnull ItemStack stack) {
         TileEntityKeyButton tile = getTileEntity(worldIn, pos);
         if (tile != null)
             tile.setDirection(state.getValue(FACING));
@@ -134,7 +134,7 @@ public class BlockKeyButton extends Block implements ITileEntityProvider
 
     @Override
     @SuppressWarnings("deprecation")
-    public void neighborChanged (IBlockState state, World worldIn, BlockPos pos, Block blockIn, BlockPos fromPos) {
+    public void neighborChanged(IBlockState state, World worldIn, BlockPos pos, Block blockIn, BlockPos fromPos) {
         state = getActualState(state, worldIn, pos);
         if (checkForDrop(worldIn, pos, state) && !canPlaceBlock(worldIn, pos, state.getValue(FACING).getOpposite())) {
             dropBlockAsItem(worldIn, pos, state, 0);
@@ -142,7 +142,7 @@ public class BlockKeyButton extends Block implements ITileEntityProvider
         }
     }
 
-    private boolean checkForDrop (World world, BlockPos pos, IBlockState state) {
+    private boolean checkForDrop(World world, BlockPos pos, IBlockState state) {
         if (canPlaceBlockAt(world, pos))
             return true;
 
@@ -153,7 +153,7 @@ public class BlockKeyButton extends Block implements ITileEntityProvider
 
     @Override
     @SuppressWarnings("deprecation")
-    public AxisAlignedBB getBoundingBox (IBlockState state, IBlockAccess source, BlockPos pos) {
+    public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos) {
         state = getActualState(state, source, pos);
         EnumFacing facing = state.getValue(FACING);
         boolean powered = state.getValue(POWERED);
@@ -170,7 +170,7 @@ public class BlockKeyButton extends Block implements ITileEntityProvider
     }
 
     @Override
-    public boolean onBlockActivated (World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
+    public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
         state = getActualState(state, worldIn, pos);
         if (state.getValue(POWERED))
             return true;
@@ -189,8 +189,7 @@ public class BlockKeyButton extends Block implements ITileEntityProvider
         Block target = worldIn.getBlockState(targetPos).getBlock();
         if (target instanceof BlockController controller) {
             controller.toggle(worldIn, targetPos, playerIn, state.getValue(VARIANT));
-        }
-        else if (target instanceof BlockSlave slave) {
+        } else if (target instanceof BlockSlave slave) {
             slave.toggle(worldIn, targetPos, playerIn, state.getValue(VARIANT));
         }
 
@@ -198,7 +197,7 @@ public class BlockKeyButton extends Block implements ITileEntityProvider
     }
 
     @Override
-    public void breakBlock (World worldIn, BlockPos pos, IBlockState state) {
+    public void breakBlock(World worldIn, BlockPos pos, IBlockState state) {
         state = getActualState(state, worldIn, pos);
         if (state.getValue(POWERED))
             notifyNeighbors(worldIn, pos, state.getValue(FACING));
@@ -209,7 +208,7 @@ public class BlockKeyButton extends Block implements ITileEntityProvider
 
     @Override
     @SuppressWarnings("deprecation")
-    public boolean eventReceived (IBlockState state, World worldIn, BlockPos pos, int id, int param) {
+    public boolean eventReceived(IBlockState state, World worldIn, BlockPos pos, int id, int param) {
         super.eventReceived(state, worldIn, pos, id, param);
         TileEntity tile = worldIn.getTileEntity(pos);
         return tile != null && tile.receiveClientEvent(id, param);
@@ -217,40 +216,41 @@ public class BlockKeyButton extends Block implements ITileEntityProvider
 
     @Override
     @Nonnull
-    public TileEntity createNewTileEntity (World worldIn, int meta) {
+    public TileEntity createNewTileEntity(World worldIn, int meta) {
         return new TileEntityKeyButton();
     }
 
-    public TileEntityKeyButton getTileEntity (IBlockAccess blockAccess, BlockPos pos) {
+    public TileEntityKeyButton getTileEntity(IBlockAccess blockAccess, BlockPos pos) {
         TileEntity tile = blockAccess.getTileEntity(pos);
         return (tile instanceof TileEntityKeyButton) ? (TileEntityKeyButton) tile : null;
     }
 
     @Override
     @SuppressWarnings("deprecation")
-    public int getWeakPower (IBlockState blockState, IBlockAccess blockAccess, BlockPos pos, EnumFacing side) {
+    public int getWeakPower(IBlockState blockState, IBlockAccess blockAccess, BlockPos pos, EnumFacing side) {
         blockState = getActualState(blockState, blockAccess, pos);
         return blockState.getValue(POWERED) ? 15 : 0;
     }
 
     @Override
     @SuppressWarnings("deprecation")
-    public int getStrongPower (IBlockState blockState, IBlockAccess blockAccess, BlockPos pos, EnumFacing side) {
+    public int getStrongPower(IBlockState blockState, IBlockAccess blockAccess, BlockPos pos, EnumFacing side) {
         blockState = getActualState(blockState, blockAccess, pos);
         return !blockState.getValue(POWERED) ? 0 : (blockState.getValue(FACING) == side ? 15 : 0);
     }
 
     @Override
     @SuppressWarnings("deprecation")
-    public boolean canProvidePower (IBlockState state) {
+    public boolean canProvidePower(IBlockState state) {
         return true;
     }
 
     @Override
-    public void randomTick (World worldIn, BlockPos pos, IBlockState state, Random random) { }
+    public void randomTick(World worldIn, BlockPos pos, IBlockState state, Random random) {
+    }
 
     @Override
-    public void updateTick (World worldIn, BlockPos pos, IBlockState state, Random rand) {
+    public void updateTick(World worldIn, BlockPos pos, IBlockState state, Random rand) {
         state = getActualState(state, worldIn, pos);
         if (worldIn.isRemote || !state.getValue(POWERED))
             return;
@@ -265,32 +265,31 @@ public class BlockKeyButton extends Block implements ITileEntityProvider
         worldIn.markBlockRangeForRenderUpdate(pos, pos);
     }
 
-    private void notifyNeighbors(World worldIn, BlockPos pos, EnumFacing facing)
-    {
+    private void notifyNeighbors(World worldIn, BlockPos pos, EnumFacing facing) {
         worldIn.notifyNeighborsOfStateChange(pos, this, false);
         worldIn.notifyNeighborsOfStateChange(pos.offset(facing.getOpposite()), this, false);
     }
 
     @Override
     @SuppressWarnings("deprecation")
-    public IBlockState withRotation (IBlockState state, Rotation rot) {
+    public IBlockState withRotation(IBlockState state, Rotation rot) {
         return state.withProperty(FACING, rot.rotate(state.getValue(FACING)));
     }
 
     @Override
     @SuppressWarnings("deprecation")
-    public IBlockState withMirror (IBlockState state, Mirror mirrorIn) {
+    public IBlockState withMirror(IBlockState state, Mirror mirrorIn) {
         return state.withRotation(mirrorIn.toRotation(state.getValue(FACING)));
     }
 
     @Override
-    protected BlockStateContainer createBlockState () {
+    protected BlockStateContainer createBlockState() {
         return new BlockStateContainer(this, FACING, POWERED, VARIANT);
     }
 
     @Override
     @SuppressWarnings("deprecation")
-    public IBlockState getActualState (IBlockState state, IBlockAccess worldIn, BlockPos pos) {
+    public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos) {
         TileEntityKeyButton tile = getTileEntity(worldIn, pos);
         if (tile == null)
             return state;
@@ -300,22 +299,22 @@ public class BlockKeyButton extends Block implements ITileEntityProvider
 
     @Override
     @SuppressWarnings("deprecation")
-    public IBlockState getStateFromMeta (int meta) {
+    public IBlockState getStateFromMeta(int meta) {
         return getDefaultState().withProperty(VARIANT, EnumKeyType.byMetadata(meta));
     }
 
     @Override
-    public int getMetaFromState (IBlockState state) {
+    public int getMetaFromState(IBlockState state) {
         return state.getValue(VARIANT).getMetadata();
     }
 
     @Override
-    public int damageDropped (IBlockState state) {
+    public int damageDropped(IBlockState state) {
         return getMetaFromState(state);
     }
 
     @Override
-    public void getSubBlocks (CreativeTabs tab, NonNullList<ItemStack> list) {
+    public void getSubBlocks(CreativeTabs tab, NonNullList<ItemStack> list) {
         for (EnumKeyType type : EnumKeyType.values()) {
             list.add(new ItemStack(this, 1, type.getMetadata()));
         }

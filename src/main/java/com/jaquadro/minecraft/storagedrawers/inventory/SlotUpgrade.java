@@ -9,9 +9,9 @@ import net.minecraft.item.ItemStack;
 
 import javax.annotation.Nonnull;
 
-public class SlotUpgrade extends Slot
-{
-    public SlotUpgrade (IInventory inventory, int index, int x, int y) {
+public class SlotUpgrade extends Slot {
+
+    public SlotUpgrade(IInventory inventory, int index, int x, int y) {
         super(inventory, index, x, y);
     }
 
@@ -31,7 +31,7 @@ public class SlotUpgrade extends Slot
     }
 
     @Override
-    public boolean canTakeStack (EntityPlayer player) {
+    public boolean canTakeStack(EntityPlayer player) {
         if (inventory instanceof InventoryUpgrade inventoryUpgrade) {
             ItemStack stack = getStack();
             if (stack.getItem() == ModItems.upgradeStorage) {
@@ -47,7 +47,7 @@ public class SlotUpgrade extends Slot
         return true;
     }
 
-    public boolean canTakeStack () {
+    public boolean canTakeStack() {
         return canTakeStack(null);
     }
 }

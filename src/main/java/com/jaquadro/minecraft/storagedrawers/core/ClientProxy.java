@@ -8,10 +8,10 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
-public class ClientProxy extends CommonProxy
-{
+public class ClientProxy extends CommonProxy {
+
     @Override
-    public void registerRenderers () {
+    public void registerRenderers() {
         IconRegistry iconRegistry = Chameleon.instance.iconRegistry;
         iconRegistry.registerIcon(iconConcealmentOverlayResource);
         iconRegistry.registerIcon(iconIndicatorCompOnResource);

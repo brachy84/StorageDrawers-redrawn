@@ -18,13 +18,13 @@ import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ItemKeyButton extends ItemMultiTexture implements IItemMeshMapper, IItemVariantProvider
-{
-    public ItemKeyButton (Block block) {
+public class ItemKeyButton extends ItemMultiTexture implements IItemMeshMapper, IItemVariantProvider {
+
+    public ItemKeyButton(Block block) {
         super(block, block, new Mapper() {
             @Override
             @Nonnull
-            public String apply (@Nonnull ItemStack input) {
+            public String apply(@Nonnull ItemStack input) {
                 return EnumKeyType.byMetadata(input.getMetadata()).getName();
             }
         });
@@ -32,17 +32,17 @@ public class ItemKeyButton extends ItemMultiTexture implements IItemMeshMapper, 
     }
 
     @Override
-    public String getTranslationKey (@Nonnull ItemStack itemStack) {
+    public String getTranslationKey(@Nonnull ItemStack itemStack) {
         return super.getTranslationKey() + "." + EnumKeyType.byMetadata(itemStack.getMetadata()).getName();
     }
 
     @Override
-    public int getMetadata (int damage) {
+    public int getMetadata(int damage) {
         return damage;
     }
 
     @Override
-    public List<Pair<ItemStack, ModelResourceLocation>> getMeshMappings () {
+    public List<Pair<ItemStack, ModelResourceLocation>> getMeshMappings() {
         List<Pair<ItemStack, ModelResourceLocation>> mappings = new ArrayList<Pair<ItemStack, ModelResourceLocation>>();
 
         for (EnumKeyType keyType : EnumKeyType.values()) {
@@ -55,7 +55,7 @@ public class ItemKeyButton extends ItemMultiTexture implements IItemMeshMapper, 
     }
 
     @Override
-    public List<ResourceLocation> getItemVariants () {
+    public List<ResourceLocation> getItemVariants() {
         ResourceLocation location = ForgeRegistries.ITEMS.getKey(this);
         List<ResourceLocation> variants = new ArrayList<>();
 

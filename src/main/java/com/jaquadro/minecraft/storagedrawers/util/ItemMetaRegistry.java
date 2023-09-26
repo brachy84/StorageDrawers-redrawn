@@ -6,21 +6,21 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-public class ItemMetaRegistry<E>
-{
-    private Map<Item, Map<Integer, E>> registry;
+public class ItemMetaRegistry<E> {
+
+    private final Map<Item, Map<Integer, E>> registry;
     private boolean compactTopLevel;
 
-    public ItemMetaRegistry () {
+    public ItemMetaRegistry() {
         registry = new HashMap<Item, Map<Integer, E>>();
     }
 
-    public ItemMetaRegistry (boolean compactTopLevel) {
+    public ItemMetaRegistry(boolean compactTopLevel) {
         this();
         this.compactTopLevel = compactTopLevel;
     }
 
-    public void register (Item item, int meta, E entry) {
+    public void register(Item item, int meta, E entry) {
         Map<Integer, E> metamap = registry.get(item);
         if (metamap == null) {
             metamap = new HashMap<>();
@@ -30,7 +30,7 @@ public class ItemMetaRegistry<E>
         metamap.put(meta, entry);
     }
 
-    public E getEntry (Item item, int meta) {
+    public E getEntry(Item item, int meta) {
         Map<Integer, E> metamap = registry.get(item);
         if (metamap == null)
             return null;
@@ -38,7 +38,7 @@ public class ItemMetaRegistry<E>
         return metamap.get(meta);
     }
 
-    public void remove (Item item, int meta) {
+    public void remove(Item item, int meta) {
         Map<Integer, E> metamap = registry.get(item);
         if (metamap == null)
             return;
@@ -48,7 +48,7 @@ public class ItemMetaRegistry<E>
             registry.remove(item);
     }
 
-    public void clear (Item item) {
+    public void clear(Item item) {
         Map<Integer, E> metamap = registry.get(item);
         if (metamap == null)
             return;
@@ -58,7 +58,7 @@ public class ItemMetaRegistry<E>
             registry.remove(item);
     }
 
-    public void clear () {
+    public void clear() {
         if (compactTopLevel)
             registry.clear();
         else {
@@ -67,11 +67,11 @@ public class ItemMetaRegistry<E>
         }
     }
 
-    public Set<Map.Entry<Item, Map<Integer, E>>> entrySet () {
+    public Set<Map.Entry<Item, Map<Integer, E>>> entrySet() {
         return registry.entrySet();
     }
 
-    public Set<Map.Entry<Integer, E>> entrySet (Item item) {
+    public Set<Map.Entry<Integer, E>> entrySet(Item item) {
         Map<Integer, E> metamap = registry.get(item);
         if (metamap == null) {
             metamap = new HashMap<>();

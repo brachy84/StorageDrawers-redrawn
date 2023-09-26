@@ -30,26 +30,26 @@ import thaumcraft.api.items.ItemsTC;
 
 import java.util.Objects;
 
-public class Thaumcraft extends IntegrationModule
-{
+public class Thaumcraft extends IntegrationModule {
+
     private Item[] aspectItems;
 
     @Override
-    public String getModID () {
+    public String getModID() {
         return "thaumcraft";
     }
 
     @Override
-    public void init () throws Throwable {
+    public void init() throws Throwable {
         MinecraftForge.EVENT_BUS.register(this);
 
-        aspectItems = new Item[] {
-            ItemsTC.phial,
-            ItemsTC.crystalEssence,
-            ItemsTC.jarBrace,
-            ItemsTC.label,
-            Item.getItemFromBlock(BlocksTC.jarNormal),
-            Item.getItemFromBlock(BlocksTC.jarVoid),
+        aspectItems = new Item[]{
+                ItemsTC.phial,
+                ItemsTC.crystalEssence,
+                ItemsTC.jarBrace,
+                ItemsTC.label,
+                Item.getItemFromBlock(BlocksTC.jarNormal),
+                Item.getItemFromBlock(BlocksTC.jarVoid),
         };
 
         Objects.requireNonNull(StorageDrawersApi.instance()).renderRegistry().registerPreLabelRenderHandler(new LabelRenderHandler());
@@ -57,12 +57,12 @@ public class Thaumcraft extends IntegrationModule
     }
 
     @Override
-    public void postInit () {
+    public void postInit() {
 
     }
 
     @SubscribeEvent
-    public void onDrawerPopulated (DrawerPopulatedEvent event) {
+    public void onDrawerPopulated(DrawerPopulatedEvent event) {
         IDrawer drawer = event.drawer;
         if (drawer.isEmpty()) {
             drawer.setExtendedData("aspect", null);
@@ -78,7 +78,7 @@ public class Thaumcraft extends IntegrationModule
         }
     }
 
-    private void setDrawerAspect (IDrawer drawer, ItemStack itemStack) {
+    private void setDrawerAspect(IDrawer drawer, ItemStack itemStack) {
         // Check for labeled jars first
         NBTTagCompound compound = itemStack.getTagCompound();
         if (compound != null) {
@@ -92,8 +92,7 @@ public class Thaumcraft extends IntegrationModule
             }
         }
         // Otherwise, see if the item contains essentia
-        if(itemStack.getItem() instanceof IEssentiaContainerItem) {
-            IEssentiaContainerItem container = (IEssentiaContainerItem)itemStack.getItem();
+        if (itemStack.getItem() instanceof IEssentiaContainerItem container) {
             AspectList aspects = container.getAspects(itemStack);
             if (!(aspects == null || aspects.size() == 0)) {
                 drawer.setExtendedData("aspect", aspects.getAspects()[0]);
@@ -104,12 +103,11 @@ public class Thaumcraft extends IntegrationModule
     private class WailaTooltipHandler implements IWailaTooltipHandler {
 
         @Override
-        public String transformItemName (IDrawer drawer, String defaultName) {
+        public String transformItemName(IDrawer drawer, String defaultName) {
             Object aspectObj = drawer.getExtendedData("aspect");
-            if (!(aspectObj instanceof Aspect))
+            if (!(aspectObj instanceof Aspect aspect))
                 return defaultName;
 
-            Aspect aspect = (Aspect)aspectObj;
             EntityPlayerSP player = Minecraft.getMinecraft().player;
 
             //if (!ThaumcraftApiHelper.hasDiscoveredAspect(player.getDisplayName(), aspect))
@@ -122,13 +120,13 @@ public class Thaumcraft extends IntegrationModule
     private class LabelRenderHandler implements IRenderLabel {
 
         @Override
-        public void render (TileEntity tileEntity, IDrawerGroup drawerGroup, int slot, float brightness, float partialTickTime) {
+        public void render(TileEntity tileEntity, IDrawerGroup drawerGroup, int slot, float brightness, float partialTickTime) {
             IDrawer drawer = drawerGroup.getDrawer(slot);
             if (drawer == null)
                 return;
 
             Object aspectObj = drawer.getExtendedData("aspect");
-            if (!(aspectObj instanceof Aspect))
+            if (!(aspectObj instanceof Aspect aspect))
                 return;
 
             EntityPlayerSP player = Minecraft.getMinecraft().player;
@@ -138,7 +136,6 @@ public class Thaumcraft extends IntegrationModule
             if (distance > 10)
                 return;
 
-            Aspect aspect = (Aspect)aspectObj;
             //if (!ThaumcraftApiHelper.hasDiscoveredAspect(player.getDisplayName(), aspect))
             //    return;
 
@@ -156,7 +153,7 @@ public class Thaumcraft extends IntegrationModule
 
             float alpha = 1;
             if (distance > 3)
-                alpha = 1f - (float)((distance - 3) / 7);
+                alpha = 1f - (float) ((distance - 3) / 7);
 
             int color = aspect.getColor();
             float r = (color >> 16 & 255);
@@ -176,7 +173,7 @@ public class Thaumcraft extends IntegrationModule
 
             Tessellator tessellator = Tessellator.getInstance();
             BufferBuilder worldRenderer = tessellator.getBuffer();
-            renderQuad(worldRenderer, x, y, w, h, (int)(r), (int)(g), (int)(b), (int)(alpha * 255));
+            renderQuad(worldRenderer, x, y, w, h, (int) (r), (int) (g), (int) (b), (int) (alpha * 255));
 
             GlStateManager.disablePolygonOffset();
 
@@ -186,13 +183,12 @@ public class Thaumcraft extends IntegrationModule
         }
     }
 
-    private void renderQuad (BufferBuilder tessellator, int x, int y, int w, int h, int r, int g, int b, int a)
-    {
+    private void renderQuad(BufferBuilder tessellator, int x, int y, int w, int h, int r, int g, int b, int a) {
         tessellator.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR);
-        tessellator.pos(x + 0, y + 0, 0).tex(0, 0).color(r, g, b, a).endVertex();
-        tessellator.pos(x + 0, y + h, 0).tex(0, 1).color(r, g, b, a).endVertex();
+        tessellator.pos(x, y, 0).tex(0, 0).color(r, g, b, a).endVertex();
+        tessellator.pos(x, y + h, 0).tex(0, 1).color(r, g, b, a).endVertex();
         tessellator.pos(x + w, y + h, 0).tex(1, 1).color(r, g, b, a).endVertex();
-        tessellator.pos(x + w, y + 0, 0).tex(1, 0).color(r, g, b, a).endVertex();
+        tessellator.pos(x + w, y, 0).tex(1, 0).color(r, g, b, a).endVertex();
         Tessellator.getInstance().draw();
     }
 }

@@ -22,9 +22,9 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
 
-public class ItemTape extends Item
-{
-    public ItemTape (String registryName, String unlocalizedName) {
+public class ItemTape extends Item {
+
+    public ItemTape(String registryName, String unlocalizedName) {
         setRegistryName(registryName);
         setTranslationKey(unlocalizedName);
         setMaxStackSize(1);
@@ -34,21 +34,21 @@ public class ItemTape extends Item
 
     @Override
     @SideOnly(Side.CLIENT)
-    public void addInformation (@Nonnull ItemStack itemStack, @Nullable World world, List<String> list, ITooltipFlag advanced) {
+    public void addInformation(@Nonnull ItemStack itemStack, @Nullable World world, List<String> list, ITooltipFlag advanced) {
         String name = getTranslationKey(itemStack);
         list.add(I18n.format(name + ".description"));
     }
 
     @Override
     @Nonnull
-    public EnumActionResult onItemUse (EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
+    public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
         ItemStack stack = player.getHeldItem(hand);
         if (!player.canPlayerEdit(pos, side, stack))
             return EnumActionResult.FAIL;
 
         TileEntity tile = world.getTileEntity(pos);
         if (tile instanceof IProtectable) {
-            if (!SecurityManager.hasOwnership(player.getGameProfile(), (IProtectable)tile))
+            if (!SecurityManager.hasOwnership(player.getGameProfile(), (IProtectable) tile))
                 return EnumActionResult.FAIL;
         }
 

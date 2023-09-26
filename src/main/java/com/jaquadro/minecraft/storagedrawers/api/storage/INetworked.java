@@ -1,5 +1,5 @@
 package com.jaquadro.minecraft.storagedrawers.api.storage;
 
-public interface INetworked
-{
+public interface INetworked {
+
 }

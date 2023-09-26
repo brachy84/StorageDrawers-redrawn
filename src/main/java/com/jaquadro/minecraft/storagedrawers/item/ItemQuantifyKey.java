@@ -3,9 +3,9 @@ package com.jaquadro.minecraft.storagedrawers.item;
 import com.jaquadro.minecraft.storagedrawers.api.storage.IDrawerAttributesModifiable;
 import com.jaquadro.minecraft.storagedrawers.core.ModCreativeTabs;
 
-public class ItemQuantifyKey extends ItemKey
-{
-    public ItemQuantifyKey (String registryName, String unlocalizedName) {
+public class ItemQuantifyKey extends ItemKey {
+
+    public ItemQuantifyKey(String registryName, String unlocalizedName) {
         setRegistryName(registryName);
         setTranslationKey(unlocalizedName);
         setCreativeTab(ModCreativeTabs.tabStorageDrawers);
@@ -13,7 +13,7 @@ public class ItemQuantifyKey extends ItemKey
     }
 
     @Override
-    protected void handleDrawerAttributes (IDrawerAttributesModifiable attrs) {
+    protected void handleDrawerAttributes(IDrawerAttributesModifiable attrs) {
         attrs.setIsShowingQuantity(!attrs.isShowingQuantity());
     }
 }

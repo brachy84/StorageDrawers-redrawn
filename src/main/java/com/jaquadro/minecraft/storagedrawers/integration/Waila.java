@@ -24,30 +24,28 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.event.FMLInterModComms;
 
 import javax.annotation.Nonnull;
 import java.lang.reflect.Method;
-
 import java.util.List;
 
-public class Waila extends IntegrationModule
-{
+public class Waila extends IntegrationModule {
+
     private static Class classConfigHandler;
 
     private static Method methInstance;
     private static Method methAddConfig;
 
     @Override
-    public String getModID () {
+    public String getModID() {
         return "waila";
     }
 
     @Override
-    public void init () throws Throwable {
+    public void init() throws Throwable {
         classConfigHandler = Class.forName("mcp.mobius.waila.api.impl.ConfigHandler");
 
         methInstance = classConfigHandler.getMethod("instance");
@@ -57,7 +55,8 @@ public class Waila extends IntegrationModule
     }
 
     @Override
-    public void postInit () { }
+    public void postInit() {
+    }
 
     @SuppressWarnings("unused")
     public static void registerProvider(IWailaRegistrar registrar) {
@@ -72,18 +71,17 @@ public class Waila extends IntegrationModule
             methAddConfig.invoke(configHandler, StorageDrawers.MOD_NAME, "display.content", I18n.format("storageDrawers.waila.config.displayContents"), true);
             methAddConfig.invoke(configHandler, StorageDrawers.MOD_NAME, "display.stacklimit", I18n.format("storageDrawers.waila.config.displayStackLimit"), true);
             methAddConfig.invoke(configHandler, StorageDrawers.MOD_NAME, "display.status", I18n.format("storageDrawers.waila.config.displayStatus"), true);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             // Oh well, we couldn't hook the waila config
             StorageDrawers.log.error("Failed to hook the Waila Config. Could not add in custom Storage Drawers related configs.");
         }
     }
 
-    public static class WailaDrawer implements IWailaDataProvider
-    {
+    public static class WailaDrawer implements IWailaDataProvider {
+
         @Override
         @Nonnull
-        public ItemStack getWailaStack (IWailaDataAccessor accessor, IWailaConfigHandler config) {
+        public ItemStack getWailaStack(IWailaDataAccessor accessor, IWailaConfigHandler config) {
             // Only replace info if it needs to (trim or drawers). Else, leave it, some other mod might change it.
             // Returning ItemStack.EMPTY tells Hwyla that an override is not required.
 
@@ -92,7 +90,7 @@ public class Waila extends IntegrationModule
             if ((block instanceof BlockDrawers))
                 return ((BlockDrawers) accessor.getBlock()).getWailaTOPBlock(accessor.getWorld(), accessor.getPosition(), accessor.getBlockState());
 
-            if (block instanceof BlockTrim){
+            if (block instanceof BlockTrim) {
                 List<ItemStack> drops = ((BlockTrim) block).getDrops(accessor.getWorld(), accessor.getPosition(), accessor.getBlockState(), 0);
                 if (drops == null || drops.isEmpty())
                     return ItemStack.EMPTY;
@@ -104,12 +102,12 @@ public class Waila extends IntegrationModule
         }
 
         @Override
-        public List<String> getWailaHead (@Nonnull ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor, IWailaConfigHandler config) {
+        public List<String> getWailaHead(@Nonnull ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor, IWailaConfigHandler config) {
             return currenttip;
         }
 
         @Override
-        public List<String> getWailaBody (@Nonnull ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor, IWailaConfigHandler config) {
+        public List<String> getWailaBody(@Nonnull ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor, IWailaConfigHandler config) {
             TileEntityDrawers tile = (TileEntityDrawers) accessor.getTileEntity();
             IDrawerAttributes attr = tile.getCapability(CapabilityDrawerAttributes.DRAWER_ATTRIBUTES_CAPABILITY, null);
             if (attr == null)
@@ -179,7 +177,7 @@ public class Waila extends IntegrationModule
         }
 
         @Override
-        public List<String> getWailaTail (@Nonnull ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor, IWailaConfigHandler config) {
+        public List<String> getWailaTail(@Nonnull ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor, IWailaConfigHandler config) {
             return currenttip;
         }
 

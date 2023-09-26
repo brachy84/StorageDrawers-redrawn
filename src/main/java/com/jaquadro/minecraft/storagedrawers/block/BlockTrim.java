@@ -26,9 +26,9 @@ import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BlockTrim extends Block implements INetworked
-{
-    public String[] getResourceVariants () {
+public class BlockTrim extends Block implements INetworked {
+
+    public String[] getResourceVariants() {
         String[] variants = new String[BlockPlanks.EnumType.values().length];
         int index = 0;
 
@@ -40,7 +40,7 @@ public class BlockTrim extends Block implements INetworked
 
     public static final PropertyEnum VARIANT = PropertyEnum.create("variant", BlockPlanks.EnumType.class);
 
-    public BlockTrim (String registryName, String name) {
+    public BlockTrim(String registryName, String name) {
         super(Material.WOOD);
 
         setTranslationKey(name);
@@ -52,28 +52,28 @@ public class BlockTrim extends Block implements INetworked
         setDefaultState();
     }
 
-    protected void setDefaultState () {
+    protected void setDefaultState() {
         setDefaultState(blockState.getBaseState().withProperty(VARIANT, BlockPlanks.EnumType.OAK));
     }
 
     @Override
-    public boolean removedByPlayer (IBlockState state, World world, BlockPos pos, EntityPlayer player, boolean willHarvest) {
+    public boolean removedByPlayer(IBlockState state, World world, BlockPos pos, EntityPlayer player, boolean willHarvest) {
         return willHarvest || super.removedByPlayer(state, world, pos, player, true);
     }
 
     @Override
-    public void harvestBlock (World worldIn, EntityPlayer player, BlockPos pos, IBlockState state, TileEntity te, @Nonnull ItemStack stack) {
+    public void harvestBlock(World worldIn, EntityPlayer player, BlockPos pos, IBlockState state, TileEntity te, @Nonnull ItemStack stack) {
         super.harvestBlock(worldIn, player, pos, state, te, stack);
         worldIn.setBlockToAir(pos);
     }
 
     @Nonnull
-    protected ItemStack getMainDrop (IBlockAccess world, BlockPos pos, IBlockState state) {
+    protected ItemStack getMainDrop(IBlockAccess world, BlockPos pos, IBlockState state) {
         return new ItemStack(Item.getItemFromBlock(this), 1, state.getBlock().getMetaFromState(state));
     }
 
     @Override
-    public List<ItemStack> getDrops (IBlockAccess world, BlockPos pos, IBlockState state, int fortune) {
+    public List<ItemStack> getDrops(IBlockAccess world, BlockPos pos, IBlockState state, int fortune) {
         ItemStack dropStack = getMainDrop(world, pos, state);
 
         ArrayList<ItemStack> drops = new ArrayList<>();
@@ -89,24 +89,24 @@ public class BlockTrim extends Block implements INetworked
 
     @Override
     @SideOnly(Side.CLIENT)
-    public void getSubBlocks (CreativeTabs creativeTabs, NonNullList<ItemStack> list) {
+    public void getSubBlocks(CreativeTabs creativeTabs, NonNullList<ItemStack> list) {
         for (BlockPlanks.EnumType type : BlockPlanks.EnumType.values())
             list.add(new ItemStack(this, 1, type.getMetadata()));
     }
 
     @Override
     @SuppressWarnings("deprecation")
-    public IBlockState getStateFromMeta (int meta) {
+    public IBlockState getStateFromMeta(int meta) {
         return getDefaultState().withProperty(VARIANT, BlockPlanks.EnumType.byMetadata(meta));
     }
 
     @Override
-    public int getMetaFromState (IBlockState state) {
-        return ((BlockPlanks.EnumType)state.getValue(VARIANT)).getMetadata();
+    public int getMetaFromState(IBlockState state) {
+        return ((BlockPlanks.EnumType) state.getValue(VARIANT)).getMetadata();
     }
 
     @Override
-    protected BlockStateContainer createBlockState () {
+    protected BlockStateContainer createBlockState() {
         return new BlockStateContainer(this, VARIANT);
     }
 }

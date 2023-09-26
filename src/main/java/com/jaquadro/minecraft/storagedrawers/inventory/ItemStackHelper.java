@@ -9,27 +9,27 @@ import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import javax.annotation.Nonnull;
 import java.lang.reflect.Field;
 
-public class ItemStackHelper
-{
+public class ItemStackHelper {
+
     private static boolean initialized;
     private static Field itemField;
     private static Field itemDamageField;
     private static Field stackTagCompoundField;
     private static Field capabilitiesField;
 
-    public static Item getTrueItem (@Nonnull ItemStack stack) {
+    public static Item getTrueItem(@Nonnull ItemStack stack) {
         if (!initialized)
             return stack.getItem();
 
         try {
-            return (Item)itemField.get(stack);
+            return (Item) itemField.get(stack);
         } catch (IllegalAccessException e) {
             return stack.getItem();
         }
     }
 
     @Nonnull
-    public static ItemStack getItemPrototype (@Nonnull ItemStack stack) {
+    public static ItemStack getItemPrototype(@Nonnull ItemStack stack) {
         if (!initialized)
             return stack.copy();
 
@@ -50,7 +50,7 @@ public class ItemStackHelper
     }
 
     @Nonnull
-    public static ItemStack encodeItemStack (@Nonnull ItemStack stack) {
+    public static ItemStack encodeItemStack(@Nonnull ItemStack stack) {
         if (!stack.isEmpty())
             return stack;
 
@@ -69,7 +69,7 @@ public class ItemStackHelper
         return proto;
     }
 
-    public static ItemStack encodeItemStack (@Nonnull ItemStack proto, int count) {
+    public static ItemStack encodeItemStack(@Nonnull ItemStack proto, int count) {
         if (!proto.isEmpty() && count > 0 && count < 128) {
             ItemStack stack = proto.copy();
             stack.setCount(count);
@@ -92,7 +92,7 @@ public class ItemStackHelper
         return proto.copy();
     }
 
-    public static ItemStack decodeItemStack (@Nonnull ItemStack stack) {
+    public static ItemStack decodeItemStack(@Nonnull ItemStack stack) {
         NBTTagCompound tag = stack.getTagCompound();
         if (tag == null)
             return stack;
@@ -114,7 +114,7 @@ public class ItemStackHelper
         return stack;
     }
 
-    public static boolean isStackEncoded (@Nonnull ItemStack stack) {
+    public static boolean isStackEncoded(@Nonnull ItemStack stack) {
         NBTTagCompound tag = stack.getTagCompound();
         if (tag == null)
             return false;
@@ -124,10 +124,10 @@ public class ItemStackHelper
 
     static {
         try {
-            itemField = ReflectionHelper.findField(ItemStack.class,  "item", "field_151002_e");
-            itemDamageField = ReflectionHelper.findField(ItemStack.class,"itemDamage", "field_77991_e");
-            stackTagCompoundField = ReflectionHelper.findField(ItemStack.class,"stackTagCompound", "field_77990_d");
-            capabilitiesField = ReflectionHelper.findField(ItemStack.class,"capabilities");
+            itemField = ReflectionHelper.findField(ItemStack.class, "item", "field_151002_e");
+            itemDamageField = ReflectionHelper.findField(ItemStack.class, "itemDamage", "field_77991_e");
+            stackTagCompoundField = ReflectionHelper.findField(ItemStack.class, "stackTagCompound", "field_77990_d");
+            capabilitiesField = ReflectionHelper.findField(ItemStack.class, "capabilities");
 
             itemField.setAccessible(true);
             itemDamageField.setAccessible(true);

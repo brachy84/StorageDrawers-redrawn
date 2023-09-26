@@ -13,20 +13,20 @@ import net.minecraftforge.common.util.INBTSerializable;
 
 import javax.annotation.Nullable;
 
-public class CapabilityDrawerAttributes
-{
+public class CapabilityDrawerAttributes {
+
     @CapabilityInject(IDrawerAttributes.class)
     public static Capability<IDrawerAttributes> DRAWER_ATTRIBUTES_CAPABILITY = null;
 
-    public static void register () {
+    public static void register() {
         CapabilityManager.INSTANCE.register(IDrawerAttributes.class, new DefaultStorage(), BasicDrawerAttributes::new);
     }
 
-    private static class DefaultStorage implements Capability.IStorage<IDrawerAttributes>
-    {
+    private static class DefaultStorage implements Capability.IStorage<IDrawerAttributes> {
+
         @Nullable
         @Override
-        public NBTBase writeNBT (Capability<IDrawerAttributes> capability, IDrawerAttributes instance, EnumFacing side) {
+        public NBTBase writeNBT(Capability<IDrawerAttributes> capability, IDrawerAttributes instance, EnumFacing side) {
             if (instance instanceof INBTSerializable serializable)
                 return serializable.serializeNBT();
 
@@ -43,7 +43,7 @@ public class CapabilityDrawerAttributes
         }
 
         @Override
-        public void readNBT (Capability<IDrawerAttributes> capability, IDrawerAttributes instance, EnumFacing side, NBTBase nbt) {
+        public void readNBT(Capability<IDrawerAttributes> capability, IDrawerAttributes instance, EnumFacing side, NBTBase nbt) {
             if (instance instanceof INBTSerializable serializable) {
                 @SuppressWarnings("unchecked")
                 INBTSerializable<NBTBase> serializer = serializable;

@@ -22,27 +22,26 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.common.property.IExtendedBlockState;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class DrawerDecoratorModel implements IBakedModel
-{
+public class DrawerDecoratorModel implements IBakedModel {
+
     public static final ResourceLocation iconLock = new ResourceLocation(StorageDrawers.MOD_ID + ":blocks/indicator/lock_icon");
     public static final ResourceLocation iconClaim = new ResourceLocation(StorageDrawers.MOD_ID + ":blocks/indicator/claim_icon");
     public static final ResourceLocation iconClaimLock = new ResourceLocation(StorageDrawers.MOD_ID + ":blocks/indicator/claim_lock_icon");
     public static final ResourceLocation iconVoid = new ResourceLocation(StorageDrawers.MOD_ID + ":blocks/indicator/void_icon");
     public static final ResourceLocation iconShroudCover = new ResourceLocation(StorageDrawers.MOD_ID + ":blocks/drawers_oak_trim");
 
-    private IBakedModel baseModel;
-    private IExtendedBlockState blockState;
-    private IDrawerGeometry drawer;
-    private EnumFacing dir;
-    private DrawerStateModelData modelData;
-    private Set<BlockRenderLayer> renderLayers;
+    private final IBakedModel baseModel;
+    private final IExtendedBlockState blockState;
+    private final IDrawerGeometry drawer;
+    private final EnumFacing dir;
+    private final DrawerStateModelData modelData;
+    private final Set<BlockRenderLayer> renderLayers;
 
-    public DrawerDecoratorModel (IBakedModel baseModel, IExtendedBlockState blockState, IDrawerGeometry drawer, EnumFacing dir, DrawerStateModelData modelData) {
+    public DrawerDecoratorModel(IBakedModel baseModel, IExtendedBlockState blockState, IDrawerGeometry drawer, EnumFacing dir, DrawerStateModelData modelData) {
         this.baseModel = baseModel;
         this.blockState = blockState;
         this.drawer = drawer;
@@ -57,12 +56,12 @@ public class DrawerDecoratorModel implements IBakedModel
         this.renderLayers.add(layer);
     }
 
-    public static boolean shouldHandleState (DrawerStateModelData stateModel) {
+    public static boolean shouldHandleState(DrawerStateModelData stateModel) {
         return stateModel != null && (stateModel.isShrouded() || stateModel.isVoid() || stateModel.isItemLocked() || stateModel.getOwner() != null);
     }
 
     @Override
-    public List<BakedQuad> getQuads (IBlockState state, EnumFacing side, long rand) {
+    public List<BakedQuad> getQuads(IBlockState state, EnumFacing side, long rand) {
         BlockRenderLayer renderLayer = MinecraftForgeClient.getRenderLayer();
 
         ChamRender renderer = ChamRenderManager.instance.getRenderer(null);
@@ -70,8 +69,7 @@ public class DrawerDecoratorModel implements IBakedModel
         if (renderLayer == BlockRenderLayer.TRANSLUCENT) {
             if (modelData.isShrouded())
                 buildShroudGeometry(renderer);
-        }
-        else if (renderLayer == BlockRenderLayer.CUTOUT_MIPPED) {
+        } else if (renderLayer == BlockRenderLayer.CUTOUT_MIPPED) {
             if (modelData.isItemLocked() || modelData.getOwner() != null)
                 buildLockGeometry(renderer);
             if (modelData.isVoid())
@@ -90,36 +88,36 @@ public class DrawerDecoratorModel implements IBakedModel
     }
 
     @Override
-    public boolean isAmbientOcclusion () {
+    public boolean isAmbientOcclusion() {
         return baseModel.isAmbientOcclusion();
     }
 
     @Override
-    public boolean isGui3d () {
+    public boolean isGui3d() {
         return baseModel.isGui3d();
     }
 
     @Override
-    public boolean isBuiltInRenderer () {
+    public boolean isBuiltInRenderer() {
         return false;
     }
 
     @Override
-    public TextureAtlasSprite getParticleTexture () {
+    public TextureAtlasSprite getParticleTexture() {
         return baseModel.getParticleTexture();
     }
 
     @Override
-    public ItemCameraTransforms getItemCameraTransforms () {
+    public ItemCameraTransforms getItemCameraTransforms() {
         return baseModel.getItemCameraTransforms();
     }
 
     @Override
-    public ItemOverrideList getOverrides () {
+    public ItemOverrideList getOverrides() {
         return baseModel.getOverrides();
     }
 
-    private void buildLockGeometry (ChamRender renderer) {
+    private void buildLockGeometry(ChamRender renderer) {
         double depth = drawer.isHalfDepth() ? .5 : 1;
 
         TextureAtlasSprite lockIcon;
@@ -138,7 +136,7 @@ public class DrawerDecoratorModel implements IBakedModel
         renderer.state.clearRotateTransform();
     }
 
-    private void buildVoidGeometry (ChamRender renderer) {
+    private void buildVoidGeometry(ChamRender renderer) {
         double depth = drawer.isHalfDepth() ? .5 : 1;
         TextureAtlasSprite icon = Chameleon.instance.iconRegistry.getIcon(iconVoid);
 
@@ -148,7 +146,7 @@ public class DrawerDecoratorModel implements IBakedModel
         renderer.state.clearRotateTransform();
     }
 
-    private void buildShroudGeometry (ChamRender renderer) {
+    private void buildShroudGeometry(ChamRender renderer) {
         if (!(blockState.getBlock() instanceof BlockDrawers block))
             return;
 
@@ -169,7 +167,7 @@ public class DrawerDecoratorModel implements IBakedModel
             Area2D bounds = slot.getIconArea();
 
             renderer.setRenderBounds(bounds.getX() * unit, bounds.getY() * unit, 0,
-                (bounds.getX() + bounds.getWidth()) * unit, (bounds.getY() + bounds.getHeight()) * unit, depth - frontDepth + .003);
+                    (bounds.getX() + bounds.getWidth()) * unit, (bounds.getY() + bounds.getHeight()) * unit, depth - frontDepth + .003);
             renderer.state.setRotateTransform(ChamRender.ZPOS, dir.getIndex());
             renderer.bakeFace(ChamRender.FACE_ZPOS, blockState, iconCover, false, 1, 1, 1);
             renderer.state.clearRotateTransform();

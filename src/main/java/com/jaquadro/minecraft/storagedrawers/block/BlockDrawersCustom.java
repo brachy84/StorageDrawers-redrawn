@@ -28,26 +28,26 @@ import net.minecraftforge.common.property.IUnlistedProperty;
 
 import javax.annotation.Nonnull;
 
-public class BlockDrawersCustom extends BlockStandardDrawers
-{
+public class BlockDrawersCustom extends BlockStandardDrawers {
+
     public static final IUnlistedProperty<MaterialModelData> MAT_MODEL = UnlistedModelData.create(MaterialModelData.class);
 
-    public BlockDrawersCustom (String registryName, String blockName) {
+    public BlockDrawersCustom(String registryName, String blockName) {
         super(registryName, blockName);
     }
 
-    protected void initDefaultState () {
+    protected void initDefaultState() {
         setDefaultState(blockState.getBaseState().withProperty(BLOCK, EnumBasicDrawer.FULL2)
-            .withProperty(FACING, EnumFacing.NORTH));
+                .withProperty(FACING, EnumFacing.NORTH));
     }
 
     @Override
-    public boolean canRenderInLayer (IBlockState state, BlockRenderLayer layer) {
+    public boolean canRenderInLayer(IBlockState state, BlockRenderLayer layer) {
         return layer == BlockRenderLayer.CUTOUT_MIPPED || layer == BlockRenderLayer.TRANSLUCENT;
     }
 
     @Override
-    public boolean doesSideBlockRendering (IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing face) {
+    public boolean doesSideBlockRendering(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing face) {
         TileEntityDrawers tile = getTileEntity(world, pos);
         if (tile != null && tile.material().getEffectiveSide().isEmpty())
             return false;
@@ -61,13 +61,13 @@ public class BlockDrawersCustom extends BlockStandardDrawers
     }
 
     @Override
-    public BlockType retrimType () {
+    public BlockType retrimType() {
         return null;
     }
 
     @Override
     @Nonnull
-    protected ItemStack getMainDrop (IBlockAccess world, BlockPos pos, IBlockState state) {
+    protected ItemStack getMainDrop(IBlockAccess world, BlockPos pos, IBlockState state) {
         TileEntityDrawers tile = getTileEntity(world, pos);
         if (tile == null)
             return ItemCustomDrawers.makeItemStack(state, 1, ItemStack.EMPTY, ItemStack.EMPTY, ItemStack.EMPTY);
@@ -104,13 +104,13 @@ public class BlockDrawersCustom extends BlockStandardDrawers
     }
 
     @Override
-    public void getSubBlocks (CreativeTabs creativeTabs, NonNullList<ItemStack> list) {
+    public void getSubBlocks(CreativeTabs creativeTabs, NonNullList<ItemStack> list) {
         for (EnumBasicDrawer type : EnumBasicDrawer.values())
             list.add(new ItemStack(this, 1, type.getMetadata()));
     }
 
     @Override
-    public boolean onBlockActivated (World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
+    public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
         TileEntityDrawers tile = getTileEntity(world, pos);
         if (tile != null && tile.material().getSide().isEmpty())
             return false;
@@ -119,12 +119,12 @@ public class BlockDrawersCustom extends BlockStandardDrawers
     }
 
     @Override
-    protected BlockStateContainer createBlockState () {
-        return new ExtendedBlockState(this, new IProperty[] { BLOCK, FACING }, new IUnlistedProperty[] { STATE_MODEL, MAT_MODEL });
+    protected BlockStateContainer createBlockState() {
+        return new ExtendedBlockState(this, new IProperty[]{BLOCK, FACING}, new IUnlistedProperty[]{STATE_MODEL, MAT_MODEL});
     }
 
     @Override
-    public IBlockState getActualState (IBlockState state, IBlockAccess worldIn, BlockPos pos) {
+    public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos) {
         TileEntityDrawers tile = getTileEntity(worldIn, pos);
         if (tile == null)
             return state;
@@ -134,11 +134,11 @@ public class BlockDrawersCustom extends BlockStandardDrawers
             facing = EnumFacing.NORTH;
 
         return state.withProperty(BLOCK, state.getValue(BLOCK))
-            .withProperty(FACING, facing);
+                .withProperty(FACING, facing);
     }
 
     @Override
-    public IBlockState getExtendedState (IBlockState state, IBlockAccess world, BlockPos pos) {
+    public IBlockState getExtendedState(IBlockState state, IBlockAccess world, BlockPos pos) {
         state = super.getExtendedState(state, world, pos);
         if (!(state instanceof IExtendedBlockState))
             return state;
@@ -147,6 +147,6 @@ public class BlockDrawersCustom extends BlockStandardDrawers
         if (tile == null)
             return state;
 
-        return ((IExtendedBlockState)state).withProperty(MAT_MODEL, new MaterialModelData(tile));
+        return ((IExtendedBlockState) state).withProperty(MAT_MODEL, new MaterialModelData(tile));
     }
 }

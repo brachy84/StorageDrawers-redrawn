@@ -22,24 +22,24 @@ import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ItemTrim extends ItemMultiTexture implements IItemMeshMapper, IItemVariantProvider
-{
-    public ItemTrim (Block block) {
+public class ItemTrim extends ItemMultiTexture implements IItemMeshMapper, IItemVariantProvider {
+
+    public ItemTrim(Block block) {
         super(block, block, new Mapper() {
             @Override
             @Nonnull
-            public String apply (@Nonnull ItemStack input) {
+            public String apply(@Nonnull ItemStack input) {
                 return BlockPlanks.EnumType.byMetadata(input.getMetadata()).getTranslationKey();
             }
         });
     }
 
-    protected ItemTrim (Block block, Mapper mapper) {
+    protected ItemTrim(Block block, Mapper mapper) {
         super(block, block, mapper);
     }
 
     @Override
-    public boolean doesSneakBypassUse (@Nonnull ItemStack stack, IBlockAccess world, BlockPos pos, EntityPlayer player) {
+    public boolean doesSneakBypassUse(@Nonnull ItemStack stack, IBlockAccess world, BlockPos pos, EntityPlayer player) {
         IBlockState blockState = world.getBlockState(pos);
         Block block = blockState.getBlock();
 
@@ -47,7 +47,7 @@ public class ItemTrim extends ItemMultiTexture implements IItemMeshMapper, IItem
     }
 
     @Override
-    public List<ResourceLocation> getItemVariants () {
+    public List<ResourceLocation> getItemVariants() {
         ResourceLocation location = ForgeRegistries.ITEMS.getKey(this);
         List<ResourceLocation> variants = new ArrayList<>();
 
@@ -58,7 +58,7 @@ public class ItemTrim extends ItemMultiTexture implements IItemMeshMapper, IItem
     }
 
     @Override
-    public List<Pair<ItemStack, ModelResourceLocation>> getMeshMappings () {
+    public List<Pair<ItemStack, ModelResourceLocation>> getMeshMappings() {
         List<Pair<ItemStack, ModelResourceLocation>> mappings = new ArrayList<Pair<ItemStack, ModelResourceLocation>>();
 
         for (BlockPlanks.EnumType woodType : BlockPlanks.EnumType.values()) {

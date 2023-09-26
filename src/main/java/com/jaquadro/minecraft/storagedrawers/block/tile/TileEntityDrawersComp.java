@@ -1,17 +1,12 @@
 package com.jaquadro.minecraft.storagedrawers.block.tile;
 
 import com.jaquadro.minecraft.storagedrawers.StorageDrawers;
-import com.jaquadro.minecraft.storagedrawers.api.capabilities.IItemRepository;
 import com.jaquadro.minecraft.storagedrawers.api.storage.IDrawerAttributes;
 import com.jaquadro.minecraft.storagedrawers.api.storage.IDrawerGroup;
 import com.jaquadro.minecraft.storagedrawers.block.tile.tiledata.FractionalDrawerGroup;
 import com.jaquadro.minecraft.storagedrawers.config.ConfigManager;
-import com.jaquadro.minecraft.storagedrawers.inventory.ContainerDrawersComp;
 import com.jaquadro.minecraft.storagedrawers.network.CountUpdateMessage;
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.Container;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
@@ -24,16 +19,16 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public class TileEntityDrawersComp extends TileEntityDrawers
-{
+public class TileEntityDrawersComp extends TileEntityDrawers {
+
     @CapabilityInject(IDrawerAttributes.class)
     static Capability<IDrawerAttributes> DRAWER_ATTRIBUTES_CAPABILITY = null;
 
-    private GroupData groupData;
+    private final GroupData groupData;
 
     private int capacity = 0;
 
-    public TileEntityDrawersComp () {
+    public TileEntityDrawersComp() {
         groupData = new GroupData(3);
         groupData.setCapabilityProvider(this);
 
@@ -41,39 +36,39 @@ public class TileEntityDrawersComp extends TileEntityDrawers
     }
 
     @Override
-    public IDrawerGroup getGroup () {
+    public IDrawerGroup getGroup() {
         return groupData;
     }
 
     @Override
-    protected void onAttributeChanged () {
+    protected void onAttributeChanged() {
         groupData.syncAttributes();
     }
 
-    private class GroupData extends FractionalDrawerGroup
-    {
-        public GroupData (int slotCount) {
+    private class GroupData extends FractionalDrawerGroup {
+
+        public GroupData(int slotCount) {
             super(slotCount);
         }
 
         @Override
-        protected World getWorld () {
+        protected World getWorld() {
             return TileEntityDrawersComp.this.getWorld();
         }
 
         @Override
-        protected void log (String message) {
+        protected void log(String message) {
             if (!getWorld().isRemote && StorageDrawers.config.cache.debugTrace)
                 StorageDrawers.log.info(message);
         }
 
         @Override
-        protected int getStackCapacity () {
+        protected int getStackCapacity() {
             return upgrades().getStorageMultiplier() * getEffectiveDrawerCapacity();
         }
 
         @Override
-        protected void onItemChanged () {
+        protected void onItemChanged() {
             if (getWorld() != null && !getWorld().isRemote) {
                 markDirty();
                 markBlockForUpdate();
@@ -81,7 +76,7 @@ public class TileEntityDrawersComp extends TileEntityDrawers
         }
 
         @Override
-        protected void onAmountChanged () {
+        protected void onAmountChanged() {
             if (getWorld() != null && !getWorld().isRemote) {
                 IMessage message = new CountUpdateMessage(getPos(), 0, getPooledCount());
                 NetworkRegistry.TargetPoint targetPoint = new NetworkRegistry.TargetPoint(getWorld().provider.getDimension(), getPos().getX(), getPos().getY(), getPos().getZ(), 500);
@@ -93,15 +88,15 @@ public class TileEntityDrawersComp extends TileEntityDrawers
         }
 
         @Override
-        public boolean hasCapability (@Nonnull Capability<?> capability, @Nullable EnumFacing facing) {
+        public boolean hasCapability(@Nonnull Capability<?> capability, @Nullable EnumFacing facing) {
             return capability == TileEntityDrawersComp.DRAWER_ATTRIBUTES_CAPABILITY
-                || super.hasCapability(capability, facing);
+                    || super.hasCapability(capability, facing);
 
         }
 
         @Nullable
         @Override
-        public <T> T getCapability (@Nonnull Capability<T> capability, @Nullable EnumFacing facing) {
+        public <T> T getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing) {
             if (capability == TileEntityDrawersComp.DRAWER_ATTRIBUTES_CAPABILITY)
                 return (T) TileEntityDrawersComp.this.getDrawerAttributes();
 
@@ -110,7 +105,7 @@ public class TileEntityDrawersComp extends TileEntityDrawers
     }
 
     @Override
-    public int getDrawerCapacity () {
+    public int getDrawerCapacity() {
         if (getWorld() == null || getWorld().isRemote)
             return super.getDrawerCapacity();
 
@@ -126,13 +121,13 @@ public class TileEntityDrawersComp extends TileEntityDrawers
     }
 
     @Override
-    public boolean dataPacketRequiresRenderUpdate () {
+    public boolean dataPacketRequiresRenderUpdate() {
         return true;
     }
 
     @Override
     @SideOnly(Side.CLIENT)
-    public void clientUpdateCount (final int slot, final int count) {
+    public void clientUpdateCount(final int slot, final int count) {
         if (!getWorld().isRemote)
             return;
 
@@ -140,12 +135,12 @@ public class TileEntityDrawersComp extends TileEntityDrawers
     }
 
     @SideOnly(Side.CLIENT)
-    private void clientUpdateCountAsync (int count) {
+    private void clientUpdateCountAsync(int count) {
         groupData.setPooledCount(count);
     }
 
     @Override
-    public String getName () {
+    public String getName() {
         return hasCustomName() ? super.getName() : "storagedrawers.container.compDrawers";
     }
 }

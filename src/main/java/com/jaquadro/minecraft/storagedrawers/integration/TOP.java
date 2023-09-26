@@ -14,11 +14,14 @@ import net.minecraft.world.World;
 import static mcjty.theoneprobe.api.TextStyleClass.MODNAME;
 
 public class TOP {
+
     public static void registerProviders() {
         ITheOneProbe TOP = TheOneProbe.theOneProbeImp;
         TOP.registerBlockDisplayOverride(new DrawerLogoProvider());
     }
+
     private static class DrawerLogoProvider implements IBlockDisplayOverride {
+
         @Override
         public boolean overrideStandardInfo(ProbeMode mode, IProbeInfo probeInfo, EntityPlayer entityPlayer, World world, IBlockState blockState, IProbeHitData probeHitData) {
             // Returns false if no override is needed

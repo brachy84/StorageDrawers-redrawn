@@ -8,83 +8,83 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 
-public class CommonFramingRenderer
-{
-    private static double unit = .0625;
-    private static double unit2 = unit * 2;
-    private static double unit4 = unit * 4;
+public class CommonFramingRenderer {
 
-    private static double[][] baseBoundsLeftY = new double[][] {
-        { unit, 1 - unit2, unit, 1, 1, 1 - unit }
+    private static final double unit = .0625;
+    private static final double unit2 = unit * 2;
+    private static final double unit4 = unit * 4;
+
+    private static final double[][] baseBoundsLeftY = new double[][]{
+            {unit, 1 - unit2, unit, 1, 1, 1 - unit}
     };
 
-    private static double[][] trimBoundsLeftY = new double[][] {
-        { 0, 1 - unit2, unit, unit, 1, 1 - unit },
-        { 0, 1 - unit2, 0, unit, 1, unit },
-        { 0, 1 - unit2, 1 - unit, unit, 1, 1 },
-        { unit, 1 - unit2, 0, 1, 1, unit },
-        { unit, 1 - unit2, 1 - unit, 1, 1, 1 },
+    private static final double[][] trimBoundsLeftY = new double[][]{
+            {0, 1 - unit2, unit, unit, 1, 1 - unit},
+            {0, 1 - unit2, 0, unit, 1, unit},
+            {0, 1 - unit2, 1 - unit, unit, 1, 1},
+            {unit, 1 - unit2, 0, 1, 1, unit},
+            {unit, 1 - unit2, 1 - unit, 1, 1, 1},
     };
 
-    private static double[][] trimBoundsLeftZ = new double[][] {
-        { 0, 1 - unit2, 0, unit, 1, 1 },
-        { unit, 1 - unit2, 0, 1, 1, 1 },
+    private static final double[][] trimBoundsLeftZ = new double[][]{
+            {0, 1 - unit2, 0, unit, 1, 1},
+            {unit, 1 - unit2, 0, 1, 1, 1},
     };
 
-    private static double[][] trimBoundsLeftX = new double[][] {
-        { 0, 1 - unit2, 0, 1, 1, unit },
-        { 0, 1 - unit2, unit, 1, 1, 1 - unit },
-        { 0, 1 - unit2, 1 - unit, 1, 1, 1 },
+    private static final double[][] trimBoundsLeftX = new double[][]{
+            {0, 1 - unit2, 0, 1, 1, unit},
+            {0, 1 - unit2, unit, 1, 1, 1 - unit},
+            {0, 1 - unit2, 1 - unit, 1, 1, 1},
     };
 
-    private static double[][] baseBoundsRightY = new double[][] {
-        { 0, 1 - unit2, unit, 1 - unit, 1, 1 - unit }
+    private static final double[][] baseBoundsRightY = new double[][]{
+            {0, 1 - unit2, unit, 1 - unit, 1, 1 - unit}
     };
 
-    private static double[][] trimBoundsRightY = new double[][] {
-        { 1 - unit, 1 - unit2, unit, 1, 1, 1 - unit },
-        { 1 - unit, 1 - unit2, 0, 1, 1, unit },
-        { 1 - unit, 1 - unit2, 1 - unit, 1, 1, 1 },
-        { 0, 1 - unit2, 0, 1 - unit, 1, unit },
-        { 0, 1 - unit2, 1 - unit, 1 - unit, 1, 1 },
+    private static final double[][] trimBoundsRightY = new double[][]{
+            {1 - unit, 1 - unit2, unit, 1, 1, 1 - unit},
+            {1 - unit, 1 - unit2, 0, 1, 1, unit},
+            {1 - unit, 1 - unit2, 1 - unit, 1, 1, 1},
+            {0, 1 - unit2, 0, 1 - unit, 1, unit},
+            {0, 1 - unit2, 1 - unit, 1 - unit, 1, 1},
     };
 
-    private static double[][] trimBoundsRightZ = new double[][] {
-        { 1 - unit, 1 - unit2, 0, 1, 1, 1 },
-        { 0, 1 - unit2, 0, 1 - unit, 1, 1 },
+    private static final double[][] trimBoundsRightZ = new double[][]{
+            {1 - unit, 1 - unit2, 0, 1, 1, 1},
+            {0, 1 - unit2, 0, 1 - unit, 1, 1},
     };
 
-    private static double[][] trimBoundsRightX = new double[][] {
-        { 0, 1 - unit2, 0, 1, 1, unit },
-        { 0, 1 - unit2, unit, 1, 1, 1 - unit },
-        { 0, 1 - unit2, 1 - unit, 1, 1, 1 },
+    private static final double[][] trimBoundsRightX = new double[][]{
+            {0, 1 - unit2, 0, 1, 1, unit},
+            {0, 1 - unit2, unit, 1, 1, 1 - unit},
+            {0, 1 - unit2, 1 - unit, 1, 1, 1},
     };
 
-    private ChamRender renderer;
+    private final ChamRender renderer;
 
-    public CommonFramingRenderer (ChamRender renderer) {
+    public CommonFramingRenderer(ChamRender renderer) {
         this.renderer = renderer;
     }
 
-    public void renderLeft (IBlockAccess blockAccess, IBlockState state, BlockPos pos, TextureAtlasSprite iconBase, TextureAtlasSprite iconTrim) {
+    public void renderLeft(IBlockAccess blockAccess, IBlockState state, BlockPos pos, TextureAtlasSprite iconBase, TextureAtlasSprite iconTrim) {
         renderTableBox(blockAccess, state, pos, iconBase, iconTrim, baseBoundsLeftY, trimBoundsLeftY, trimBoundsLeftZ, trimBoundsLeftX, true);
         renderStructure(blockAccess, state, pos, iconBase, true);
     }
 
-    public void renderRight (IBlockAccess blockAccess, IBlockState state, BlockPos pos, TextureAtlasSprite iconBase, TextureAtlasSprite iconTrim) {
+    public void renderRight(IBlockAccess blockAccess, IBlockState state, BlockPos pos, TextureAtlasSprite iconBase, TextureAtlasSprite iconTrim) {
         renderTableBox(blockAccess, state, pos, iconBase, iconTrim, baseBoundsRightY, trimBoundsRightY, trimBoundsRightZ, trimBoundsRightX, false);
         renderStructure(blockAccess, state, pos, iconBase, false);
     }
 
-    public void renderOverlayLeft (IBlockAccess blockAccess, IBlockState state, BlockPos pos, TextureAtlasSprite iconOverlay) {
+    public void renderOverlayLeft(IBlockAccess blockAccess, IBlockState state, BlockPos pos, TextureAtlasSprite iconOverlay) {
         renderOverlay(blockAccess, state, pos, iconOverlay, baseBoundsLeftY);
     }
 
-    public void renderOverlayRight (IBlockAccess blockAccess, IBlockState state, BlockPos pos, TextureAtlasSprite iconOverlay) {
+    public void renderOverlayRight(IBlockAccess blockAccess, IBlockState state, BlockPos pos, TextureAtlasSprite iconOverlay) {
         renderOverlay(blockAccess, state, pos, iconOverlay, baseBoundsRightY);
     }
 
-    public void renderOverlay (IBlockAccess blockAccess, IBlockState state, BlockPos pos, TextureAtlasSprite iconOverlay, double[][] baseBoundsY) {
+    public void renderOverlay(IBlockAccess blockAccess, IBlockState state, BlockPos pos, TextureAtlasSprite iconOverlay, double[][] baseBoundsY) {
         renderer.targetFaceGroup(true);
         renderer.state.setUVRotation(ChamRender.YPOS, renderer.state.rotateTransform);
 
@@ -97,14 +97,14 @@ public class CommonFramingRenderer
         renderer.targetFaceGroup(false);
     }
 
-    private void renderStructure (IBlockAccess blockAccess, IBlockState state, BlockPos pos, TextureAtlasSprite iconBase, boolean left) {
+    private void renderStructure(IBlockAccess blockAccess, IBlockState state, BlockPos pos, TextureAtlasSprite iconBase, boolean left) {
         renderFoot(blockAccess, state, pos, iconBase, left);
         renderLegs(blockAccess, state, pos, iconBase, left);
         renderBraces(blockAccess, state, pos, iconBase, left);
     }
 
-    private void renderTableBox (IBlockAccess blockAccess, IBlockState state, BlockPos pos, TextureAtlasSprite iconBase, TextureAtlasSprite iconTrim,
-                                 double[][] baseBoundsY, double[][] trimBoundsY, double[][] trimBoundsZ, double[][] trimBoundsX, boolean left) {
+    private void renderTableBox(IBlockAccess blockAccess, IBlockState state, BlockPos pos, TextureAtlasSprite iconBase, TextureAtlasSprite iconTrim,
+                                double[][] baseBoundsY, double[][] trimBoundsY, double[][] trimBoundsZ, double[][] trimBoundsX, boolean left) {
         EnumFacing xSide = left ? ChamRender.FACE_XNEG : ChamRender.FACE_XPOS;
 
         for (int i = 0; i < 2; i++)
@@ -133,7 +133,7 @@ public class CommonFramingRenderer
             renderer.state.clearUVRotation(i);
     }
 
-    private void renderTableSurface (IBlockAccess blockAccess, IBlockState state, BlockPos pos, TextureAtlasSprite icon, double[] bound) {
+    private void renderTableSurface(IBlockAccess blockAccess, IBlockState state, BlockPos pos, TextureAtlasSprite icon, double[] bound) {
         renderer.setRenderBounds(bound);
         renderer.targetFaceGroup(true);
         renderer.renderFace(ChamRender.FACE_YPOS, blockAccess, state, pos, icon);
@@ -141,7 +141,7 @@ public class CommonFramingRenderer
         renderer.renderFace(ChamRender.FACE_YNEG, blockAccess, state, pos, icon);
     }
 
-    private void renderFoot (IBlockAccess blockAccess, IBlockState state, BlockPos pos, TextureAtlasSprite icon, boolean left) {
+    private void renderFoot(IBlockAccess blockAccess, IBlockState state, BlockPos pos, TextureAtlasSprite icon, boolean left) {
         float oldColor = renderer.state.colorMultYPos;
         renderer.state.colorMultYPos = .9f;
 
@@ -160,7 +160,7 @@ public class CommonFramingRenderer
         renderer.state.colorMultYPos = oldColor;
     }
 
-    private void renderLegs (IBlockAccess blockAccess, IBlockState state, BlockPos pos, TextureAtlasSprite icon, boolean left) {
+    private void renderLegs(IBlockAccess blockAccess, IBlockState state, BlockPos pos, TextureAtlasSprite icon, boolean left) {
         for (int i = 2; i < 6; i++)
             renderer.state.setUVRotation(i, ChamRenderState.ROTATE90);
 
@@ -178,7 +178,7 @@ public class CommonFramingRenderer
             renderer.state.clearUVRotation(i);
     }
 
-    private void renderBraces (IBlockAccess blockAccess, IBlockState state, BlockPos pos, TextureAtlasSprite icon, boolean left) {
+    private void renderBraces(IBlockAccess blockAccess, IBlockState state, BlockPos pos, TextureAtlasSprite icon, boolean left) {
         float oldColor = renderer.state.colorMultYPos;
         renderer.state.colorMultYPos = .85f;
 

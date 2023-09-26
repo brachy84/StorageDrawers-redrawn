@@ -7,12 +7,12 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.util.Constants;
 
-public class ControllerData extends TileDataShim
-{
+public class ControllerData extends TileDataShim {
+
     private BlockPos controllerCoord;
 
     @Override
-    public void readFromNBT (NBTTagCompound tag) {
+    public void readFromNBT(NBTTagCompound tag) {
         controllerCoord = null;
         if (tag.hasKey("Controller", Constants.NBT.TAG_COMPOUND)) {
             NBTTagCompound ctag = tag.getCompoundTag("Controller");
@@ -21,7 +21,7 @@ public class ControllerData extends TileDataShim
     }
 
     @Override
-    public NBTTagCompound writeToNBT (NBTTagCompound tag) {
+    public NBTTagCompound writeToNBT(NBTTagCompound tag) {
         if (controllerCoord != null) {
             NBTTagCompound ctag = new NBTTagCompound();
             ctag.setInteger("x", controllerCoord.getX());
@@ -33,11 +33,11 @@ public class ControllerData extends TileDataShim
         return tag;
     }
 
-    public BlockPos getCoord () {
+    public BlockPos getCoord() {
         return controllerCoord;
     }
 
-    public TileEntityController getController (TileEntity host) {
+    public TileEntityController getController(TileEntity host) {
         if (controllerCoord == null)
             return null;
 
@@ -48,10 +48,10 @@ public class ControllerData extends TileDataShim
             return null;
         }
 
-        return (TileEntityController)te;
+        return (TileEntityController) te;
     }
 
-    public boolean bindCoord (BlockPos pos) {
+    public boolean bindCoord(BlockPos pos) {
         if (controllerCoord == null || !controllerCoord.equals(pos)) {
             controllerCoord = pos;
             return true;

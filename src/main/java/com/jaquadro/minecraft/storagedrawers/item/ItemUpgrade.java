@@ -13,11 +13,11 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
 
-public class ItemUpgrade extends Item
-{
+public class ItemUpgrade extends Item {
+
     private boolean allowMultiple;
 
-    public ItemUpgrade (String registryName, String unlocalizedName) {
+    public ItemUpgrade(String registryName, String unlocalizedName) {
         setRegistryName(registryName);
         setTranslationKey(unlocalizedName);
         setCreativeTab(ModCreativeTabs.tabStorageDrawers);
@@ -26,16 +26,16 @@ public class ItemUpgrade extends Item
 
     @Override
     @SideOnly(Side.CLIENT)
-    public void addInformation (@Nonnull ItemStack itemStack, @Nullable World world, List<String> list, ITooltipFlag advanced) {
+    public void addInformation(@Nonnull ItemStack itemStack, @Nullable World world, List<String> list, ITooltipFlag advanced) {
         String name = getTranslationKey(itemStack);
         list.add(I18n.format(name + ".description"));
     }
 
-    public void setAllowMultiple (boolean allow) {
+    public void setAllowMultiple(boolean allow) {
         allowMultiple = allow;
     }
 
-    public boolean getAllowMultiple () {
+    public boolean getAllowMultiple() {
         return allowMultiple;
     }
 }

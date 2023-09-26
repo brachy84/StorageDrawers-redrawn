@@ -28,11 +28,11 @@ import net.minecraft.world.World;
 import java.util.EnumSet;
 import java.util.Random;
 
-public class BlockController extends BlockContainer implements INetworked
-{
+public class BlockController extends BlockContainer implements INetworked {
+
     public static final PropertyDirection FACING = PropertyDirection.create("facing", EnumFacing.Plane.HORIZONTAL);
 
-    public BlockController (String registryName, String blockName) {
+    public BlockController(String registryName, String blockName) {
         super(Material.ROCK);
 
         setTranslationKey(blockName);
@@ -49,27 +49,27 @@ public class BlockController extends BlockContainer implements INetworked
 
     @Override
     @SuppressWarnings("deprecation")
-    public boolean isOpaqueCube (IBlockState state) {
+    public boolean isOpaqueCube(IBlockState state) {
         return false;
     }
 
     @Override
-    public EnumBlockRenderType getRenderType (IBlockState state) {
+    public EnumBlockRenderType getRenderType(IBlockState state) {
         return EnumBlockRenderType.MODEL;
     }
 
     @Override
-    public int tickRate (World world) {
+    public int tickRate(World world) {
         return 100;
     }
 
     @Override
-    public Item getItemDropped (IBlockState state, Random rand, int fortune) {
+    public Item getItemDropped(IBlockState state, Random rand, int fortune) {
         return Item.getItemFromBlock(this);
     }
 
     @Override
-    public void onBlockAdded (World world, BlockPos pos, IBlockState state) {
+    public void onBlockAdded(World world, BlockPos pos, IBlockState state) {
         if (!world.isRemote) {
             IBlockState blockNorth = world.getBlockState(pos.north());
             IBlockState blockSouth = world.getBlockState(pos.south());
@@ -92,17 +92,17 @@ public class BlockController extends BlockContainer implements INetworked
     }
 
     @Override
-    public IBlockState getStateForPlacement (World world, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer, EnumHand hand) {
+    public IBlockState getStateForPlacement(World world, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer, EnumHand hand) {
         return getDefaultState().withProperty(FACING, placer.getHorizontalFacing().getOpposite());
     }
 
     @Override
-    public void onBlockPlacedBy (World world, BlockPos pos, IBlockState state, EntityLivingBase entity, ItemStack itemStack) {
+    public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase entity, ItemStack itemStack) {
         world.setBlockState(pos, state.withProperty(FACING, entity.getHorizontalFacing().getOpposite()), 2);
     }
 
     @Override
-    public boolean onBlockActivated (World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
+    public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
         EnumFacing blockDir = state.getValue(FACING);
         TileEntityController te = getTileEntitySafe(world, pos);
 
@@ -123,7 +123,7 @@ public class BlockController extends BlockContainer implements INetworked
         return true;
     }
 
-    public boolean toggle (World world, BlockPos pos, EntityPlayer player, Item item) {
+    public boolean toggle(World world, BlockPos pos, EntityPlayer player, Item item) {
         if (world.isRemote || item == null)
             return false;
 
@@ -141,7 +141,7 @@ public class BlockController extends BlockContainer implements INetworked
         return true;
     }
 
-    public void toggle (World world, BlockPos pos, EntityPlayer player, EnumKeyType keyType) {
+    public void toggle(World world, BlockPos pos, EntityPlayer player, EnumKeyType keyType) {
         if (world.isRemote)
             return;
 
@@ -163,12 +163,12 @@ public class BlockController extends BlockContainer implements INetworked
     }
 
     @Override
-    public boolean isSideSolid (IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing side) {
+    public boolean isSideSolid(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing side) {
         return state == null || state.getValue(FACING) != side;
     }
 
     @Override
-    public void updateTick (World world, BlockPos pos, IBlockState state, Random rand) {
+    public void updateTick(World world, BlockPos pos, IBlockState state, Random rand) {
         if (world.isRemote)
             return;
 
@@ -183,7 +183,7 @@ public class BlockController extends BlockContainer implements INetworked
 
     @Override
     @SuppressWarnings("deprecation")
-    public IBlockState getStateFromMeta (int meta) {
+    public IBlockState getStateFromMeta(int meta) {
         EnumFacing facing = EnumFacing.byIndex(meta);
         if (facing.getAxis() == EnumFacing.Axis.Y)
             facing = EnumFacing.NORTH;
@@ -192,26 +192,26 @@ public class BlockController extends BlockContainer implements INetworked
     }
 
     @Override
-    public int getMetaFromState (IBlockState state) {
+    public int getMetaFromState(IBlockState state) {
         return (state.getValue(FACING)).getIndex();
     }
 
     @Override
-    protected BlockStateContainer createBlockState () {
+    protected BlockStateContainer createBlockState() {
         return new BlockStateContainer(this, FACING);
     }
 
     @Override
-    public TileEntityController createNewTileEntity (World world, int meta) {
+    public TileEntityController createNewTileEntity(World world, int meta) {
         return new TileEntityController();
     }
 
-    public TileEntityController getTileEntity (IBlockAccess blockAccess, BlockPos pos) {
+    public TileEntityController getTileEntity(IBlockAccess blockAccess, BlockPos pos) {
         TileEntity tile = blockAccess.getTileEntity(pos);
         return (tile instanceof TileEntityController) ? (TileEntityController) tile : null;
     }
 
-    public TileEntityController getTileEntitySafe (World world, BlockPos pos) {
+    public TileEntityController getTileEntitySafe(World world, BlockPos pos) {
         TileEntityController tile = getTileEntity(world, pos);
         if (tile == null) {
             tile = createNewTileEntity(world, 0);

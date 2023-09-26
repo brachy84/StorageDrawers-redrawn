@@ -4,8 +4,8 @@ import com.jaquadro.minecraft.chameleon.integration.IntegrationRegistry;
 import com.jaquadro.minecraft.storagedrawers.StorageDrawers;
 import net.minecraftforge.fml.common.Loader;
 
-public class LocalIntegrationRegistry
-{
+public class LocalIntegrationRegistry {
+
     private static LocalIntegrationRegistry instance;
 
     static {
@@ -22,13 +22,13 @@ public class LocalIntegrationRegistry
         //    reg.add(new MineTweaker());
     }
 
-    private IntegrationRegistry registry;
+    private final IntegrationRegistry registry;
 
-    private LocalIntegrationRegistry () {
+    private LocalIntegrationRegistry() {
         registry = new IntegrationRegistry(StorageDrawers.MOD_ID);
     }
 
-    public static IntegrationRegistry instance () {
+    public static IntegrationRegistry instance() {
         if (instance == null)
             instance = new LocalIntegrationRegistry();
 

@@ -27,48 +27,48 @@ import net.minecraftforge.common.property.IUnlistedProperty;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class BlockCompDrawers extends BlockDrawers implements INetworked
-{
+public class BlockCompDrawers extends BlockDrawers implements INetworked {
+
     public static final PropertyEnum SLOTS = PropertyEnum.create("slots", EnumCompDrawer.class);
 
     @SideOnly(Side.CLIENT)
     private StatusModelData statusInfo;
 
-    public BlockCompDrawers (String registryName, String blockName) {
+    public BlockCompDrawers(String registryName, String blockName) {
         super(Material.ROCK, registryName, blockName);
 
         setSoundType(SoundType.STONE);
     }
 
     @Override
-    protected void initDefaultState () {
+    protected void initDefaultState() {
         setDefaultState(blockState.getBaseState().withProperty(SLOTS, EnumCompDrawer.OPEN1).withProperty(FACING, EnumFacing.NORTH));
     }
 
     @Override
     @SideOnly(Side.CLIENT)
-    public void initDynamic () {
+    public void initDynamic() {
         ResourceLocation location = new ResourceLocation(StorageDrawers.MOD_ID + ":models/dynamic/compDrawers.json");
         statusInfo = new StatusModelData(3, location);
     }
 
     @Override
-    public StatusModelData getStatusInfo (IBlockState state) {
+    public StatusModelData getStatusInfo(IBlockState state) {
         return statusInfo;
     }
 
     @Override
-    public int getDrawerCount (IBlockState state) {
+    public int getDrawerCount(IBlockState state) {
         return 3;
     }
 
     @Override
-    public boolean isHalfDepth (IBlockState state) {
+    public boolean isHalfDepth(IBlockState state) {
         return false;
     }
 
     @Override
-    protected int getDrawerSlot (int drawerCount, int side, float hitX, float hitY, float hitZ) {
+    protected int getDrawerSlot(int drawerCount, int side, float hitX, float hitY, float hitZ) {
         if (hitTop(hitY))
             return 0;
 
@@ -79,37 +79,37 @@ public class BlockCompDrawers extends BlockDrawers implements INetworked
     }
 
     @Override
-    public IBlockState getStateForPlacement (World world, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer, EnumHand hand) {
+    public IBlockState getStateForPlacement(World world, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer, EnumHand hand) {
         return getDefaultState();
     }
 
     @Override
-    public BlockType retrimType () {
+    public BlockType retrimType() {
         return null;
     }
 
     @Override
-    public TileEntityDrawers createNewTileEntity (World world, int meta) {
+    public TileEntityDrawers createNewTileEntity(World world, int meta) {
         return new TileEntityDrawersComp();
     }
 
     @Override
-    public void getSubBlocks (CreativeTabs creativeTabs, NonNullList<ItemStack> list) {
+    public void getSubBlocks(CreativeTabs creativeTabs, NonNullList<ItemStack> list) {
         list.add(new ItemStack(this, 1, 0));
     }
 
     @Override
-    public int getMetaFromState (IBlockState state) {
+    public int getMetaFromState(IBlockState state) {
         return 0;
     }
 
     @Override
-    protected BlockStateContainer createBlockState () {
-        return new ExtendedBlockState(this, new IProperty[] { SLOTS, FACING }, new IUnlistedProperty[] { STATE_MODEL });
+    protected BlockStateContainer createBlockState() {
+        return new ExtendedBlockState(this, new IProperty[]{SLOTS, FACING}, new IUnlistedProperty[]{STATE_MODEL});
     }
 
     @Override
-    public IBlockState getActualState (IBlockState state, IBlockAccess world, BlockPos pos) {
+    public IBlockState getActualState(IBlockState state, IBlockAccess world, BlockPos pos) {
         TileEntityDrawers tile = getTileEntity(world, pos);
         if (tile == null)
             return state;

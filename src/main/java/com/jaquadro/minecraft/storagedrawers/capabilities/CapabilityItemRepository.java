@@ -15,20 +15,20 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.function.Predicate;
 
-public class CapabilityItemRepository
-{
+public class CapabilityItemRepository {
+
     @CapabilityInject(IItemRepository.class)
     public static Capability<IItemRepository> ITEM_REPOSITORY_CAPABILITY = null;
 
-    public static void register () {
+    public static void register() {
         CapabilityManager.INSTANCE.register(IItemRepository.class, new DefaultStorage(), DefaultImplementation::new);
     }
 
-    private static class DefaultStorage implements Capability.IStorage<IItemRepository>
-    {
+    private static class DefaultStorage implements Capability.IStorage<IItemRepository> {
+
         @Nullable
         @Override
-        public NBTBase writeNBT (Capability<IItemRepository> capability, IItemRepository instance, EnumFacing side) {
+        public NBTBase writeNBT(Capability<IItemRepository> capability, IItemRepository instance, EnumFacing side) {
             if (instance instanceof INBTSerializable serializable)
                 return serializable.serializeNBT();
 
@@ -36,7 +36,7 @@ public class CapabilityItemRepository
         }
 
         @Override
-        public void readNBT (Capability<IItemRepository> capability, IItemRepository instance, EnumFacing side, NBTBase nbt) {
+        public void readNBT(Capability<IItemRepository> capability, IItemRepository instance, EnumFacing side, NBTBase nbt) {
             if (instance instanceof INBTSerializable serializable) {
                 @SuppressWarnings("unchecked")
                 INBTSerializable<NBTBase> serializer = serializable;
@@ -45,23 +45,23 @@ public class CapabilityItemRepository
         }
     }
 
-    private static class DefaultImplementation implements IItemRepository
-    {
+    private static class DefaultImplementation implements IItemRepository {
+
         @Nonnull
         @Override
-        public NonNullList<ItemRecord> getAllItems () {
+        public NonNullList<ItemRecord> getAllItems() {
             return NonNullList.create();
         }
 
         @Nonnull
         @Override
-        public ItemStack insertItem (@Nonnull ItemStack stack, boolean simulate, Predicate<ItemStack> predicate) {
+        public ItemStack insertItem(@Nonnull ItemStack stack, boolean simulate, Predicate<ItemStack> predicate) {
             return stack;
         }
 
         @Nonnull
         @Override
-        public ItemStack extractItem (@Nonnull ItemStack stack, int amount, boolean simulate, Predicate<ItemStack> predicate) {
+        public ItemStack extractItem(@Nonnull ItemStack stack, int amount, boolean simulate, Predicate<ItemStack> predicate) {
             return ItemStack.EMPTY;
         }
     }

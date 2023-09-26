@@ -15,9 +15,9 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
-public class BlockSlave extends BlockContainer implements INetworked
-{
-    public BlockSlave (String registryName, String blockName) {
+public class BlockSlave extends BlockContainer implements INetworked {
+
+    public BlockSlave(String registryName, String blockName) {
         super(Material.ROCK);
 
         setCreativeTab(ModCreativeTabs.tabStorageDrawers);
@@ -28,11 +28,11 @@ public class BlockSlave extends BlockContainer implements INetworked
     }
 
     @Override
-    public EnumBlockRenderType getRenderType (IBlockState state) {
+    public EnumBlockRenderType getRenderType(IBlockState state) {
         return EnumBlockRenderType.MODEL;
     }
 
-    public void toggle (World world, BlockPos pos, EntityPlayer player, EnumKeyType keyType) {
+    public void toggle(World world, BlockPos pos, EntityPlayer player, EnumKeyType keyType) {
         TileEntitySlave tile = getTileEntity(world, pos);
         if (tile == null)
             return;
@@ -43,22 +43,22 @@ public class BlockSlave extends BlockContainer implements INetworked
 
         Block block = world.getBlockState(controllerPos).getBlock();
         if (block instanceof BlockContainer) {
-            BlockController controller = (BlockController)block;
+            BlockController controller = (BlockController) block;
             controller.toggle(world, controllerPos, player, keyType);
         }
     }
 
     @Override
-    public TileEntitySlave createNewTileEntity (World world, int meta) {
+    public TileEntitySlave createNewTileEntity(World world, int meta) {
         return new TileEntitySlave();
     }
 
-    public TileEntitySlave getTileEntity (IBlockAccess blockAccess, BlockPos pos) {
+    public TileEntitySlave getTileEntity(IBlockAccess blockAccess, BlockPos pos) {
         TileEntity tile = blockAccess.getTileEntity(pos);
         return (tile instanceof TileEntitySlave) ? (TileEntitySlave) tile : null;
     }
 
-    public TileEntitySlave getTileEntitySafe (World world, BlockPos pos) {
+    public TileEntitySlave getTileEntitySafe(World world, BlockPos pos) {
         TileEntitySlave tile = getTileEntity(world, pos);
         if (tile == null) {
             tile = createNewTileEntity(world, 0);

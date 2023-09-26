@@ -13,26 +13,26 @@ import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ItemUpgradeRedstone extends ItemUpgrade implements IItemMeshMapper
-{
-    public ItemUpgradeRedstone (String registryName, String unlocalizedName) {
+public class ItemUpgradeRedstone extends ItemUpgrade implements IItemMeshMapper {
+
+    public ItemUpgradeRedstone(String registryName, String unlocalizedName) {
         super(registryName, unlocalizedName);
         setHasSubtypes(true);
     }
 
     @Override
-    public String getTranslationKey (@Nonnull ItemStack itemStack) {
+    public String getTranslationKey(@Nonnull ItemStack itemStack) {
         return super.getTranslationKey() + "." + EnumUpgradeRedstone.byMetadata(itemStack.getMetadata()).getUnlocalizedName();
     }
 
     @Override
-    public int getMetadata (int damage) {
+    public int getMetadata(int damage) {
         return damage;
     }
 
     @Override
     @SideOnly(Side.CLIENT)
-    public void getSubItems (CreativeTabs creativeTabs, NonNullList<ItemStack> list) {
+    public void getSubItems(CreativeTabs creativeTabs, NonNullList<ItemStack> list) {
         if (isInCreativeTab(creativeTabs)) {
             for (EnumUpgradeRedstone upgrade : EnumUpgradeRedstone.values())
                 list.add(new ItemStack(this, 1, upgrade.getMetadata()));
@@ -40,7 +40,7 @@ public class ItemUpgradeRedstone extends ItemUpgrade implements IItemMeshMapper
     }
 
     @Override
-    public List<Pair<ItemStack, ModelResourceLocation>> getMeshMappings () {
+    public List<Pair<ItemStack, ModelResourceLocation>> getMeshMappings() {
         List<Pair<ItemStack, ModelResourceLocation>> mappings = new ArrayList<Pair<ItemStack, ModelResourceLocation>>();
 
         for (EnumUpgradeRedstone type : EnumUpgradeRedstone.values()) {

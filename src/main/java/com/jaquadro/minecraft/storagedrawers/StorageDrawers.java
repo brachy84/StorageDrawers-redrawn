@@ -1,10 +1,12 @@
 package com.jaquadro.minecraft.storagedrawers;
 
+import com.jaquadro.minecraft.storagedrawers.capabilities.CapabilityDrawerAttributes;
 import com.jaquadro.minecraft.storagedrawers.capabilities.CapabilityDrawerGroup;
 import com.jaquadro.minecraft.storagedrawers.capabilities.CapabilityItemRepository;
 import com.jaquadro.minecraft.storagedrawers.config.*;
-import com.jaquadro.minecraft.storagedrawers.core.*;
-import com.jaquadro.minecraft.storagedrawers.capabilities.CapabilityDrawerAttributes;
+import com.jaquadro.minecraft.storagedrawers.core.Api;
+import com.jaquadro.minecraft.storagedrawers.core.CommandDebug;
+import com.jaquadro.minecraft.storagedrawers.core.CommonProxy;
 import com.jaquadro.minecraft.storagedrawers.core.handlers.GuiHandler;
 import com.jaquadro.minecraft.storagedrawers.integration.LocalIntegrationRegistry;
 import com.jaquadro.minecraft.storagedrawers.network.BoolConfigUpdateMessage;
@@ -31,11 +33,11 @@ import java.io.File;
 
 // This will stop erroring once you run the build task once. Or, if you really hate the error message and don't want to build, run `./gradlew injectTags`.
 @Mod(modid = StorageDrawers.MOD_ID, name = StorageDrawers.MOD_NAME, version = Version.VERSION,
-    dependencies = "required-after:forge@[14.21.0.2362,);required-after:chameleon;",
-    guiFactory = StorageDrawers.SOURCE_PATH + "core.ModGuiFactory",
-    acceptedMinecraftVersions = "[1.12,1.13)")
-public class StorageDrawers
-{
+        dependencies = "required-after:forge@[14.21.0.2362,);required-after:chameleon;",
+        guiFactory = StorageDrawers.SOURCE_PATH + "core.ModGuiFactory",
+        acceptedMinecraftVersions = "[1.12,1.13)")
+public class StorageDrawers {
+
     public static final String MOD_ID = "storagedrawers";
     public static final String MOD_NAME = "Storage Drawers";
     public static final String SOURCE_PATH = "com.jaquadro.minecraft.storagedrawers.";
@@ -59,7 +61,7 @@ public class StorageDrawers
     public static CommonProxy proxy;
 
     @Mod.EventHandler
-    public void preInit (FMLPreInitializationEvent event) {
+    public void preInit(FMLPreInitializationEvent event) {
         log = event.getModLog();
         config = new ConfigManager(new File(event.getModConfigurationDirectory(), MOD_ID + ".cfg"));
 
@@ -72,8 +74,7 @@ public class StorageDrawers
 
         if (FMLCommonHandler.instance().getSide() == Side.CLIENT) {
             network.registerMessage(CountUpdateMessage.Handler.class, CountUpdateMessage.class, 1, Side.CLIENT);
-        }
-        else {
+        } else {
             network.registerMessage(CountUpdateMessage.HandlerStub.class, CountUpdateMessage.class, 1, Side.CLIENT);
         }
 
@@ -87,7 +88,7 @@ public class StorageDrawers
     }
 
     @Mod.EventHandler
-    public void init (FMLInitializationEvent event) {
+    public void init(FMLInitializationEvent event) {
         NetworkRegistry.INSTANCE.registerGuiHandler(this, new GuiHandler());
         MinecraftForge.EVENT_BUS.register(proxy);
         MinecraftForge.EVENT_BUS.register(instance);
@@ -97,17 +98,17 @@ public class StorageDrawers
     }
 
     @Mod.EventHandler
-    public void postInit (FMLPostInitializationEvent event) {
+    public void postInit(FMLPostInitializationEvent event) {
         LocalIntegrationRegistry.instance().postInit();
     }
 
     @Mod.EventHandler
-    public void serverStarted (FMLServerStartingEvent event) {
+    public void serverStarted(FMLServerStartingEvent event) {
         event.registerServerCommand(new CommandDebug());
     }
 
     @SubscribeEvent
-    public void onConfigChanged (ConfigChangedEvent.OnConfigChangedEvent event) {
+    public void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent event) {
         boolean preShiftValue = config.cache.invertShift;
         if (event.getModID().equals(MOD_ID))
             config.syncConfig();

@@ -7,38 +7,38 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-public class TileEntityKeyButton extends ChamTileEntity
-{
+public class TileEntityKeyButton extends ChamTileEntity {
+
     EnumFacing facing = EnumFacing.NORTH;
     boolean powered;
 
-    public EnumFacing getDirection () {
+    public EnumFacing getDirection() {
         return facing;
     }
 
-    public void setDirection (EnumFacing facing) {
+    public void setDirection(EnumFacing facing) {
         this.facing = facing;
         markDirty();
         markBlockForUpdate();
     }
 
-    public boolean isPowered () {
+    public boolean isPowered() {
         return powered;
     }
 
-    public void setPowered (boolean powered) {
+    public void setPowered(boolean powered) {
         this.powered = powered;
         markDirty();
         markBlockForUpdate();
     }
 
     @Override
-    public boolean shouldRefresh (World world, BlockPos pos, IBlockState oldState, IBlockState newSate) {
+    public boolean shouldRefresh(World world, BlockPos pos, IBlockState oldState, IBlockState newSate) {
         return oldState.getBlock() != newSate.getBlock();
     }
 
     @Override
-    protected void readFromFixedNBT (NBTTagCompound tag) {
+    protected void readFromFixedNBT(NBTTagCompound tag) {
         super.readFromFixedNBT(tag);
 
         setDirection(EnumFacing.NORTH);
@@ -51,7 +51,7 @@ public class TileEntityKeyButton extends ChamTileEntity
     }
 
     @Override
-    protected NBTTagCompound writeToFixedNBT (NBTTagCompound tag) {
+    protected NBTTagCompound writeToFixedNBT(NBTTagCompound tag) {
         tag = super.writeToFixedNBT(tag);
 
         if (facing != null)

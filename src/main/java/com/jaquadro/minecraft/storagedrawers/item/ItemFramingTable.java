@@ -12,15 +12,15 @@ import net.minecraft.world.World;
 
 import javax.annotation.Nonnull;
 
-public class ItemFramingTable extends ItemBlock
-{
-    public ItemFramingTable (Block block) {
+public class ItemFramingTable extends ItemBlock {
+
+    public ItemFramingTable(Block block) {
         super(block);
         setMaxDamage(0);
     }
 
     @Override
-    public boolean placeBlockAt (@Nonnull ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, IBlockState newState) {
+    public boolean placeBlockAt(@Nonnull ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, IBlockState newState) {
         newState = newState.withProperty(BlockFramingTable.RIGHT_SIDE, true);
 
         if (side == EnumFacing.DOWN)

@@ -13,15 +13,15 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
 
-public class ItemController extends ItemBlock
-{
-    public ItemController (Block block) {
+public class ItemController extends ItemBlock {
+
+    public ItemController(Block block) {
         super(block);
     }
 
     @Override
     @SideOnly(Side.CLIENT)
-    public void addInformation (@Nonnull ItemStack itemStack, @Nullable World world, List<String> list, ITooltipFlag advanced) {
+    public void addInformation(@Nonnull ItemStack itemStack, @Nullable World world, List<String> list, ITooltipFlag advanced) {
         list.add(I18n.format("storagedrawers.controller.description"));
     }
 }

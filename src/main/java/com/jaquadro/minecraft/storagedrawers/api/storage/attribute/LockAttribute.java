@@ -2,16 +2,15 @@ package com.jaquadro.minecraft.storagedrawers.api.storage.attribute;
 
 import java.util.EnumSet;
 
-public enum LockAttribute
-{
+public enum LockAttribute {
     LOCK_POPULATED,
     LOCK_EMPTY;
 
-    public int getFlagValue () {
+    public int getFlagValue() {
         return 1 << ordinal();
     }
 
-    public static int getBitfield (EnumSet<LockAttribute> attributes) {
+    public static int getBitfield(EnumSet<LockAttribute> attributes) {
         int value = 0;
         if (attributes == null)
             return value;
@@ -22,7 +21,7 @@ public enum LockAttribute
         return value;
     }
 
-    public static EnumSet<LockAttribute> getEnumSet (int bitfield) {
+    public static EnumSet<LockAttribute> getEnumSet(int bitfield) {
         if (bitfield == 0)
             return null;
 

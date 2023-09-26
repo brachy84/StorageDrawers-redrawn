@@ -8,14 +8,14 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 
 import javax.annotation.Nonnull;
 
-public class SlotCraftResult extends Slot
-{
+public class SlotCraftResult extends Slot {
+
     private final IInventory inputInventory;
     private final int[] inputSlots;
-    private EntityPlayer player;
+    private final EntityPlayer player;
     private int amountCrafted;
 
-    public SlotCraftResult (EntityPlayer player, IInventory inputInventory, IInventory inventory, int[] inputSlots, int slot, int x, int y) {
+    public SlotCraftResult(EntityPlayer player, IInventory inputInventory, IInventory inventory, int[] inputSlots, int slot, int x, int y) {
         super(inventory, slot, x, y);
 
         this.player = player;
@@ -24,13 +24,13 @@ public class SlotCraftResult extends Slot
     }
 
     @Override
-    public boolean isItemValid (@Nonnull ItemStack stack) {
+    public boolean isItemValid(@Nonnull ItemStack stack) {
         return false;
     }
 
     @Override
     @Nonnull
-    public ItemStack decrStackSize (int count) {
+    public ItemStack decrStackSize(int count) {
         if (getHasStack())
             amountCrafted += Math.min(count, getStack().getCount());
 
@@ -38,20 +38,20 @@ public class SlotCraftResult extends Slot
     }
 
     @Override
-    protected void onCrafting (@Nonnull ItemStack stack, int count) {
+    protected void onCrafting(@Nonnull ItemStack stack, int count) {
         amountCrafted += count;
         super.onCrafting(stack, count);
     }
 
     @Override
-    protected void onCrafting (@Nonnull ItemStack stack) {
+    protected void onCrafting(@Nonnull ItemStack stack) {
         stack.onCrafting(player.getEntityWorld(), player, amountCrafted);
         amountCrafted = 0;
     }
 
     @Override
     @Nonnull
-    public ItemStack onTake (EntityPlayer player, @Nonnull ItemStack stack) {
+    public ItemStack onTake(EntityPlayer player, @Nonnull ItemStack stack) {
         FMLCommonHandler.instance().firePlayerCraftingEvent(player, stack, inputInventory);
         onCrafting(stack);
 

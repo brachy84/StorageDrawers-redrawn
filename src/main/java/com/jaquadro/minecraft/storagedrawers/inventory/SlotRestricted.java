@@ -6,14 +6,14 @@ import net.minecraft.item.ItemStack;
 
 import javax.annotation.Nonnull;
 
-public class SlotRestricted extends Slot
-{
-    public SlotRestricted (IInventory inventory, int slotIndex, int xDisplayPosition, int yDisplayPosition) {
+public class SlotRestricted extends Slot {
+
+    public SlotRestricted(IInventory inventory, int slotIndex, int xDisplayPosition, int yDisplayPosition) {
         super(inventory, slotIndex, xDisplayPosition, yDisplayPosition);
     }
 
     @Override
-    public boolean isItemValid (@Nonnull ItemStack stack) {
+    public boolean isItemValid(@Nonnull ItemStack stack) {
         return inventory.isItemValidForSlot(getSlotIndex(), stack);
     }
 }

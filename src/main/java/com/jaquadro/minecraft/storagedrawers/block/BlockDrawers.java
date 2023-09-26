@@ -2,12 +2,8 @@ package com.jaquadro.minecraft.storagedrawers.block;
 
 import com.jaquadro.minecraft.chameleon.block.properties.UnlistedModelData;
 import com.jaquadro.minecraft.storagedrawers.StorageDrawers;
-import com.jaquadro.minecraft.storagedrawers.api.storage.BlockType;
 import com.jaquadro.minecraft.storagedrawers.api.security.ISecurityProvider;
-import com.jaquadro.minecraft.storagedrawers.api.storage.IDrawer;
-import com.jaquadro.minecraft.storagedrawers.api.storage.IDrawerAttributes;
-import com.jaquadro.minecraft.storagedrawers.api.storage.IDrawerAttributesModifiable;
-import com.jaquadro.minecraft.storagedrawers.api.storage.INetworked;
+import com.jaquadro.minecraft.storagedrawers.api.storage.*;
 import com.jaquadro.minecraft.storagedrawers.api.storage.attribute.LockAttribute;
 import com.jaquadro.minecraft.storagedrawers.block.dynamic.StatusModelData;
 import com.jaquadro.minecraft.storagedrawers.block.modeldata.DrawerStateModelData;
@@ -17,13 +13,13 @@ import com.jaquadro.minecraft.storagedrawers.config.ConfigManager;
 import com.jaquadro.minecraft.storagedrawers.config.PlayerConfigSetting;
 import com.jaquadro.minecraft.storagedrawers.core.ModCreativeTabs;
 import com.jaquadro.minecraft.storagedrawers.core.ModItems;
-import com.jaquadro.minecraft.storagedrawers.inventory.DrawerInventoryHelper;
 import com.jaquadro.minecraft.storagedrawers.core.handlers.GuiHandler;
+import com.jaquadro.minecraft.storagedrawers.inventory.DrawerInventoryHelper;
 import com.jaquadro.minecraft.storagedrawers.item.*;
 import com.jaquadro.minecraft.storagedrawers.security.SecurityManager;
 import net.minecraft.block.*;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.properties.*;
+import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.state.BlockFaceShape;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
@@ -58,8 +54,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-public abstract class BlockDrawers extends BlockContainer implements INetworked
-{
+public abstract class BlockDrawers extends BlockContainer implements INetworked {
+
     public static final PropertyDirection FACING = PropertyDirection.create("facing", EnumFacing.Plane.HORIZONTAL);
 
     public static final IUnlistedProperty<DrawerStateModelData> STATE_MODEL = UnlistedModelData.create(DrawerStateModelData.class);
@@ -76,16 +72,16 @@ public abstract class BlockDrawers extends BlockContainer implements INetworked
 
     private static final ThreadLocal<Boolean> inTileLookup = new ThreadLocal<Boolean>() {
         @Override
-        protected Boolean initialValue () {
+        protected Boolean initialValue() {
             return false;
         }
     };
 
-    public BlockDrawers (String registryName, String blockName) {
+    public BlockDrawers(String registryName, String blockName) {
         this(Material.WOOD, registryName, blockName);
     }
 
-    protected BlockDrawers (Material material, String registryName, String blockName) {
+    protected BlockDrawers(Material material, String registryName, String blockName) {
         super(material);
 
         this.useNeighborBrightness = true;
@@ -100,58 +96,59 @@ public abstract class BlockDrawers extends BlockContainer implements INetworked
         initDefaultState();
     }
 
-    protected void initDefaultState () {
+    protected void initDefaultState() {
         setDefaultState(blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH));
     }
 
-    public boolean retrimBlock (World world, BlockPos pos, ItemStack prototype) {
+    public boolean retrimBlock(World world, BlockPos pos, ItemStack prototype) {
         return false;
     }
 
-    public BlockType retrimType () {
+    public BlockType retrimType() {
         return BlockType.Drawers;
     }
 
     // TODO: ABSTRACT?
-    public int getDrawerCount (IBlockState state) {
+    public int getDrawerCount(IBlockState state) {
         return 0;
     }
 
-    public boolean isHalfDepth (IBlockState state) {
+    public boolean isHalfDepth(IBlockState state) {
         return false;
     }
 
-    public EnumFacing getDirection (IBlockAccess blockAccess, BlockPos pos) {
+    public EnumFacing getDirection(IBlockAccess blockAccess, BlockPos pos) {
         TileEntityDrawers tile = getTileEntity(blockAccess, pos);
         return (tile != null) ? EnumFacing.byIndex(tile.getDirection()) : EnumFacing.NORTH;
     }
 
     @SideOnly(Side.CLIENT)
-    public void initDynamic () { }
+    public void initDynamic() {
+    }
 
     @SideOnly(Side.CLIENT)
-    public StatusModelData getStatusInfo (IBlockState state) {
+    public StatusModelData getStatusInfo(IBlockState state) {
         return null;
     }
 
     @Override
-    public EnumBlockRenderType getRenderType (IBlockState state) {
+    public EnumBlockRenderType getRenderType(IBlockState state) {
         return EnumBlockRenderType.MODEL;
     }
 
     @Override
-    public @NotNull BlockRenderLayer getRenderLayer () {
+    public @NotNull BlockRenderLayer getRenderLayer() {
         return BlockRenderLayer.CUTOUT_MIPPED;
     }
 
     @Override
-    public boolean canRenderInLayer (IBlockState state, BlockRenderLayer layer) {
+    public boolean canRenderInLayer(IBlockState state, BlockRenderLayer layer) {
         return layer == BlockRenderLayer.CUTOUT_MIPPED || layer == BlockRenderLayer.TRANSLUCENT;
     }
 
     @Override
     @SuppressWarnings("deprecation")
-    public AxisAlignedBB getBoundingBox (IBlockState state, IBlockAccess blockAccess, BlockPos pos) {
+    public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess blockAccess, BlockPos pos) {
         TileEntityDrawers tile = getTileEntity(blockAccess, pos);
         if (tile != null && isHalfDepth(state)) {
             switch (EnumFacing.byIndex(tile.getDirection())) {
@@ -175,12 +172,12 @@ public abstract class BlockDrawers extends BlockContainer implements INetworked
 
     @Override
     @SuppressWarnings("deprecation")
-    public void addCollisionBoxToList (IBlockState state, World world, BlockPos pos, AxisAlignedBB aabb, List<AxisAlignedBB> list, @Nullable Entity entityIn, boolean p_185477_7_) {
+    public void addCollisionBoxToList(IBlockState state, World world, BlockPos pos, AxisAlignedBB aabb, List<AxisAlignedBB> list, @Nullable Entity entityIn, boolean p_185477_7_) {
         addCollisionBoxToList(pos, aabb, list, getBoundingBox(state, world, pos));
     }
 
     @Override
-    public void onBlockAdded (World world, BlockPos pos, IBlockState state) {
+    public void onBlockAdded(World world, BlockPos pos, IBlockState state) {
         if (!world.isRemote) {
             IBlockState blockNorth = world.getBlockState(pos.north());
             IBlockState blockSouth = world.getBlockState(pos.south());
@@ -209,7 +206,7 @@ public abstract class BlockDrawers extends BlockContainer implements INetworked
     }
 
     @Override
-    public void onBlockPlacedBy (World world, BlockPos pos, IBlockState state, EntityLivingBase entity, ItemStack itemStack) {
+    public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase entity, ItemStack itemStack) {
         EnumFacing facing = entity.getHorizontalFacing().getOpposite();
 
         TileEntityDrawers tile = getTileEntitySafe(world, pos);
@@ -223,15 +220,14 @@ public abstract class BlockDrawers extends BlockContainer implements INetworked
 
         if (entity.getHeldItemOffhand().getItem() == ModItems.drawerKey) {
             IDrawerAttributes _attrs = tile.getCapability(CapabilityDrawerAttributes.DRAWER_ATTRIBUTES_CAPABILITY, null);
-            if (_attrs instanceof IDrawerAttributesModifiable) {
-                IDrawerAttributesModifiable attrs = (IDrawerAttributesModifiable) _attrs;
+            if (_attrs instanceof IDrawerAttributesModifiable attrs) {
                 attrs.setItemLocked(LockAttribute.LOCK_EMPTY, true);
                 attrs.setItemLocked(LockAttribute.LOCK_POPULATED, true);
             }
         }
     }
 
-    private boolean isInvertedHand (EntityPlayer player) {
+    private boolean isInvertedHand(EntityPlayer player) {
         Map<String, PlayerConfigSetting<?>> configSettings = ConfigManager.serverPlayerConfigSettings.get(player.getUniqueID());
         boolean invertHand = StorageDrawers.config.cache.invertClick;
         if (configSettings != null) {
@@ -245,7 +241,7 @@ public abstract class BlockDrawers extends BlockContainer implements INetworked
     }
 
     @Override
-    public boolean onBlockActivated (World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
+    public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
         if (hand == EnumHand.OFF_HAND)
             return false;
 
@@ -270,20 +266,19 @@ public abstract class BlockDrawers extends BlockContainer implements INetworked
         EnumFacing side = rayResult.sideHit;
 
         // adjust hitVec for drawers
-        float hitX = (float)(rayResult.hitVec.x - pos.getX());
-        float hitY = (float)(rayResult.hitVec.y - pos.getY());
-        float hitZ = (float)(rayResult.hitVec.z - pos.getZ());
+        float hitX = (float) (rayResult.hitVec.x - pos.getX());
+        float hitY = (float) (rayResult.hitVec.y - pos.getY());
+        float hitZ = (float) (rayResult.hitVec.z - pos.getZ());
 
         if (!isInvertedHand(playerIn)) {
             if (worldIn.isRemote)
                 return;
             extractItem(worldIn, pos, playerIn, side, hitX, hitY, hitZ);
-        }
-        else
+        } else
             insertOrApplyItem(worldIn, pos, worldIn.getBlockState(pos), playerIn, side, hitX, hitY, hitZ);
     }
 
-    public boolean insertOrApplyItem (World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumFacing side, float hitX, float hitY, float hitZ) {
+    public boolean insertOrApplyItem(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumFacing side, float hitX, float hitY, float hitZ) {
         ItemStack item = player.getHeldItem(EnumHand.MAIN_HAND);
         if (world.isRemote && Minecraft.getSystemTime() == ignoreEventTime) {
             ignoreEventTime = 0;
@@ -297,7 +292,7 @@ public abstract class BlockDrawers extends BlockContainer implements INetworked
 
         if (StorageDrawers.config.cache.debugTrace) {
             StorageDrawers.log.info("BlockDrawers.onBlockActivated");
-            StorageDrawers.log.info((item.isEmpty()) ? "  null item" : "  " + item.toString());
+            StorageDrawers.log.info((item.isEmpty()) ? "  null item" : "  " + item);
         }
 
         if (!item.isEmpty()) {
@@ -315,8 +310,7 @@ public abstract class BlockDrawers extends BlockContainer implements INetworked
                 }
 
                 return true;
-            }
-            else if (item.getItem() instanceof ItemUpgrade) {
+            } else if (item.getItem() instanceof ItemUpgrade) {
                 if (!tileDrawers.upgrades().canAddUpgrade(item)) {
                     if (!world.isRemote)
                         player.sendStatusMessage(new TextComponentTranslation("storagedrawers.msg.cannotAddUpgrade"), true);
@@ -340,32 +334,26 @@ public abstract class BlockDrawers extends BlockContainer implements INetworked
                 }
 
                 return true;
-            }
-            else if (item.getItem() instanceof ItemPersonalKey) {
+            } else if (item.getItem() instanceof ItemPersonalKey) {
                 String securityKey = ((ItemPersonalKey) item.getItem()).getSecurityProviderKey(item.getItemDamage());
                 ISecurityProvider provider = StorageDrawers.securityRegistry.getProvider(securityKey);
 
                 if (tileDrawers.getOwner() == null) {
                     tileDrawers.setOwner(player.getPersistentID());
                     tileDrawers.setSecurityProvider(provider);
-                }
-                else if (SecurityManager.hasOwnership(player.getGameProfile(), tileDrawers)) {
+                } else if (SecurityManager.hasOwnership(player.getGameProfile(), tileDrawers)) {
                     tileDrawers.setOwner(null);
                     tileDrawers.setSecurityProvider(null);
-                }
-                else
+                } else
                     return false;
                 return true;
-            }
-            else if (item.getItem() == ModItems.tape)
+            } else if (item.getItem() == ModItems.tape)
                 return false;
-        }
-        else if (item.isEmpty() && player.isSneaking()) {
+        } else if (item.isEmpty() && player.isSneaking()) {
             if (tileDrawers.isSealed()) {
                 tileDrawers.setIsSealed(false);
                 return true;
-            }
-            else if (StorageDrawers.config.cache.enableDrawerUI) {
+            } else if (StorageDrawers.config.cache.enableDrawerUI) {
                 player.openGui(StorageDrawers.instance, GuiHandler.drawersGuiID, world, pos.getX(), pos.getY(), pos.getZ());
                 return true;
             }
@@ -386,15 +374,15 @@ public abstract class BlockDrawers extends BlockContainer implements INetworked
         return true;
     }
 
-    protected int getDrawerSlot (int drawerCount, int side, float hitX, float hitY, float hitZ) {
+    protected int getDrawerSlot(int drawerCount, int side, float hitX, float hitY, float hitZ) {
         return 0;
     }
 
-    protected boolean hitTop (float hitY) {
+    protected boolean hitTop(float hitY) {
         return hitY > .5;
     }
 
-    protected boolean hitLeft (int side, float hitX, float hitZ) {
+    protected boolean hitLeft(int side, float hitX, float hitZ) {
         return switch (side) {
             case 2 -> hitX > .5;
             case 3 -> hitX < .5;
@@ -408,10 +396,10 @@ public abstract class BlockDrawers extends BlockContainer implements INetworked
         TileEntityDrawers tileDrawers = getTileEntitySafe(worldIn, pos);
         if (tileDrawers.getDirection() != side.ordinal())
             return;
-    
+
         if (tileDrawers.isSealed())
             return;
-    
+
         if (!SecurityManager.hasAccess(playerIn.getGameProfile(), tileDrawers))
             return;
 
@@ -433,21 +421,20 @@ public abstract class BlockDrawers extends BlockContainer implements INetworked
             item = tileDrawers.takeItemsFromSlot(slot, 1);
 
         if (StorageDrawers.config.cache.debugTrace)
-            StorageDrawers.log.info((item.isEmpty()) ? "  null item" : "  " + item.toString());
+            StorageDrawers.log.info((item.isEmpty()) ? "  null item" : "  " + item);
 
         IBlockState state = worldIn.getBlockState(pos);
         if (!item.isEmpty()) {
             if (!playerIn.inventory.addItemStackToInventory(item)) {
                 dropItemStack(worldIn, pos.offset(side), playerIn, item);
                 worldIn.notifyBlockUpdate(pos, state, state, 3);
-            }
-            else
+            } else
                 worldIn.playSound(null, pos.getX() + .5f, pos.getY() + .5f, pos.getZ() + .5f, SoundEvents.ENTITY_ITEM_PICKUP, SoundCategory.PLAYERS, .2f, ((worldIn.rand.nextFloat() - worldIn.rand.nextFloat()) * .7f + 1) * 2);
         }
     }
 
     @Override
-    public boolean rotateBlock (World world, BlockPos pos, EnumFacing axis) {
+    public boolean rotateBlock(World world, BlockPos pos, EnumFacing axis) {
         TileEntityDrawers tile = getTileEntitySafe(world, pos);
         if (tile.isSealed()) {
             dropBlockAsItem(world, pos, world.getBlockState(pos), 0);
@@ -464,7 +451,7 @@ public abstract class BlockDrawers extends BlockContainer implements INetworked
 
     @Override
     @SuppressWarnings("deprecation")
-    public BlockFaceShape getBlockFaceShape (IBlockAccess world, IBlockState state, BlockPos pos, EnumFacing side) {
+    public BlockFaceShape getBlockFaceShape(IBlockAccess world, IBlockState state, BlockPos pos, EnumFacing side) {
         TileEntityDrawers tile = getTileEntity(world, pos);
         if (tile == null)
             return BlockFaceShape.SOLID;
@@ -483,23 +470,23 @@ public abstract class BlockDrawers extends BlockContainer implements INetworked
 
     @Override
     @SuppressWarnings("deprecation")
-    public boolean isSideSolid (IBlockState state, @Nonnull IBlockAccess world, @Nonnull BlockPos pos, EnumFacing side) {
+    public boolean isSideSolid(IBlockState state, @Nonnull IBlockAccess world, @Nonnull BlockPos pos, EnumFacing side) {
         return getBlockFaceShape(world, state, pos, side) == BlockFaceShape.SOLID;
     }
 
-    private void dropItemStack (World world, BlockPos pos, EntityPlayer player, @Nonnull ItemStack stack) {
+    private void dropItemStack(World world, BlockPos pos, EntityPlayer player, @Nonnull ItemStack stack) {
         EntityItem entity = new EntityItem(world, pos.getX() + .5f, pos.getY() + .3f, pos.getZ() + .5f, stack);
         entity.addVelocity(-entity.motionX, -entity.motionY, -entity.motionZ);
         world.spawnEntity(entity);
     }
 
     @Override
-    public int damageDropped (IBlockState state) {
+    public int damageDropped(IBlockState state) {
         return getMetaFromState(state);
     }
 
     @Override
-    public boolean removedByPlayer (IBlockState state, World world, BlockPos pos, EntityPlayer player, boolean willHarvest) {
+    public boolean removedByPlayer(IBlockState state, World world, BlockPos pos, EntityPlayer player, boolean willHarvest) {
         if (player.capabilities.isCreativeMode) {
             float blockReachDistance = 0;
             if (world.isRemote) {
@@ -521,7 +508,7 @@ public abstract class BlockDrawers extends BlockContainer implements INetworked
     }
 
     @Override
-    public void breakBlock (World world, BlockPos pos, IBlockState state) {
+    public void breakBlock(World world, BlockPos pos, IBlockState state) {
         TileEntityDrawers tile = getTileEntity(world, pos);
 
         if (tile != null && !tile.isSealed() && !StorageDrawers.config.cache.keepContentsOnBreak) {
@@ -542,11 +529,11 @@ public abstract class BlockDrawers extends BlockContainer implements INetworked
     }
 
     @Override
-    public void getDrops (NonNullList<ItemStack> drops, IBlockAccess world, BlockPos pos, IBlockState state, int fortune) {
+    public void getDrops(NonNullList<ItemStack> drops, IBlockAccess world, BlockPos pos, IBlockState state, int fortune) {
         drops.add(getMainDrop(world, pos, state));
     }
 
-    protected ItemStack getMainDrop (IBlockAccess world, BlockPos pos, IBlockState state) {
+    protected ItemStack getMainDrop(IBlockAccess world, BlockPos pos, IBlockState state) {
         ItemStack drop = new ItemStack(Item.getItemFromBlock(this), 1, state.getBlock().getMetaFromState(state));
 
         TileEntityDrawers tile = getTileEntity(world, pos);
@@ -581,7 +568,7 @@ public abstract class BlockDrawers extends BlockContainer implements INetworked
     }
 
     @Override
-    public ItemStack getPickBlock (IBlockState state, RayTraceResult target, World world, BlockPos pos, EntityPlayer player) {
+    public ItemStack getPickBlock(IBlockState state, RayTraceResult target, World world, BlockPos pos, EntityPlayer player) {
         ItemStack drop = getMainDrop(world, pos, state);
 
         // If no tile data was written. Note that hasTagCompound returns false if the tag compound is null.
@@ -618,13 +605,13 @@ public abstract class BlockDrawers extends BlockContainer implements INetworked
     }
 
     @Override
-    public void harvestBlock (World world, EntityPlayer player, BlockPos pos, IBlockState state, TileEntity te, @Nonnull ItemStack stack) {
+    public void harvestBlock(World world, EntityPlayer player, BlockPos pos, IBlockState state, TileEntity te, @Nonnull ItemStack stack) {
         super.harvestBlock(world, player, pos, state, te, stack);
         world.setBlockToAir(pos);
     }
 
     @Override
-    public float getExplosionResistance (World world, BlockPos pos, Entity exploder, Explosion explosion) {
+    public float getExplosionResistance(World world, BlockPos pos, Entity exploder, Explosion explosion) {
         TileEntityDrawers tile = getTileEntity(world, pos);
         if (tile != null) {
             for (int slot = 0; slot < 5; slot++) {
@@ -642,7 +629,7 @@ public abstract class BlockDrawers extends BlockContainer implements INetworked
         return super.getExplosionResistance(world, pos, exploder, explosion);
     }
 
-    public TileEntityDrawers getTileEntity (IBlockAccess blockAccess, BlockPos pos) {
+    public TileEntityDrawers getTileEntity(IBlockAccess blockAccess, BlockPos pos) {
         if (inTileLookup.get())
             return null;
 
@@ -653,7 +640,7 @@ public abstract class BlockDrawers extends BlockContainer implements INetworked
         return (tile instanceof TileEntityDrawers) ? (TileEntityDrawers) tile : null;
     }
 
-    public TileEntityDrawers getTileEntitySafe (World world, BlockPos pos) {
+    public TileEntityDrawers getTileEntitySafe(World world, BlockPos pos) {
         TileEntityDrawers tile = getTileEntity(world, pos);
         if (tile == null) {
             tile = (TileEntityDrawers) createNewTileEntity(world, 0);
@@ -665,7 +652,7 @@ public abstract class BlockDrawers extends BlockContainer implements INetworked
 
     @Override
     @SideOnly(Side.CLIENT)
-    public boolean addHitEffects (IBlockState state, World worldObj, RayTraceResult target, ParticleManager manager) {
+    public boolean addHitEffects(IBlockState state, World worldObj, RayTraceResult target, ParticleManager manager) {
         if (getDirection(worldObj, target.getBlockPos()) == target.sideHit)
             return true;
 
@@ -674,7 +661,7 @@ public abstract class BlockDrawers extends BlockContainer implements INetworked
 
     @Override
     @SideOnly(Side.CLIENT)
-    public boolean addDestroyEffects (World world, BlockPos pos, ParticleManager manager) {
+    public boolean addDestroyEffects(World world, BlockPos pos, ParticleManager manager) {
         //TileEntityDrawers tile = getTileEntity(world, pos);
         //if (tile != null && !tile.getWillDestroy())
         //    return true;
@@ -684,13 +671,13 @@ public abstract class BlockDrawers extends BlockContainer implements INetworked
 
     @Override
     @SuppressWarnings("deprecation")
-    public boolean canProvidePower (IBlockState state) {
+    public boolean canProvidePower(IBlockState state) {
         return true;
     }
 
     @Override
     @SuppressWarnings("deprecation")
-    public int getWeakPower (IBlockState state, IBlockAccess worldIn, BlockPos pos, EnumFacing side) {
+    public int getWeakPower(IBlockState state, IBlockAccess worldIn, BlockPos pos, EnumFacing side) {
         if (!canProvidePower(state))
             return 0;
 
@@ -703,13 +690,13 @@ public abstract class BlockDrawers extends BlockContainer implements INetworked
 
     @Override
     @SuppressWarnings("deprecation")
-    public int getStrongPower (IBlockState state, IBlockAccess worldIn, BlockPos pos, EnumFacing side) {
+    public int getStrongPower(IBlockState state, IBlockAccess worldIn, BlockPos pos, EnumFacing side) {
         return (side == EnumFacing.UP) ? getWeakPower(state, worldIn, pos, side) : 0;
     }
 
     @Override
     @SuppressWarnings("deprecation")
-    public IBlockState getActualState (IBlockState state, IBlockAccess worldIn, BlockPos pos) {
+    public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos) {
         TileEntityDrawers tile = getTileEntity(worldIn, pos);
         if (tile == null)
             return state;
@@ -722,7 +709,7 @@ public abstract class BlockDrawers extends BlockContainer implements INetworked
     }
 
     @Override
-    public IBlockState getExtendedState (IBlockState state, IBlockAccess world, BlockPos pos) {
+    public IBlockState getExtendedState(IBlockState state, IBlockAccess world, BlockPos pos) {
         state = getActualState(state, world, pos);
         if (!(state instanceof IExtendedBlockState))
             return state;
@@ -731,6 +718,6 @@ public abstract class BlockDrawers extends BlockContainer implements INetworked
         if (tile == null)
             return state;
 
-        return ((IExtendedBlockState)state).withProperty(STATE_MODEL, new DrawerStateModelData(tile));
+        return ((IExtendedBlockState) state).withProperty(STATE_MODEL, new DrawerStateModelData(tile));
     }
 }

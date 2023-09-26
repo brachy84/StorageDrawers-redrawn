@@ -6,31 +6,31 @@ import mezz.jei.api.recipe.IRecipeWrapper;
 import mezz.jei.api.recipe.VanillaRecipeCategoryUid;
 
 // TODO: Deprecated API
-public class TemplateRecipeHandler implements IRecipeHandler<TemplateRecipe>
-{
+public class TemplateRecipeHandler implements IRecipeHandler<TemplateRecipe> {
+
     private final TemplateRecipeWrapper wrapper;
 
-    public TemplateRecipeHandler (TemplateRecipeWrapper wrapper) {
+    public TemplateRecipeHandler(TemplateRecipeWrapper wrapper) {
         this.wrapper = wrapper;
     }
 
     @Override
-    public Class getRecipeClass () {
+    public Class getRecipeClass() {
         return TemplateRecipe.class;
     }
 
     @Override
-    public String getRecipeCategoryUid (TemplateRecipe recipe) {
+    public String getRecipeCategoryUid(TemplateRecipe recipe) {
         return VanillaRecipeCategoryUid.CRAFTING;
     }
 
     @Override
-    public IRecipeWrapper getRecipeWrapper (TemplateRecipe recipe) {
+    public IRecipeWrapper getRecipeWrapper(TemplateRecipe recipe) {
         return wrapper;
     }
 
     @Override
-    public boolean isRecipeValid (TemplateRecipe recipe) {
+    public boolean isRecipeValid(TemplateRecipe recipe) {
         return recipe.getRecipeOutput() != null;
     }
 }

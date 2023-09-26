@@ -15,29 +15,29 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
 
-public class TemplateRecipe implements IRecipe
-{
+public class TemplateRecipe implements IRecipe {
+
     private final Object[] input;
 
-    public TemplateRecipe () {
+    public TemplateRecipe() {
         List<ItemStack> stick = OreDictionary.getOres("stickWood");
         List<ItemStack> drawer = OreDictionary.getOres("drawerBasic");
 
-        input = new Object[] {
-            stick, stick, stick,
-            stick, drawer, stick,
-            stick, stick, stick
+        input = new Object[]{
+                stick, stick, stick,
+                stick, drawer, stick,
+                stick, stick, stick
         };
     }
 
     @Override
-    public boolean matches (InventoryCrafting inventory, World world) {
+    public boolean matches(InventoryCrafting inventory, World world) {
         return !getCraftingResult(inventory).isEmpty();
     }
 
     @Override
     @Nonnull
-    public ItemStack getCraftingResult (InventoryCrafting inventory) {
+    public ItemStack getCraftingResult(InventoryCrafting inventory) {
         List<ItemStack> sticks = OreDictionary.getOres("stickWood");
         for (int row = 0; row < 3; row++) {
             for (int col = 0; col < 3; col++) {
@@ -70,40 +70,40 @@ public class TemplateRecipe implements IRecipe
     }
 
     @Override
-    public boolean canFit (int width, int height) {
+    public boolean canFit(int width, int height) {
         return width >= 3 && height >= 3;
     }
 
     @Override
     @Nonnull
-    public ItemStack getRecipeOutput () {
+    public ItemStack getRecipeOutput() {
         return new ItemStack(ModItems.upgradeTemplate, 2);
     }
 
     @Override
     @Nonnull
-    public NonNullList<ItemStack> getRemainingItems (InventoryCrafting inv) {
+    public NonNullList<ItemStack> getRemainingItems(InventoryCrafting inv) {
         return ForgeHooks.defaultRecipeGetRemainingItems(inv);
     }
 
-    public Object[] getInput () {
+    public Object[] getInput() {
         return input;
     }
 
     // TODO: What to do with this
     @Override
-    public IRecipe setRegistryName (ResourceLocation name) {
+    public IRecipe setRegistryName(ResourceLocation name) {
         return null;
     }
 
     @Nullable
     @Override
-    public ResourceLocation getRegistryName () {
+    public ResourceLocation getRegistryName() {
         return null;
     }
 
     @Override
-    public Class<IRecipe> getRegistryType () {
+    public Class<IRecipe> getRegistryType() {
         return null;
     }
 }

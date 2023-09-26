@@ -4,13 +4,18 @@ import com.jaquadro.minecraft.chameleon.block.ChamTileEntity;
 import com.jaquadro.minecraft.chameleon.block.tiledata.CustomNameData;
 import com.jaquadro.minecraft.storagedrawers.StorageDrawers;
 import com.jaquadro.minecraft.storagedrawers.api.security.ISecurityProvider;
-import com.jaquadro.minecraft.storagedrawers.api.storage.*;
-import com.jaquadro.minecraft.storagedrawers.api.storage.attribute.*;
+import com.jaquadro.minecraft.storagedrawers.api.storage.IDrawer;
+import com.jaquadro.minecraft.storagedrawers.api.storage.IDrawerAttributes;
+import com.jaquadro.minecraft.storagedrawers.api.storage.IDrawerAttributesModifiable;
+import com.jaquadro.minecraft.storagedrawers.api.storage.IDrawerGroup;
+import com.jaquadro.minecraft.storagedrawers.api.storage.attribute.IProtectable;
+import com.jaquadro.minecraft.storagedrawers.api.storage.attribute.ISealable;
+import com.jaquadro.minecraft.storagedrawers.api.storage.attribute.LockAttribute;
 import com.jaquadro.minecraft.storagedrawers.block.tile.tiledata.ControllerData;
 import com.jaquadro.minecraft.storagedrawers.block.tile.tiledata.MaterialData;
 import com.jaquadro.minecraft.storagedrawers.block.tile.tiledata.UpgradeData;
-import com.jaquadro.minecraft.storagedrawers.core.ModItems;
 import com.jaquadro.minecraft.storagedrawers.capabilities.BasicDrawerAttributes;
+import com.jaquadro.minecraft.storagedrawers.core.ModItems;
 import com.jaquadro.minecraft.storagedrawers.item.EnumUpgradeRedstone;
 import com.jaquadro.minecraft.storagedrawers.item.EnumUpgradeStorage;
 import com.jaquadro.minecraft.storagedrawers.network.CountUpdateMessage;
@@ -21,7 +26,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
-
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.IWorldNameable;
 import net.minecraft.world.World;
@@ -37,11 +41,11 @@ import javax.annotation.Nullable;
 import java.util.EnumSet;
 import java.util.UUID;
 
-public abstract class TileEntityDrawers extends ChamTileEntity implements ISealable, IProtectable, IDrawerGroup, IWorldNameable
-{
-    private CustomNameData customNameData = new CustomNameData("storagedrawers.container.drawers");
-    private MaterialData materialData = new MaterialData();
-    private UpgradeData upgradeData = new DrawerUpgradeData();
+public abstract class TileEntityDrawers extends ChamTileEntity implements ISealable, IProtectable, IDrawerGroup, IWorldNameable {
+
+    private final CustomNameData customNameData = new CustomNameData("storagedrawers.container.drawers");
+    private final MaterialData materialData = new MaterialData();
+    private final UpgradeData upgradeData = new DrawerUpgradeData();
 
     public final ControllerData controllerData = new ControllerData();
 
@@ -52,15 +56,15 @@ public abstract class TileEntityDrawers extends ChamTileEntity implements ISeala
     private UUID owner;
     private String securityKey;
 
-    private IDrawerAttributesModifiable drawerAttributes;
+    private final IDrawerAttributesModifiable drawerAttributes;
 
     private long lastClickTime;
     private UUID lastClickUUID;
 
-    private class DrawerAttributes extends BasicDrawerAttributes
-    {
+    private class DrawerAttributes extends BasicDrawerAttributes {
+
         @Override
-        protected void onAttributeChanged () {
+        protected void onAttributeChanged() {
             TileEntityDrawers.this.onAttributeChanged();
             if (getWorld() != null && !getWorld().isRemote) {
                 markDirty();
@@ -69,14 +73,14 @@ public abstract class TileEntityDrawers extends ChamTileEntity implements ISeala
         }
     }
 
-    private class DrawerUpgradeData extends UpgradeData
-    {
-        DrawerUpgradeData () {
+    private class DrawerUpgradeData extends UpgradeData {
+
+        DrawerUpgradeData() {
             super(7);
         }
 
         @Override
-        public boolean canAddUpgrade (@Nonnull ItemStack upgrade) {
+        public boolean canAddUpgrade(@Nonnull ItemStack upgrade) {
             if (!super.canAddUpgrade(upgrade))
                 return false;
 
@@ -89,7 +93,7 @@ public abstract class TileEntityDrawers extends ChamTileEntity implements ISeala
         }
 
         @Override
-        public boolean canRemoveUpgrade (int slot) {
+        public boolean canRemoveUpgrade(int slot) {
             if (!super.canRemoveUpgrade(slot))
                 return false;
 
@@ -143,7 +147,7 @@ public abstract class TileEntityDrawers extends ChamTileEntity implements ISeala
         }
 
         @Override
-        protected void onUpgradeChanged (ItemStack oldUpgrade, ItemStack newUpgrade) {
+        protected void onUpgradeChanged(ItemStack oldUpgrade, ItemStack newUpgrade) {
 
             if (getWorld() != null && !getWorld().isRemote) {
                 markDirty();
@@ -151,7 +155,7 @@ public abstract class TileEntityDrawers extends ChamTileEntity implements ISeala
             }
         }
 
-        private boolean stackCapacityCheck (int stackCapacity) {
+        private boolean stackCapacityCheck(int stackCapacity) {
             for (int i = 0; i < getDrawerCount(); i++) {
                 IDrawer drawer = getDrawer(i);
                 if (!drawer.isEnabled() || drawer.isEmpty())
@@ -166,7 +170,7 @@ public abstract class TileEntityDrawers extends ChamTileEntity implements ISeala
         }
     }
 
-    protected TileEntityDrawers () {
+    protected TileEntityDrawers() {
         drawerAttributes = new DrawerAttributes();
 
         upgradeData.setDrawerAttributes(drawerAttributes);
@@ -177,46 +181,46 @@ public abstract class TileEntityDrawers extends ChamTileEntity implements ISeala
         injectData(controllerData);
     }
 
-    public abstract IDrawerGroup getGroup ();
+    public abstract IDrawerGroup getGroup();
 
-    public IDrawerAttributes getDrawerAttributes () {
+    public IDrawerAttributes getDrawerAttributes() {
         return drawerAttributes;
     }
 
-    public UpgradeData upgrades () {
+    public UpgradeData upgrades() {
         return upgradeData;
     }
 
-    public MaterialData material () {
+    public MaterialData material() {
         return materialData;
     }
 
-    public int getDirection () {
+    public int getDirection() {
         return direction;
     }
 
-    public void setDirection (int direction) {
+    public void setDirection(int direction) {
         this.direction = direction % 6;
     }
 
-    public String getMaterial () {
+    public String getMaterial() {
         return material;
     }
 
-    public String getMaterialOrDefault () {
+    public String getMaterialOrDefault() {
         String mat = getMaterial();
         return (mat != null) ? mat : "oak";
     }
 
-    public void setMaterial (String material) {
+    public void setMaterial(String material) {
         this.material = material;
     }
 
-    public int getDrawerCapacity () {
+    public int getDrawerCapacity() {
         return drawerCapacity;
     }
 
-    public int getEffectiveDrawerCapacity () {
+    public int getEffectiveDrawerCapacity() {
         if (upgradeData.hasOneStackUpgrade())
             return 1;
 
@@ -224,7 +228,7 @@ public abstract class TileEntityDrawers extends ChamTileEntity implements ISeala
     }
 
     @Override
-    public UUID getOwner () {
+    public UUID getOwner() {
         if (!StorageDrawers.config.cache.enablePersonalUpgrades)
             return null;
 
@@ -232,7 +236,7 @@ public abstract class TileEntityDrawers extends ChamTileEntity implements ISeala
     }
 
     @Override
-    public boolean setOwner (UUID owner) {
+    public boolean setOwner(UUID owner) {
         if (!StorageDrawers.config.cache.enablePersonalUpgrades)
             return false;
 
@@ -249,12 +253,12 @@ public abstract class TileEntityDrawers extends ChamTileEntity implements ISeala
     }
 
     @Override
-    public ISecurityProvider getSecurityProvider () {
+    public ISecurityProvider getSecurityProvider() {
         return StorageDrawers.securityRegistry.getProvider(securityKey);
     }
 
     @Override
-    public boolean setSecurityProvider (ISecurityProvider provider) {
+    public boolean setSecurityProvider(ISecurityProvider provider) {
         if (!StorageDrawers.config.cache.enablePersonalUpgrades)
             return false;
 
@@ -271,16 +275,17 @@ public abstract class TileEntityDrawers extends ChamTileEntity implements ISeala
         return true;
     }
 
-    protected void onAttributeChanged () { }
+    protected void onAttributeChanged() {
+    }
 
-    public boolean isSealed () {
+    public boolean isSealed() {
         if (!StorageDrawers.config.cache.enableTape)
             return false;
 
         return taped;
     }
 
-    public boolean setIsSealed (boolean sealed) {
+    public boolean setIsSealed(boolean sealed) {
         if (!StorageDrawers.config.cache.enableTape)
             return false;
 
@@ -296,14 +301,14 @@ public abstract class TileEntityDrawers extends ChamTileEntity implements ISeala
         return true;
     }
 
-    public boolean isRedstone () {
+    public boolean isRedstone() {
         if (!StorageDrawers.config.cache.enableRedstoneUpgrades)
             return false;
 
         return upgradeData.getRedstoneType() != null;
     }
 
-    public int getRedstoneLevel () {
+    public int getRedstoneLevel() {
         EnumUpgradeRedstone type = upgradeData.getRedstoneType();
         if (type == null)
             return 0;
@@ -316,7 +321,7 @@ public abstract class TileEntityDrawers extends ChamTileEntity implements ISeala
         };
     }
 
-    protected int getCombinedRedstoneLevel () {
+    protected int getCombinedRedstoneLevel() {
         int active = 0;
         float fillRatio = 0;
 
@@ -326,7 +331,7 @@ public abstract class TileEntityDrawers extends ChamTileEntity implements ISeala
                 continue;
 
             if (drawer.getMaxCapacity() > 0)
-                fillRatio += ((float)drawer.getStoredItemCount() / drawer.getMaxCapacity());
+                fillRatio += ((float) drawer.getStoredItemCount() / drawer.getMaxCapacity());
 
             active++;
         }
@@ -337,10 +342,10 @@ public abstract class TileEntityDrawers extends ChamTileEntity implements ISeala
         if (fillRatio == active)
             return 15;
 
-        return (int)Math.ceil((fillRatio / active) * 14);
+        return (int) Math.ceil((fillRatio / active) * 14);
     }
 
-    protected int getMinRedstoneLevel () {
+    protected int getMinRedstoneLevel() {
         float minRatio = 2;
 
         for (int i = 0; i < getDrawerCount(); i++) {
@@ -349,7 +354,7 @@ public abstract class TileEntityDrawers extends ChamTileEntity implements ISeala
                 continue;
 
             if (drawer.getMaxCapacity() > 0)
-                minRatio = Math.min(minRatio, (float)drawer.getStoredItemCount() / drawer.getMaxCapacity());
+                minRatio = Math.min(minRatio, (float) drawer.getStoredItemCount() / drawer.getMaxCapacity());
             else
                 minRatio = 0;
         }
@@ -359,10 +364,10 @@ public abstract class TileEntityDrawers extends ChamTileEntity implements ISeala
         if (minRatio == 1)
             return 15;
 
-        return (int)Math.ceil(minRatio * 14);
+        return (int) Math.ceil(minRatio * 14);
     }
 
-    protected int getMaxRedstoneLevel () {
+    protected int getMaxRedstoneLevel() {
         float maxRatio = 0;
 
         for (int i = 0; i < getDrawerCount(); i++) {
@@ -371,17 +376,17 @@ public abstract class TileEntityDrawers extends ChamTileEntity implements ISeala
                 continue;
 
             if (drawer.getMaxCapacity() > 0)
-                maxRatio = Math.max(maxRatio, (float)drawer.getStoredItemCount() / drawer.getMaxCapacity());
+                maxRatio = Math.max(maxRatio, (float) drawer.getStoredItemCount() / drawer.getMaxCapacity());
         }
 
         if (maxRatio == 1)
             return 15;
 
-        return (int)Math.ceil(maxRatio * 14);
+        return (int) Math.ceil(maxRatio * 14);
     }
 
     @Nonnull
-    public ItemStack takeItemsFromSlot (int slot, int count) {
+    public ItemStack takeItemsFromSlot(int slot, int count) {
         IDrawer drawer = getGroup().getDrawer(slot);
         if (!drawer.isEnabled() || drawer.isEmpty())
             return ItemStack.EMPTY;
@@ -401,7 +406,7 @@ public abstract class TileEntityDrawers extends ChamTileEntity implements ISeala
         return stack;
     }
 
-    public int putItemsIntoSlot (int slot, @Nonnull ItemStack stack, int count) {
+    public int putItemsIntoSlot(int slot, @Nonnull ItemStack stack, int count) {
         IDrawer drawer = getGroup().getDrawer(slot);
         if (!drawer.isEnabled())
             return 0;
@@ -422,7 +427,7 @@ public abstract class TileEntityDrawers extends ChamTileEntity implements ISeala
         return countAdded;
     }
 
-    public int interactPutCurrentItemIntoSlot (int slot, EntityPlayer player) {
+    public int interactPutCurrentItemIntoSlot(int slot, EntityPlayer player) {
         IDrawer drawer = getDrawer(slot);
         if (!drawer.isEnabled())
             return 0;
@@ -435,7 +440,7 @@ public abstract class TileEntityDrawers extends ChamTileEntity implements ISeala
         return count;
     }
 
-    public int interactPutCurrentInventoryIntoSlot (int slot, EntityPlayer player) {
+    public int interactPutCurrentInventoryIntoSlot(int slot, EntityPlayer player) {
         IDrawer drawer = getGroup().getDrawer(slot);
         if (!drawer.isEnabled())
             return 0;
@@ -460,7 +465,7 @@ public abstract class TileEntityDrawers extends ChamTileEntity implements ISeala
         return count;
     }
 
-    public int interactPutItemsIntoSlot (int slot, EntityPlayer player) {
+    public int interactPutItemsIntoSlot(int slot, EntityPlayer player) {
         int count;
         if (getWorld().getTotalWorldTime() - lastClickTime < 10 && player.getPersistentID().equals(lastClickUUID))
             count = interactPutCurrentInventoryIntoSlot(slot, player);
@@ -474,7 +479,7 @@ public abstract class TileEntityDrawers extends ChamTileEntity implements ISeala
     }
 
     @Override
-    protected void readFromFixedNBT (NBTTagCompound tag) {
+    protected void readFromFixedNBT(NBTTagCompound tag) {
         super.readFromFixedNBT(tag);
 
         setDirection(tag.getByte("Dir"));
@@ -485,7 +490,7 @@ public abstract class TileEntityDrawers extends ChamTileEntity implements ISeala
     }
 
     @Override
-    protected NBTTagCompound writeToFixedNBT (NBTTagCompound tag) {
+    protected NBTTagCompound writeToFixedNBT(NBTTagCompound tag) {
         tag = super.writeToFixedNBT(tag);
 
         tag.setByte("Dir", (byte) direction);
@@ -497,7 +502,7 @@ public abstract class TileEntityDrawers extends ChamTileEntity implements ISeala
     }
 
     @Override
-    public void readFromPortableNBT (NBTTagCompound tag) {
+    public void readFromPortableNBT(NBTTagCompound tag) {
         super.readFromPortableNBT(tag);
 
         material = null;
@@ -535,7 +540,7 @@ public abstract class TileEntityDrawers extends ChamTileEntity implements ISeala
     }
 
     @Override
-    public NBTTagCompound writeToPortableNBT (NBTTagCompound tag) {
+    public NBTTagCompound writeToPortableNBT(NBTTagCompound tag) {
         tag = super.writeToPortableNBT(tag);
 
         tag.setInteger("Cap", getDrawerCapacity());
@@ -550,7 +555,7 @@ public abstract class TileEntityDrawers extends ChamTileEntity implements ISeala
             attrs.add(LockAttribute.LOCK_POPULATED);
 
         if (!attrs.isEmpty()) {
-            tag.setByte("Lock", (byte)LockAttribute.getBitfield(attrs));
+            tag.setByte("Lock", (byte) LockAttribute.getBitfield(attrs));
         }
 
         if (drawerAttributes.isConcealed())
@@ -569,7 +574,7 @@ public abstract class TileEntityDrawers extends ChamTileEntity implements ISeala
     }
 
     @Override
-    public void markDirty () {
+    public void markDirty() {
         if (isRedstone() && getWorld() != null) {
             getWorld().notifyNeighborsOfStateChange(getPos(), getBlockType(), false);
             getWorld().notifyNeighborsOfStateChange(getPos().down(), getBlockType(), false);
@@ -578,17 +583,17 @@ public abstract class TileEntityDrawers extends ChamTileEntity implements ISeala
         super.markDirty();
     }
 
-    protected void syncClientCount (int slot, int count) {
+    protected void syncClientCount(int slot, int count) {
         if (getWorld() != null && getWorld().isRemote)
             return;
 
         TargetPoint point = new TargetPoint(getWorld().provider.getDimension(),
-            getPos().getX(), getPos().getY(), getPos().getZ(), 500);
+                getPos().getX(), getPos().getY(), getPos().getZ(), 500);
         StorageDrawers.network.sendToAllAround(new CountUpdateMessage(getPos(), slot, count), point);
     }
 
     @SideOnly(Side.CLIENT)
-    public void clientUpdateCount (final int slot, final int count) {
+    public void clientUpdateCount(final int slot, final int count) {
         if (!getWorld().isRemote)
             return;
 
@@ -596,7 +601,7 @@ public abstract class TileEntityDrawers extends ChamTileEntity implements ISeala
     }
 
     @SideOnly(Side.CLIENT)
-    private void clientUpdateCountAsync (int slot, int count) {
+    private void clientUpdateCountAsync(int slot, int count) {
         IDrawer drawer = getDrawer(slot);
         if (drawer.isEnabled() && drawer.getStoredItemCount() != count)
             drawer.setStoredItemCount(count);
@@ -604,51 +609,51 @@ public abstract class TileEntityDrawers extends ChamTileEntity implements ISeala
     }
 
     @Override
-    public boolean dataPacketRequiresRenderUpdate () {
+    public boolean dataPacketRequiresRenderUpdate() {
         return true;
     }
 
     @Override
-    public boolean shouldRefresh (World world, BlockPos pos, IBlockState oldState, IBlockState newSate) {
+    public boolean shouldRefresh(World world, BlockPos pos, IBlockState oldState, IBlockState newSate) {
         return oldState.getBlock() != newSate.getBlock();
     }
 
     @Override
     @Deprecated
-    public int getDrawerCount () {
+    public int getDrawerCount() {
         return getGroup().getDrawerCount();
     }
 
     @Nonnull
     @Override
     @Deprecated
-    public IDrawer getDrawer (int slot) {
+    public IDrawer getDrawer(int slot) {
         return getGroup().getDrawer(slot);
     }
 
     @Nonnull
     @Override
     @Deprecated
-    public int[] getAccessibleDrawerSlots () {
+    public int[] getAccessibleDrawerSlots() {
         return getGroup().getAccessibleDrawerSlots();
     }
 
     @Override
-    public String getName () {
+    public String getName() {
         return customNameData.getName();
     }
 
     @Override
-    public boolean hasCustomName () {
+    public boolean hasCustomName() {
         return customNameData.hasCustomName();
     }
 
     @Override
-    public ITextComponent getDisplayName () {
+    public ITextComponent getDisplayName() {
         return customNameData.getDisplayName();
     }
 
-    public void setInventoryName (String name) {
+    public void setInventoryName(String name) {
         customNameData.setName(name);
     }
 
@@ -657,8 +662,7 @@ public abstract class TileEntityDrawers extends ChamTileEntity implements ISeala
 
     @SuppressWarnings("unchecked")
     @Override
-    public <T> T getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing)
-    {
+    public <T> T getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing) {
         if (capability == DRAWER_GROUP_CAPABILITY)
             return (T) getGroup();
 
@@ -669,8 +673,7 @@ public abstract class TileEntityDrawers extends ChamTileEntity implements ISeala
     }
 
     @Override
-    public boolean hasCapability(@Nonnull Capability<?> capability, @Nullable EnumFacing facing)
-    {
+    public boolean hasCapability(@Nonnull Capability<?> capability, @Nullable EnumFacing facing) {
         if (capability == DRAWER_GROUP_CAPABILITY)
             return true;
 

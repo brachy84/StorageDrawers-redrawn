@@ -1,8 +1,8 @@
 package com.jaquadro.minecraft.storagedrawers.api.storage;
 
-public interface IDrawerGeometry
-{
-    boolean isHalfDepth ();
+public interface IDrawerGeometry {
 
-    int getDrawerCount ();
+    boolean isHalfDepth();
+
+    int getDrawerCount();
 }

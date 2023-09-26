@@ -16,8 +16,8 @@ import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ContainerFramingTable extends Container
-{
+public class ContainerFramingTable extends Container {
+
     private static final int InventoryX = 8;
     private static final int InventoryY = 84;
     private static final int HotbarY = 142;
@@ -33,18 +33,18 @@ public class ContainerFramingTable extends Container
     private static final int OutputX = 133;
     private static final int OutputY = 35;
 
-    private IInventory tableInventory;
-    private IInventory craftResult = new InventoryCraftResult();
+    private final IInventory tableInventory;
+    private final IInventory craftResult = new InventoryCraftResult();
 
-    private Slot inputSlot;
-    private Slot materialSideSlot;
-    private Slot materialTrimSlot;
-    private Slot materialFrontSlot;
-    private Slot outputSlot;
-    private List<Slot> playerSlots;
-    private List<Slot> hotbarSlots;
+    private final Slot inputSlot;
+    private final Slot materialSideSlot;
+    private final Slot materialTrimSlot;
+    private final Slot materialFrontSlot;
+    private final Slot outputSlot;
+    private final List<Slot> playerSlots;
+    private final List<Slot> hotbarSlots;
 
-    public ContainerFramingTable (InventoryPlayer inventory, TileEntityFramingTable tileEntity) {
+    public ContainerFramingTable(InventoryPlayer inventory, TileEntityFramingTable tileEntity) {
         tableInventory = new InventoryContainerProxy(tileEntity, this);
 
         inputSlot = addSlotToContainer(new SlotRestricted(tableInventory, 0, InputX, InputY));
@@ -53,7 +53,7 @@ public class ContainerFramingTable extends Container
         materialTrimSlot = addSlotToContainer(new SlotRestricted(tableInventory, 2, MaterialTrimX, MaterialTrimY));
         materialFrontSlot = addSlotToContainer(new SlotRestricted(tableInventory, 3, MaterialFrontX, MaterialFrontY));
 
-        outputSlot = addSlotToContainer(new FramingSlotResult(inventory.player, tableInventory, craftResult, new int[] { 0, 1, 2, 3 }, 0, 4, OutputX, OutputY));
+        outputSlot = addSlotToContainer(new FramingSlotResult(inventory.player, tableInventory, craftResult, new int[]{0, 1, 2, 3}, 0, 4, OutputX, OutputY));
 
         playerSlots = new ArrayList<>();
         for (int i = 0; i < 3; i++) {
@@ -69,12 +69,12 @@ public class ContainerFramingTable extends Container
     }
 
     @Override
-    public boolean canInteractWith (EntityPlayer player) {
+    public boolean canInteractWith(EntityPlayer player) {
         return tableInventory.isUsableByPlayer(player);
     }
 
     @Override
-    public void onCraftMatrixChanged (IInventory inventory) {
+    public void onCraftMatrixChanged(IInventory inventory) {
         ItemStack input = tableInventory.getStackInSlot(inputSlot.getSlotIndex()).copy();
         ItemStack matSide = tableInventory.getStackInSlot(materialSideSlot.getSlotIndex()).copy();
         ItemStack matTrim = tableInventory.getStackInSlot(materialTrimSlot.getSlotIndex()).copy();
@@ -96,7 +96,7 @@ public class ContainerFramingTable extends Container
 
     @Override
     @Nonnull
-    public ItemStack transferStackInSlot (EntityPlayer player, int slotIndex) {
+    public ItemStack transferStackInSlot(EntityPlayer player, int slotIndex) {
         ItemStack itemStack = ItemStack.EMPTY;
         Slot slot = inventorySlots.get(slotIndex);
 
@@ -156,8 +156,10 @@ public class ContainerFramingTable extends Container
      * A special Slot Craft Result class, which respects the config of `consumeDecorateBlocks`.
      */
     public static class FramingSlotResult extends SlotCraftResult {
+
         private final IInventory inputInventory;
         private final int alwaysConsumeSlot;
+
         public FramingSlotResult(EntityPlayer player, IInventory inputInventory, IInventory inventory, int[] inputSlots, int alwaysConsumeSlot, int slot, int x, int y) {
             super(player, inputInventory, inventory, inputSlots, slot, x, y);
 

@@ -21,20 +21,20 @@ import net.minecraftforge.items.IItemHandler;
 
 import java.util.Arrays;
 
-public class CommandDebug extends CommandBase
-{
+public class CommandDebug extends CommandBase {
+
     @Override
-    public String getName () {
+    public String getName() {
         return StorageDrawers.MOD_ID;
     }
 
     @Override
-    public String getUsage (ICommandSender sender) {
+    public String getUsage(ICommandSender sender) {
         return "commands.storagedrawers.usage";
     }
 
     @Override
-    public void execute (MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
+    public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
         if (args.length < 1)
             return;
 
@@ -46,7 +46,7 @@ public class CommandDebug extends CommandBase
         }
     }
 
-    private void simulateOp (MinecraftServer server, EntityPlayerMP player, String[] args) {
+    private void simulateOp(MinecraftServer server, EntityPlayerMP player, String[] args) {
         if (args.length < 2)
             return;
 
@@ -86,14 +86,13 @@ public class CommandDebug extends CommandBase
                     item.setCount(Integer.parseInt(args[2]));
                 }
 
-                sendMessage(player, "Simulate inserting " + item.toString() + " into tile " + tile.getClass().getSimpleName() + " at " + pos.toString());
+                sendMessage(player, "Simulate inserting " + item + " into tile " + tile.getClass().getSimpleName() + " at " + pos);
                 ItemStack remainder = repo.insertItem(item, true);
 
                 sendMessage(player, "Count = " + item.getCount() + "; Accepted = " +
-                    (item.getCount() - remainder.getCount()) + "; Remainder = " + remainder.getCount());
+                        (item.getCount() - remainder.getCount()) + "; Remainder = " + remainder.getCount());
             }
-        }
-        else if (args[0].equals("itemhandler")) {
+        } else if (args[0].equals("itemhandler")) {
             IItemHandler handler = tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
             if (handler == null) {
                 sendMessage(player, "Target block does not have the IItemHandler capability");
@@ -109,14 +108,14 @@ public class CommandDebug extends CommandBase
                 int slotCount = handler.getSlots();
                 int matchCount = 0;
 
-                sendMessage(player, "Simulate inserting " + item.toString() + " into tile " + tile.getClass().getSimpleName() + " at " + pos.toString());
+                sendMessage(player, "Simulate inserting " + item + " into tile " + tile.getClass().getSimpleName() + " at " + pos);
 
                 for (int i = 0; i < slotCount; i++) {
                     ItemStack remainder = handler.insertItem(i, item, true);
                     if (item.getCount() > remainder.getCount()) {
                         matchCount++;
                         sendMessage(player, "Slot " + i + ": Count = " + item.getCount() + "; Accepted = " +
-                            (item.getCount() - remainder.getCount()) + "; Remainder = " + remainder.getCount());
+                                (item.getCount() - remainder.getCount()) + "; Remainder = " + remainder.getCount());
                     }
                 }
 
@@ -125,7 +124,7 @@ public class CommandDebug extends CommandBase
         }
     }
 
-    private void sendMessage (ICommandSender sender, String message) {
+    private void sendMessage(ICommandSender sender, String message) {
         sender.sendMessage(new TextComponentString(message));
     }
 }

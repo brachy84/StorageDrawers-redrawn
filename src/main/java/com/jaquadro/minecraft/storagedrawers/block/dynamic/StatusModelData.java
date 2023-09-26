@@ -14,17 +14,17 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-public class StatusModelData
-{
-    private double frontDepth;
-    private Slot[] slots;
+public class StatusModelData {
 
-    public StatusModelData (int slotCount, ResourceLocation location) {
+    private double frontDepth;
+    private final Slot[] slots;
+
+    public StatusModelData(int slotCount, ResourceLocation location) {
         slots = new Slot[slotCount];
         load(location);
     }
 
-    private void load (ResourceLocation location) {
+    private void load(ResourceLocation location) {
         try {
             IResource configResource = Minecraft.getMinecraft().getResourceManager().getResource(location);
             BufferedReader reader = null;
@@ -42,8 +42,7 @@ public class StatusModelData
                             slots[i] = new Slot(slotsArray.get(i).getAsJsonObject());
                     }
                 }
-            }
-            finally {
+            } finally {
                 IOUtils.closeQuietly(reader);
             }
         } catch (IOException e) {
@@ -51,15 +50,16 @@ public class StatusModelData
         }
     }
 
-    public double getFrontDepth () {
+    public double getFrontDepth() {
         return frontDepth;
     }
 
-    public Slot getSlot (int i) {
+    public Slot getSlot(int i) {
         return slots[i];
     }
 
     public static class Slot {
+
         private ResourceLocation level1On;
         private ResourceLocation level1Off;
         private ResourceLocation level2On;
@@ -74,7 +74,7 @@ public class StatusModelData
         private int activeStepsX;
         private int activeStepsY;
 
-        public Slot (JsonObject json) {
+        public Slot(JsonObject json) {
             if (json == null)
                 return;
 
@@ -112,35 +112,35 @@ public class StatusModelData
             }
         }
 
-        public Area2D getStatusArea () {
+        public Area2D getStatusArea() {
             return statusArea;
         }
 
-        public Area2D getStatusActiveArea () {
+        public Area2D getStatusActiveArea() {
             return statusActiveArea;
         }
 
-        public Area2D getLabelArea () {
+        public Area2D getLabelArea() {
             return labelArea;
         }
 
-        public Area2D getSlotArea () {
+        public Area2D getSlotArea() {
             return slotArea;
         }
 
-        public Area2D getIconArea () {
+        public Area2D getIconArea() {
             return iconArea;
         }
 
-        public int getActiveStepsX () {
+        public int getActiveStepsX() {
             return activeStepsX;
         }
 
-        public int getActiveStepsY () {
+        public int getActiveStepsY() {
             return activeStepsY;
         }
 
-        public ResourceLocation getOnResource (EnumUpgradeStatus status) {
+        public ResourceLocation getOnResource(EnumUpgradeStatus status) {
             return switch (status.getLevel()) {
                 case 1 -> level1On;
                 case 2 -> level2On;
@@ -148,7 +148,7 @@ public class StatusModelData
             };
         }
 
-        public ResourceLocation getOffResource (EnumUpgradeStatus status) {
+        public ResourceLocation getOffResource(EnumUpgradeStatus status) {
             return switch (status.getLevel()) {
                 case 1 -> level1Off;
                 case 2 -> level2Off;
@@ -156,7 +156,7 @@ public class StatusModelData
             };
         }
 
-        private Area2D readArea (JsonObject object, String keyStart, String keyStop) {
+        private Area2D readArea(JsonObject object, String keyStart, String keyStop) {
             if (object == null)
                 return Area2D.EMPTY;
 
@@ -166,7 +166,7 @@ public class StatusModelData
             return Area2D.From(start[0], start[1], stop[0], stop[1]);
         }
 
-        private Area2D readIconArea (JsonObject object, String key, Area2D bound) {
+        private Area2D readIconArea(JsonObject object, String key, Area2D bound) {
             if (object == null)
                 return Area2D.EMPTY;
 
@@ -177,8 +177,8 @@ public class StatusModelData
             return Area2D.From(startX, startY, startX + size[0], startY + size[1]);
         }
 
-        private double[] readDoublePair (JsonObject object, String key) {
-            double[] size = new double[] { 0, 0 };
+        private double[] readDoublePair(JsonObject object, String key) {
+            double[] size = new double[]{0, 0};
 
             if (object.has(key)) {
                 JsonArray arr = object.getAsJsonArray(key);

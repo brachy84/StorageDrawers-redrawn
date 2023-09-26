@@ -12,12 +12,12 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
 
 @SideOnly(Side.CLIENT)
-public class GuiFraming extends GuiContainer
-{
-    private static final ResourceLocation guiTextires = new ResourceLocation(StorageDrawers.MOD_ID.toLowerCase(), "textures/gui/framing.png");
-    private TileEntityFramingTable tileFramingTable;
+public class GuiFraming extends GuiContainer {
 
-    public GuiFraming (InventoryPlayer inventory, TileEntityFramingTable tileEntity) {
+    private static final ResourceLocation guiTextires = new ResourceLocation(StorageDrawers.MOD_ID.toLowerCase(), "textures/gui/framing.png");
+    private final TileEntityFramingTable tileFramingTable;
+
+    public GuiFraming(InventoryPlayer inventory, TileEntityFramingTable tileEntity) {
         super(new ContainerFramingTable(inventory, tileEntity));
         tileFramingTable = tileEntity;
 
@@ -26,20 +26,20 @@ public class GuiFraming extends GuiContainer
     }
 
     @Override
-    public void drawScreen (int p_73863_1_, int p_73863_2_, float p_73863_3_) {
+    public void drawScreen(int p_73863_1_, int p_73863_2_, float p_73863_3_) {
         super.drawScreen(p_73863_1_, p_73863_2_, p_73863_3_);
         this.renderHoveredToolTip(p_73863_1_, p_73863_2_);
     }
-    
+
     @Override
-    protected void drawGuiContainerForegroundLayer (int mouseX, int mouseY) {
+    protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         String name = tileFramingTable.hasCustomName() ? tileFramingTable.getName() : I18n.format(tileFramingTable.getName());
         fontRenderer.drawString(name, 8, 6, 4210752);
         fontRenderer.drawString(I18n.format("container.inventory"), 8, ySize - 96 + 2, 4210752);
     }
 
     @Override
-    protected void drawGuiContainerBackgroundLayer (float dt, int mouseX, int mouseY) {
+    protected void drawGuiContainerBackgroundLayer(float dt, int mouseX, int mouseY) {
         GL11.glColor4f(1, 1, 1, 1);
         mc.getTextureManager().bindTexture(guiTextires);
 

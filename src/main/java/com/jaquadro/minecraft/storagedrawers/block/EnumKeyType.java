@@ -4,8 +4,7 @@ import net.minecraft.util.IStringSerializable;
 
 import javax.annotation.Nonnull;
 
-public enum EnumKeyType implements IStringSerializable
-{
+public enum EnumKeyType implements IStringSerializable {
     DRAWER(0, "drawer"),
     CONCEALMENT(1, "concealment"),
     PERSONAL(2, "personal"),
@@ -16,16 +15,16 @@ public enum EnumKeyType implements IStringSerializable
     private final int meta;
     private final String name;
 
-    EnumKeyType (int meta, String name) {
+    EnumKeyType(int meta, String name) {
         this.meta = meta;
         this.name = name;
     }
 
-    public int getMetadata () {
+    public int getMetadata() {
         return meta;
     }
 
-    public static EnumKeyType byMetadata (int meta) {
+    public static EnumKeyType byMetadata(int meta) {
         if (meta < 0 || meta >= META_LOOKUP.length)
             meta = 0;
         return META_LOOKUP[meta];
@@ -33,12 +32,12 @@ public enum EnumKeyType implements IStringSerializable
 
     @Override
     @Nonnull
-    public String getName () {
+    public String getName() {
         return name;
     }
 
     @Override
-    public String toString () {
+    public String toString() {
         return getName();
     }
 

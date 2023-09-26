@@ -3,17 +3,13 @@ package com.jaquadro.minecraft.storagedrawers.client.renderer;
 import com.jaquadro.minecraft.storagedrawers.inventory.ItemStackHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.ItemModelMesher;
-import net.minecraft.client.renderer.RenderItem;
-import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.block.model.ModelManager;
 import net.minecraft.client.renderer.color.ItemColors;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
@@ -24,67 +20,66 @@ import org.lwjgl.opengl.GL11;
 import javax.annotation.Nonnull;
 
 @SideOnly(Side.CLIENT)
-public class StorageRenderItem extends RenderItem
-{
-    private RenderItem parent;
+public class StorageRenderItem extends RenderItem {
+
+    private final RenderItem parent;
 
     @Nonnull
     public ItemStack overrideStack;
 
-    public StorageRenderItem (TextureManager texManager, ModelManager modelManager, ItemColors colors) {
+    public StorageRenderItem(TextureManager texManager, ModelManager modelManager, ItemColors colors) {
         super(texManager, modelManager, colors);
         parent = Minecraft.getMinecraft().getRenderItem();
         overrideStack = ItemStack.EMPTY;
     }
 
     @Override
-    public ItemModelMesher getItemModelMesher () {
+    public ItemModelMesher getItemModelMesher() {
         return parent.getItemModelMesher();
     }
 
     @Override
-    public void renderItem (@Nonnull ItemStack stack, IBakedModel model) {
+    public void renderItem(@Nonnull ItemStack stack, IBakedModel model) {
         parent.renderItem(stack, model);
     }
 
     @Override
-    public boolean shouldRenderItemIn3D (@Nonnull ItemStack stack) {
+    public boolean shouldRenderItemIn3D(@Nonnull ItemStack stack) {
         return parent.shouldRenderItemIn3D(stack);
     }
 
     @Override
-    public void renderItem (@Nonnull ItemStack stack, ItemCameraTransforms.TransformType transformType) {
+    public void renderItem(@Nonnull ItemStack stack, ItemCameraTransforms.TransformType transformType) {
         parent.renderItem(stack, transformType);
     }
 
     @Override
-    public void renderItem (@Nonnull ItemStack stack, EntityLivingBase entity, ItemCameraTransforms.TransformType transform, boolean flag) {
+    public void renderItem(@Nonnull ItemStack stack, EntityLivingBase entity, ItemCameraTransforms.TransformType transform, boolean flag) {
         parent.renderItem(stack, entity, transform, flag);
     }
 
     @Override
-    public IBakedModel getItemModelWithOverrides (@Nonnull ItemStack stack, World world, EntityLivingBase entity) {
+    public IBakedModel getItemModelWithOverrides(@Nonnull ItemStack stack, World world, EntityLivingBase entity) {
         return parent.getItemModelWithOverrides(stack, world, entity);
     }
 
     @Override
-    public void renderItemIntoGUI (@Nonnull ItemStack stack, int x, int y) {
+    public void renderItemIntoGUI(@Nonnull ItemStack stack, int x, int y) {
         parent.renderItemIntoGUI(stack, x, y);
     }
 
     @Override
-    public void renderItemAndEffectIntoGUI (@Nonnull ItemStack stack, int xPosition, int yPosition) {
+    public void renderItemAndEffectIntoGUI(@Nonnull ItemStack stack, int xPosition, int yPosition) {
         parent.renderItemAndEffectIntoGUI(stack, xPosition, yPosition);
     }
 
     @Override
-    public void renderItemOverlays (FontRenderer fr, @Nonnull ItemStack stack, int xPosition, int yPosition) {
+    public void renderItemOverlays(FontRenderer fr, @Nonnull ItemStack stack, int xPosition, int yPosition) {
         parent.renderItemOverlays(fr, stack, xPosition, yPosition);
     }
 
     @Override
-    public void renderItemOverlayIntoGUI (FontRenderer font, @Nonnull ItemStack item, int x, int y, String text)
-    {
+    public void renderItemOverlayIntoGUI(FontRenderer font, @Nonnull ItemStack item, int x, int y, String text) {
         if (item != overrideStack) {
             super.renderItemOverlayIntoGUI(font, item, x, y, text);
             return;
@@ -92,8 +87,7 @@ public class StorageRenderItem extends RenderItem
 
         item = ItemStackHelper.decodeItemStack(item);
 
-        if (!item.isEmpty())
-        {
+        if (!item.isEmpty()) {
             float scale = .5f;
             float xoff = 0;
             if (font.getUnicodeFlag()) {
@@ -105,8 +99,7 @@ public class StorageRenderItem extends RenderItem
             if (ItemStackHelper.isStackEncoded(item))
                 stackSize = 0;
 
-            if (stackSize >= 0 || text != null)
-            {
+            if (stackSize >= 0 || text != null) {
                 if (stackSize >= 100000000 || (stackSize >= 1000000 && font.getUnicodeFlag()))
                     text = (text == null) ? String.format("%.0fM", stackSize / 1000000f) : text;
                 else if (stackSize >= 1000000)
@@ -118,8 +111,8 @@ public class StorageRenderItem extends RenderItem
                 else
                     text = (text == null) ? String.valueOf(stackSize) : text;
 
-                int textX = (int)((x + 16 + xoff - font.getStringWidth(text) * scale) / scale) - 1;
-                int textY = (int)((y + 16 - 7 * scale) / scale) - 1;
+                int textX = (int) ((x + 16 + xoff - font.getStringWidth(text) * scale) / scale) - 1;
+                int textY = (int) ((y + 16 - 7 * scale) / scale) - 1;
 
                 GlStateManager.disableLighting();
                 GlStateManager.disableDepth();
@@ -137,11 +130,10 @@ public class StorageRenderItem extends RenderItem
                 GlStateManager.enableDepth();
             }
 
-            if (item.getItem().showDurabilityBar(item))
-            {
+            if (item.getItem().showDurabilityBar(item)) {
                 double health = item.getItem().getDurabilityForDisplay(item);
-                int j1 = (int)Math.round(13.0D - health * 13.0D);
-                int k = (int)Math.round(255.0D - health * 255.0D);
+                int j1 = (int) Math.round(13.0D - health * 13.0D);
+                int k = (int) Math.round(255.0D - health * 255.0D);
                 GlStateManager.disableLighting();
                 GlStateManager.disableDepth();
                 GlStateManager.disableTexture2D();
@@ -163,13 +155,12 @@ public class StorageRenderItem extends RenderItem
         }
     }
 
-    private void renderQuad (BufferBuilder tessellator, int x, int y, int w, int h, int r, int g, int b, int a)
-    {
+    private void renderQuad(BufferBuilder tessellator, int x, int y, int w, int h, int r, int g, int b, int a) {
         tessellator.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR);
-        tessellator.pos(x + 0, y + 0, 0).color(r, g, b, a).endVertex();
-        tessellator.pos(x + 0, y + h, 0).color(r, g, b, a).endVertex();
+        tessellator.pos(x, y, 0).color(r, g, b, a).endVertex();
+        tessellator.pos(x, y + h, 0).color(r, g, b, a).endVertex();
         tessellator.pos(x + w, y + h, 0).color(r, g, b, a).endVertex();
-        tessellator.pos(x + w, y + 0, 0).color(r, g, b, a).endVertex();
+        tessellator.pos(x + w, y, 0).color(r, g, b, a).endVertex();
         Tessellator.getInstance().draw();
     }
 }

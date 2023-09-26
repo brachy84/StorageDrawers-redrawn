@@ -2,8 +2,7 @@ package com.jaquadro.minecraft.storagedrawers.item;
 
 import net.minecraft.util.IStringSerializable;
 
-public enum EnumUpgradeCreative implements IStringSerializable
-{
+public enum EnumUpgradeCreative implements IStringSerializable {
     STORAGE(0, "store", "store"),
     VENDING(1, "vend", "vend");
 
@@ -13,33 +12,33 @@ public enum EnumUpgradeCreative implements IStringSerializable
     private final String name;
     private final String unlocalizedName;
 
-    EnumUpgradeCreative (int meta, String name, String unlocalizedName) {
+    EnumUpgradeCreative(int meta, String name, String unlocalizedName) {
         this.meta = meta;
         this.name = name;
         this.unlocalizedName = unlocalizedName;
     }
 
-    public int getMetadata () {
+    public int getMetadata() {
         return meta;
     }
 
-    public String getUnlocalizedName () {
+    public String getUnlocalizedName() {
         return unlocalizedName;
     }
 
-    public static EnumUpgradeCreative byMetadata (int meta) {
+    public static EnumUpgradeCreative byMetadata(int meta) {
         if (meta < 0 || meta >= META_LOOKUP.length)
             meta = 0;
         return META_LOOKUP[meta];
     }
 
     @Override
-    public String toString () {
+    public String toString() {
         return unlocalizedName;
     }
 
     @Override
-    public String getName () {
+    public String getName() {
         return name;
     }
 

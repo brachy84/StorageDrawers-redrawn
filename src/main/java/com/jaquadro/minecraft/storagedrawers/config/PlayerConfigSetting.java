@@ -3,6 +3,7 @@ package com.jaquadro.minecraft.storagedrawers.config;
 import java.util.UUID;
 
 public class PlayerConfigSetting<T extends Comparable<T>> {
+
     public final String key;
     public final T value;
     public final UUID uuid;

@@ -15,14 +15,14 @@ import net.minecraft.world.World;
 
 import javax.annotation.Nonnull;
 
-public class ItemCustomTrim extends ItemBlock implements IFrameable
-{
-    public ItemCustomTrim (Block block) {
+public class ItemCustomTrim extends ItemBlock implements IFrameable {
+
+    public ItemCustomTrim(Block block) {
         super(block);
     }
 
     @Override
-    public boolean placeBlockAt (@Nonnull ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, IBlockState newState) {
+    public boolean placeBlockAt(@Nonnull ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, IBlockState newState) {
         if (!super.placeBlockAt(stack, player, world, pos, side, hitX, hitY, hitZ, newState))
             return false;
 
@@ -38,7 +38,7 @@ public class ItemCustomTrim extends ItemBlock implements IFrameable
     }
 
     @Nonnull
-    public static ItemStack makeItemStack (Block block, int count, @Nonnull ItemStack matSide, @Nonnull ItemStack matTrim) {
+    public static ItemStack makeItemStack(Block block, int count, @Nonnull ItemStack matSide, @Nonnull ItemStack matTrim) {
         Item item = Item.getItemFromBlock(block);
         if (!(item instanceof ItemCustomTrim))
             return ItemStack.EMPTY;
@@ -58,7 +58,7 @@ public class ItemCustomTrim extends ItemBlock implements IFrameable
         return stack;
     }
 
-    private static NBTTagCompound getMaterialTag (@Nonnull ItemStack mat) {
+    private static NBTTagCompound getMaterialTag(@Nonnull ItemStack mat) {
         mat = mat.copy();
         mat.setCount(1);
 

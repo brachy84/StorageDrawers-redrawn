@@ -27,20 +27,20 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Predicate;
 
-public abstract class StandardDrawerGroup extends TileDataShim implements IDrawerGroup
-{
+public abstract class StandardDrawerGroup extends TileDataShim implements IDrawerGroup {
+
     @CapabilityInject(IItemHandler.class)
     public static Capability<IItemHandler> ITEM_HANDLER_CAPABILITY = null;
     @CapabilityInject(IItemRepository.class)
     public static Capability<IItemRepository> ITEM_REPOSITORY_CAPABILITY = null;
 
     private DrawerData[] slots;
-    private int[] order;
+    private final int[] order;
 
     private final IItemHandler itemHandler;
     private final IItemRepository itemRepository;
 
-    public StandardDrawerGroup (int slotCount) {
+    public StandardDrawerGroup(int slotCount) {
         itemHandler = new DrawerItemHandler(this);
         itemRepository = new DrawerItemRepository(this);
 
@@ -52,19 +52,19 @@ public abstract class StandardDrawerGroup extends TileDataShim implements IDrawe
         syncSlots();
     }
 
-    public void setCapabilityProvider (ICapabilityProvider capProvider) {
+    public void setCapabilityProvider(ICapabilityProvider capProvider) {
         for (DrawerData slot : slots)
             slot.setCapabilityProvider(capProvider);
     }
 
     @Override
-    public int getDrawerCount () {
+    public int getDrawerCount() {
         return slots.length;
     }
 
     @Nonnull
     @Override
-    public IDrawer getDrawer (int slot) {
+    public IDrawer getDrawer(int slot) {
         if (slot < 0 || slot >= slots.length)
             return Drawers.DISABLED;
 
@@ -73,12 +73,12 @@ public abstract class StandardDrawerGroup extends TileDataShim implements IDrawe
 
     @Nonnull
     @Override
-    public int[] getAccessibleDrawerSlots () {
+    public int[] getAccessibleDrawerSlots() {
         return order;
     }
 
     @Override
-    public void readFromNBT (NBTTagCompound tag) {
+    public void readFromNBT(NBTTagCompound tag) {
         if (!tag.hasKey("Drawers")) {
             if (tag.hasKey("Slots"))
                 readFromLegacyNBT(tag);
@@ -92,7 +92,7 @@ public abstract class StandardDrawerGroup extends TileDataShim implements IDrawe
         }
     }
 
-    public void readFromLegacyNBT (NBTTagCompound tag) {
+    public void readFromLegacyNBT(NBTTagCompound tag) {
         NBTTagList slotTags = tag.getTagList("Slots", Constants.NBT.TAG_COMPOUND);
 
         DrawerData[] realSlots = new DrawerData[slotTags.tagCount()];
@@ -106,7 +106,7 @@ public abstract class StandardDrawerGroup extends TileDataShim implements IDrawe
     }
 
     @Override
-    public NBTTagCompound writeToNBT (NBTTagCompound tag) {
+    public NBTTagCompound writeToNBT(NBTTagCompound tag) {
         if (slots == null)
             return tag;
 
@@ -120,15 +120,15 @@ public abstract class StandardDrawerGroup extends TileDataShim implements IDrawe
     }
 
     @Override
-    public boolean hasCapability (@Nonnull Capability<?> capability, @Nullable EnumFacing facing) {
+    public boolean hasCapability(@Nonnull Capability<?> capability, @Nullable EnumFacing facing) {
         return capability == ITEM_HANDLER_CAPABILITY
-            || capability == ITEM_REPOSITORY_CAPABILITY;
+                || capability == ITEM_REPOSITORY_CAPABILITY;
     }
 
     @Nullable
     @Override
     @SuppressWarnings("unchecked")
-    public <T> T getCapability (@Nonnull Capability<T> capability, @Nullable EnumFacing facing) {
+    public <T> T getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing) {
         if (capability == ITEM_HANDLER_CAPABILITY)
             return (T) itemHandler;
         if (capability == ITEM_REPOSITORY_CAPABILITY)
@@ -138,15 +138,15 @@ public abstract class StandardDrawerGroup extends TileDataShim implements IDrawe
     }
 
     @Nonnull
-    protected abstract DrawerData createDrawer (int slot);
+    protected abstract DrawerData createDrawer(int slot);
 
-    public void syncAttributes () {
+    public void syncAttributes() {
         for (DrawerData drawer : slots)
             drawer.syncAttributes();
 
     }
 
-    public void syncSlots () {
+    public void syncSlots() {
         int index = 0;
         for (int i = 0; i < slots.length; i++) {
             IDrawer drawer = getDrawer(i);
@@ -171,8 +171,8 @@ public abstract class StandardDrawerGroup extends TileDataShim implements IDrawe
         }
     }
 
-    public static class DrawerData implements IDrawer, INBTSerializable<NBTTagCompound>
-    {
+    public static class DrawerData implements IDrawer, INBTSerializable<NBTTagCompound> {
+
         @CapabilityInject(IDrawerAttributes.class)
         static Capability<IDrawerAttributes> ATTR_CAPABILITY = null;
 
@@ -186,7 +186,7 @@ public abstract class StandardDrawerGroup extends TileDataShim implements IDrawe
         private ItemStackMatcher matcher;
         private Map<String, Object> auxData;
 
-        public DrawerData (StandardDrawerGroup group) {
+        public DrawerData(StandardDrawerGroup group) {
             this.group = group;
             attrs = new EmptyDrawerAttributes();
             protoStack = ItemStack.EMPTY;
@@ -194,7 +194,7 @@ public abstract class StandardDrawerGroup extends TileDataShim implements IDrawe
             matcher = ItemStackMatcher.EMPTY;
         }
 
-        public void setCapabilityProvider (ICapabilityProvider capProvider) {
+        public void setCapabilityProvider(ICapabilityProvider capProvider) {
             IDrawerAttributes capAttrs = capProvider.getCapability(ATTR_CAPABILITY, null);
             if (capAttrs != null)
                 attrs = capAttrs;
@@ -202,24 +202,24 @@ public abstract class StandardDrawerGroup extends TileDataShim implements IDrawe
 
         @Override
         @Nonnull
-        public ItemStack getStoredItemPrototype () {
+        public ItemStack getStoredItemPrototype() {
             return protoStack;
         }
 
         @Nonnull
         @Override
-        public ItemStack getPublicItemStack () {
+        public ItemStack getPublicItemStack() {
             publicStack.setCount(getStoredItemCount());
             return publicStack;
         }
 
         @Override
         @Nonnull
-        public IDrawer setStoredItem (@Nonnull ItemStack itemPrototype) {
+        public IDrawer setStoredItem(@Nonnull ItemStack itemPrototype) {
             return setStoredItem(itemPrototype, true);
         }
 
-        protected IDrawer setStoredItem (@Nonnull ItemStack itemPrototype, boolean notify) {
+        protected IDrawer setStoredItem(@Nonnull ItemStack itemPrototype, boolean notify) {
             if (matcher.matches(itemPrototype)) {
                 return this;
             }
@@ -247,7 +247,7 @@ public abstract class StandardDrawerGroup extends TileDataShim implements IDrawe
             return this;
         }
 
-        protected IDrawer setStoredItemRaw (@Nonnull ItemStack itemPrototype) {
+        protected IDrawer setStoredItemRaw(@Nonnull ItemStack itemPrototype) {
             itemPrototype = ItemStackHelper.getItemPrototype(itemPrototype);
             protoStack = itemPrototype;
             protoStack.setCount(1);
@@ -263,7 +263,7 @@ public abstract class StandardDrawerGroup extends TileDataShim implements IDrawe
         }
 
         @Override
-        public int getStoredItemCount () {
+        public int getStoredItemCount() {
             if (protoStack.isEmpty())
                 return 0;
 
@@ -274,11 +274,11 @@ public abstract class StandardDrawerGroup extends TileDataShim implements IDrawe
         }
 
         @Override
-        public void setStoredItemCount (int amount) {
+        public void setStoredItemCount(int amount) {
             setStoredItemCount(amount, true);
         }
 
-        protected void setStoredItemCount (int amount, boolean notify) {
+        protected void setStoredItemCount(int amount, boolean notify) {
             if (protoStack.isEmpty() || count == amount)
                 return;
 
@@ -296,16 +296,16 @@ public abstract class StandardDrawerGroup extends TileDataShim implements IDrawe
             }
         }
 
-        protected void setStoredItemCountRaw (int amount) {
+        protected void setStoredItemCountRaw(int amount) {
             count = amount;
         }
 
         @Override
-        public int adjustStoredItemCount (int amount) {
+        public int adjustStoredItemCount(int amount) {
             return adjustStoredItemCount(amount, true);
         }
 
-        protected int adjustStoredItemCount (int amount, boolean notify) {
+        protected int adjustStoredItemCount(int amount, boolean notify) {
             if (protoStack.isEmpty() || amount == 0)
                 return Math.abs(amount);
 
@@ -323,8 +323,7 @@ public abstract class StandardDrawerGroup extends TileDataShim implements IDrawe
                     return 0;
 
                 return amount - (count - originalCount);
-            }
-            else {
+            } else {
                 if (attrs.isUnlimitedVending())
                     return 0;
 
@@ -336,7 +335,7 @@ public abstract class StandardDrawerGroup extends TileDataShim implements IDrawe
         }
 
         @Override
-        public int getMaxCapacity (@Nonnull ItemStack itemPrototype) {
+        public int getMaxCapacity(@Nonnull ItemStack itemPrototype) {
             if (attrs.isUnlimitedStorage() || attrs.isUnlimitedVending())
                 return Integer.MAX_VALUE;
 
@@ -347,7 +346,7 @@ public abstract class StandardDrawerGroup extends TileDataShim implements IDrawe
         }
 
         @Override
-        public int getAcceptingMaxCapacity (@Nonnull ItemStack itemPrototype) {
+        public int getAcceptingMaxCapacity(@Nonnull ItemStack itemPrototype) {
             if (attrs.isVoid())
                 return Integer.MAX_VALUE;
 
@@ -355,7 +354,7 @@ public abstract class StandardDrawerGroup extends TileDataShim implements IDrawe
         }
 
         @Override
-        public int getRemainingCapacity () {
+        public int getRemainingCapacity() {
             if (protoStack.isEmpty())
                 return 0;
 
@@ -366,7 +365,7 @@ public abstract class StandardDrawerGroup extends TileDataShim implements IDrawe
         }
 
         @Override
-        public int getAcceptingRemainingCapacity () {
+        public int getAcceptingRemainingCapacity() {
             if (protoStack.isEmpty())
                 return 0;
 
@@ -377,7 +376,7 @@ public abstract class StandardDrawerGroup extends TileDataShim implements IDrawe
         }
 
         @Override
-        public boolean canItemBeStored (@Nonnull ItemStack itemPrototype, Predicate<ItemStack> matchPredicate) {
+        public boolean canItemBeStored(@Nonnull ItemStack itemPrototype, Predicate<ItemStack> matchPredicate) {
             if (protoStack.isEmpty() && !attrs.isItemLocked(LockAttribute.LOCK_EMPTY))
                 return true;
 
@@ -387,7 +386,7 @@ public abstract class StandardDrawerGroup extends TileDataShim implements IDrawe
         }
 
         @Override
-        public boolean canItemBeExtracted (@Nonnull ItemStack itemPrototype, Predicate<ItemStack> matchPredicate) {
+        public boolean canItemBeExtracted(@Nonnull ItemStack itemPrototype, Predicate<ItemStack> matchPredicate) {
             if (protoStack.isEmpty())
                 return false;
 
@@ -397,11 +396,11 @@ public abstract class StandardDrawerGroup extends TileDataShim implements IDrawe
         }
 
         @Override
-        public boolean isEmpty () {
+        public boolean isEmpty() {
             return protoStack.isEmpty();
         }
 
-        protected void reset (boolean notify) {
+        protected void reset(boolean notify) {
             protoStack = ItemStack.EMPTY;
             publicStack = ItemStack.EMPTY;
             count = 0;
@@ -413,7 +412,7 @@ public abstract class StandardDrawerGroup extends TileDataShim implements IDrawe
         }
 
         @Override
-        public NBTTagCompound serializeNBT () {
+        public NBTTagCompound serializeNBT() {
             NBTTagCompound tag = new NBTTagCompound();
             if (protoStack.isEmpty())
                 return tag;
@@ -428,7 +427,7 @@ public abstract class StandardDrawerGroup extends TileDataShim implements IDrawe
         }
 
         @Override
-        public void deserializeNBT (NBTTagCompound nbt) {
+        public void deserializeNBT(NBTTagCompound nbt) {
             ItemStack tagItem = ItemStack.EMPTY;
             int tagCount = 0;
 
@@ -443,7 +442,7 @@ public abstract class StandardDrawerGroup extends TileDataShim implements IDrawe
             onItemChanged();
         }
 
-        public void deserializeLegacyNBT (NBTTagCompound nbt) {
+        public void deserializeLegacyNBT(NBTTagCompound nbt) {
             ItemStack tagItem = ItemStack.EMPTY;
             int tagCount = 0;
 
@@ -464,7 +463,7 @@ public abstract class StandardDrawerGroup extends TileDataShim implements IDrawe
             onItemChanged();
         }
 
-        public void syncAttributes () {
+        public void syncAttributes() {
             if (!protoStack.isEmpty()) {
                 if (attrs.isDictConvertible())
                     matcher = new ItemStackOreMatcher(protoStack);
@@ -474,7 +473,7 @@ public abstract class StandardDrawerGroup extends TileDataShim implements IDrawe
         }
 
         @Override
-        public Object getExtendedData (String key) {
+        public Object getExtendedData(String key) {
             if (auxData == null || !auxData.containsKey(key))
                 return null;
 
@@ -482,7 +481,7 @@ public abstract class StandardDrawerGroup extends TileDataShim implements IDrawe
         }
 
         @Override
-        public void setExtendedData (String key, Object data) {
+        public void setExtendedData(String key, Object data) {
             if (auxData == null)
                 auxData = new HashMap<>();
 
@@ -493,9 +492,11 @@ public abstract class StandardDrawerGroup extends TileDataShim implements IDrawe
             return 0;
         }
 
-        protected void onItemChanged() { }
+        protected void onItemChanged() {
+        }
 
-        protected void onAmountChanged() { }
+        protected void onAmountChanged() {
+        }
     }
 
 }

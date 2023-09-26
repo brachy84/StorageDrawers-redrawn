@@ -8,8 +8,8 @@ import net.minecraftforge.common.util.INBTSerializable;
 
 import java.util.EnumSet;
 
-public class BasicDrawerAttributes implements IDrawerAttributes, IDrawerAttributesModifiable, INBTSerializable<NBTTagCompound>
-{
+public class BasicDrawerAttributes implements IDrawerAttributes, IDrawerAttributesModifiable, INBTSerializable<NBTTagCompound> {
+
     private EnumSet<LockAttribute> itemLock = EnumSet.noneOf(LockAttribute.class);
     private boolean isConcealed;
     private boolean isShowingQuantity;
@@ -19,17 +19,17 @@ public class BasicDrawerAttributes implements IDrawerAttributes, IDrawerAttribut
     private boolean isConversion;
 
     @Override
-    public boolean canItemLock (LockAttribute attr) {
+    public boolean canItemLock(LockAttribute attr) {
         return true;
     }
 
     @Override
-    public boolean isItemLocked (LockAttribute attr) {
+    public boolean isItemLocked(LockAttribute attr) {
         return itemLock.contains(attr);
     }
 
     @Override
-    public boolean setItemLocked (LockAttribute attr, boolean isLocked) {
+    public boolean setItemLocked(LockAttribute attr, boolean isLocked) {
         if (isItemLocked(attr) != isLocked) {
             if (isLocked)
                 itemLock.add(attr);
@@ -43,12 +43,12 @@ public class BasicDrawerAttributes implements IDrawerAttributes, IDrawerAttribut
     }
 
     @Override
-    public boolean isConcealed () {
+    public boolean isConcealed() {
         return isConcealed;
     }
 
     @Override
-    public boolean setIsConcealed (boolean state) {
+    public boolean setIsConcealed(boolean state) {
         if (isConcealed != state) {
             isConcealed = state;
             onAttributeChanged();
@@ -58,12 +58,12 @@ public class BasicDrawerAttributes implements IDrawerAttributes, IDrawerAttribut
     }
 
     @Override
-    public boolean isVoid () {
+    public boolean isVoid() {
         return isVoid;
     }
 
     @Override
-    public boolean setIsVoid (boolean state) {
+    public boolean setIsVoid(boolean state) {
         if (isVoid != state) {
             isVoid = state;
             onAttributeChanged();
@@ -73,12 +73,12 @@ public class BasicDrawerAttributes implements IDrawerAttributes, IDrawerAttribut
     }
 
     @Override
-    public boolean isShowingQuantity () {
+    public boolean isShowingQuantity() {
         return isShowingQuantity;
     }
 
     @Override
-    public boolean setIsShowingQuantity (boolean state) {
+    public boolean setIsShowingQuantity(boolean state) {
         if (isShowingQuantity != state) {
             isShowingQuantity = state;
             onAttributeChanged();
@@ -88,12 +88,12 @@ public class BasicDrawerAttributes implements IDrawerAttributes, IDrawerAttribut
     }
 
     @Override
-    public boolean isUnlimitedStorage () {
+    public boolean isUnlimitedStorage() {
         return isUnlimitedStorage;
     }
 
     @Override
-    public boolean setIsUnlimitedStorage (boolean state) {
+    public boolean setIsUnlimitedStorage(boolean state) {
         if (isUnlimitedStorage != state) {
             isUnlimitedStorage = state;
             onAttributeChanged();
@@ -103,12 +103,12 @@ public class BasicDrawerAttributes implements IDrawerAttributes, IDrawerAttribut
     }
 
     @Override
-    public boolean isUnlimitedVending () {
+    public boolean isUnlimitedVending() {
         return isUnlimitedVending;
     }
 
     @Override
-    public boolean setIsUnlimitedVending (boolean state) {
+    public boolean setIsUnlimitedVending(boolean state) {
         if (isUnlimitedVending != state) {
             isUnlimitedVending = state;
             onAttributeChanged();
@@ -118,12 +118,12 @@ public class BasicDrawerAttributes implements IDrawerAttributes, IDrawerAttribut
     }
 
     @Override
-    public boolean isDictConvertible () {
+    public boolean isDictConvertible() {
         return isConversion;
     }
 
     @Override
-    public boolean setIsDictConvertible (boolean state) {
+    public boolean setIsDictConvertible(boolean state) {
         if (isConversion != state) {
             isConversion = state;
             onAttributeChanged();
@@ -133,7 +133,7 @@ public class BasicDrawerAttributes implements IDrawerAttributes, IDrawerAttribut
     }
 
     @Override
-    public NBTTagCompound serializeNBT () {
+    public NBTTagCompound serializeNBT() {
         NBTTagCompound tag = new NBTTagCompound();
 
         tag.setInteger("itemLock", LockAttribute.getBitfield(itemLock));
@@ -148,7 +148,7 @@ public class BasicDrawerAttributes implements IDrawerAttributes, IDrawerAttribut
     }
 
     @Override
-    public void deserializeNBT (NBTTagCompound nbt) {
+    public void deserializeNBT(NBTTagCompound nbt) {
         itemLock = LockAttribute.getEnumSet(nbt.getInteger("itemLock"));
         isConcealed = nbt.getBoolean("concealed");
         isVoid = nbt.getBoolean("void");
@@ -158,5 +158,6 @@ public class BasicDrawerAttributes implements IDrawerAttributes, IDrawerAttribut
         isConversion = nbt.getBoolean("conv");
     }
 
-    protected void onAttributeChanged () { }
+    protected void onAttributeChanged() {
+    }
 }

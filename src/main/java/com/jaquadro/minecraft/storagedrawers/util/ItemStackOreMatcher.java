@@ -8,17 +8,17 @@ import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ItemStackOreMatcher extends ItemStackMatcher
-{
+public class ItemStackOreMatcher extends ItemStackMatcher {
+
     private List<ItemStack> oreDictMatches;
 
-    public ItemStackOreMatcher (@Nonnull ItemStack stack) {
+    public ItemStackOreMatcher(@Nonnull ItemStack stack) {
         super(stack);
         refreshOreDictMatches();
     }
 
     @Override
-    public boolean matches (@Nonnull ItemStack stack) {
+    public boolean matches(@Nonnull ItemStack stack) {
         if (!this.stack.isItemEqual(stack)) {
             if (oreDictMatches == null)
                 return false;
@@ -40,7 +40,7 @@ public class ItemStackOreMatcher extends ItemStackMatcher
         return ItemStack.areItemStackTagsEqual(this.stack, stack);
     }
 
-    public void refreshOreDictMatches () {
+    public void refreshOreDictMatches() {
         if (stack.isEmpty()) {
             oreDictMatches = null;
             return;
@@ -69,11 +69,11 @@ public class ItemStackOreMatcher extends ItemStackMatcher
         }
     }
 
-    public static boolean areItemsEqual (@Nonnull ItemStack stack1, @Nonnull ItemStack stack2) {
+    public static boolean areItemsEqual(@Nonnull ItemStack stack1, @Nonnull ItemStack stack2) {
         return areItemsEqual(stack1, stack2, true);
     }
 
-    public static boolean areItemsEqual (@Nonnull ItemStack stack1, @Nonnull ItemStack stack2, boolean oreDictStrictMode) {
+    public static boolean areItemsEqual(@Nonnull ItemStack stack1, @Nonnull ItemStack stack2, boolean oreDictStrictMode) {
         if (!stack1.isEmpty() && !stack2.isEmpty() && !stack1.isItemEqual(stack2)) {
             if (stack1.getItemDamage() == OreDictionary.WILDCARD_VALUE || stack2.getItemDamage() == OreDictionary.WILDCARD_VALUE)
                 return false;

@@ -15,10 +15,10 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
 
 @SideOnly(Side.CLIENT)
-public class TileEntityFramingRenderer extends TileEntitySpecialRenderer<TileEntityFramingTable>
-{
+public class TileEntityFramingRenderer extends TileEntitySpecialRenderer<TileEntityFramingTable> {
+
     @Override
-    public void render (TileEntityFramingTable tile, double x, double y, double z, float partialTickTime, int destroyStage, float par7) {
+    public void render(TileEntityFramingTable tile, double x, double y, double z, float partialTickTime, int destroyStage, float par7) {
         if (tile == null)
             return;
 
@@ -50,7 +50,7 @@ public class TileEntityFramingRenderer extends TileEntitySpecialRenderer<TileEnt
         renderSlot(tile, x, y, z, matFront, .575f, .5f + .65f, .15f, -.225f - .5f);
     }
 
-    private void renderSlot (TileEntityFramingTable tileTable, double x, double y, double z, ItemStack item, float scale, float tx, float ty, float tz) {
+    private void renderSlot(TileEntityFramingTable tileTable, double x, double y, double z, ItemStack item, float scale, float tx, float ty, float tz) {
         if (item == null)
             return;
 
@@ -82,8 +82,8 @@ public class TileEntityFramingRenderer extends TileEntitySpecialRenderer<TileEnt
 
         try {
             Minecraft.getMinecraft().getRenderItem().renderItem(item, ItemCameraTransforms.TransformType.FIXED);
+        } catch (Exception ignored) {
         }
-        catch (Exception ignored) { }
 
         GL11.glPopMatrix();
     }

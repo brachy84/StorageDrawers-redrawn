@@ -25,36 +25,35 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nonnull;
-import java.util.List;
 
-public class BlockTrimCustom extends BlockTrim implements ITileEntityProvider
-{
+public class BlockTrimCustom extends BlockTrim implements ITileEntityProvider {
+
     public static final IUnlistedProperty<MaterialModelData> MAT_MODEL = UnlistedModelData.create(MaterialModelData.class);
 
-    public BlockTrimCustom (String registryName, String name) {
+    public BlockTrimCustom(String registryName, String name) {
         super(registryName, name);
         hasTileEntity = true;
     }
 
     @Override
-    protected void setDefaultState () {
+    protected void setDefaultState() {
         setDefaultState(blockState.getBaseState());
     }
 
     @Override
-    public boolean canRenderInLayer (IBlockState state, BlockRenderLayer layer) {
+    public boolean canRenderInLayer(IBlockState state, BlockRenderLayer layer) {
         return layer == BlockRenderLayer.CUTOUT_MIPPED;
     }
 
     @Override
     @SuppressWarnings("deprecation")
-    public boolean isOpaqueCube (IBlockState state) {
+    public boolean isOpaqueCube(IBlockState state) {
         return false;
     }
 
     @Override
     @Nonnull
-    protected ItemStack getMainDrop (IBlockAccess world, BlockPos pos, IBlockState state) {
+    protected ItemStack getMainDrop(IBlockAccess world, BlockPos pos, IBlockState state) {
         TileEntityTrim tile = getTileEntity(world, pos);
         if (tile == null)
             return ItemCustomTrim.makeItemStack(this, 1, ItemStack.EMPTY, ItemStack.EMPTY);
@@ -69,42 +68,42 @@ public class BlockTrimCustom extends BlockTrim implements ITileEntityProvider
 
     @Override
     @SideOnly(Side.CLIENT)
-    public void getSubBlocks (CreativeTabs creativeTabs, NonNullList<ItemStack> list) {
+    public void getSubBlocks(CreativeTabs creativeTabs, NonNullList<ItemStack> list) {
         list.add(new ItemStack(this));
     }
 
-    public TileEntityTrim getTileEntity (IBlockAccess blockAccess, BlockPos pos) {
+    public TileEntityTrim getTileEntity(IBlockAccess blockAccess, BlockPos pos) {
         TileEntity tile = blockAccess.getTileEntity(pos);
         return (tile instanceof TileEntityTrim) ? (TileEntityTrim) tile : null;
     }
 
     @Override
-    public TileEntity createNewTileEntity (World world, int meta) {
+    public TileEntity createNewTileEntity(World world, int meta) {
         return new TileEntityTrim();
     }
 
     @Override
-    public void breakBlock (World worldIn, BlockPos pos, IBlockState state) {
+    public void breakBlock(World worldIn, BlockPos pos, IBlockState state) {
         super.breakBlock(worldIn, pos, state);
         worldIn.removeTileEntity(pos);
     }
 
     @Override
     @SuppressWarnings("deprecation")
-    public boolean eventReceived (IBlockState state, World world, BlockPos pos, int id, int param) {
+    public boolean eventReceived(IBlockState state, World world, BlockPos pos, int id, int param) {
         super.eventReceived(state, world, pos, id, param);
         TileEntity tile = world.getTileEntity(pos);
         return (tile != null) && tile.receiveClientEvent(id, param);
     }
 
     @Override
-    protected BlockStateContainer createBlockState () {
-        return new ExtendedBlockState(this, new IProperty[0], new IUnlistedProperty[] { MAT_MODEL });
+    protected BlockStateContainer createBlockState() {
+        return new ExtendedBlockState(this, new IProperty[0], new IUnlistedProperty[]{MAT_MODEL});
     }
 
     @Override
     @SuppressWarnings("deprecation")
-    public IBlockState getExtendedState (IBlockState state, IBlockAccess world, BlockPos pos) {
+    public IBlockState getExtendedState(IBlockState state, IBlockAccess world, BlockPos pos) {
         state = getActualState(state, world, pos);
         if (!(state instanceof IExtendedBlockState))
             return state;
@@ -113,16 +112,16 @@ public class BlockTrimCustom extends BlockTrim implements ITileEntityProvider
         if (tile == null)
             return state;
 
-        return ((IExtendedBlockState)state).withProperty(MAT_MODEL, new MaterialModelData(tile));
+        return ((IExtendedBlockState) state).withProperty(MAT_MODEL, new MaterialModelData(tile));
     }
 
     @Override
-    public int getMetaFromState (IBlockState state) {
+    public int getMetaFromState(IBlockState state) {
         return 0;
     }
 
     @Override
-    public IBlockState getStateFromMeta (int meta) {
+    public IBlockState getStateFromMeta(int meta) {
         return getDefaultState();
     }
 }

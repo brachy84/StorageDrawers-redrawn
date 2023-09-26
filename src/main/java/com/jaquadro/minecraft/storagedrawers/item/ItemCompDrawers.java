@@ -29,19 +29,19 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ItemCompDrawers extends ItemBlock implements IItemMeshMapper, IItemVariantProvider
-{
-    public ItemCompDrawers (Block block) {
+public class ItemCompDrawers extends ItemBlock implements IItemMeshMapper, IItemVariantProvider {
+
+    public ItemCompDrawers(Block block) {
         super(block);
     }
 
     @Override
-    public int getMetadata (int damage) {
+    public int getMetadata(int damage) {
         return damage;
     }
 
     @Override
-    public boolean placeBlockAt (ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, IBlockState newState) {
+    public boolean placeBlockAt(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, IBlockState newState) {
         if (!super.placeBlockAt(stack, player, world, pos, side, hitX, hitY, hitZ, newState))
             return false;
 
@@ -61,7 +61,7 @@ public class ItemCompDrawers extends ItemBlock implements IItemMeshMapper, IItem
 
     @Override
     @SideOnly(Side.CLIENT)
-    public void addInformation (@Nonnull ItemStack itemStack, @Nullable World world, List<String> list, ITooltipFlag advanced) {
+    public void addInformation(@Nonnull ItemStack itemStack, @Nullable World world, List<String> list, ITooltipFlag advanced) {
         ConfigManager config = StorageDrawers.config;
 
         int count = config.getBlockBaseStorage("compdrawers");
@@ -73,7 +73,7 @@ public class ItemCompDrawers extends ItemBlock implements IItemMeshMapper, IItem
     }
 
     @Override
-    public List<ResourceLocation> getItemVariants () {
+    public List<ResourceLocation> getItemVariants() {
         ResourceLocation location = ForgeRegistries.ITEMS.getKey(this);
         List<ResourceLocation> variants = new ArrayList<ResourceLocation>();
 
@@ -84,7 +84,7 @@ public class ItemCompDrawers extends ItemBlock implements IItemMeshMapper, IItem
     }
 
     @Override
-    public List<Pair<ItemStack, ModelResourceLocation>> getMeshMappings () {
+    public List<Pair<ItemStack, ModelResourceLocation>> getMeshMappings() {
         List<Pair<ItemStack, ModelResourceLocation>> mappings = new ArrayList<>();
 
         for (EnumCompDrawer type : EnumCompDrawer.values()) {

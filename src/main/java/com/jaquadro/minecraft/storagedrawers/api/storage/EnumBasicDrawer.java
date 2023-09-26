@@ -4,8 +4,7 @@ import net.minecraft.util.IStringSerializable;
 
 import javax.annotation.Nonnull;
 
-public enum EnumBasicDrawer implements IDrawerGeometry, IStringSerializable
-{
+public enum EnumBasicDrawer implements IDrawerGeometry, IStringSerializable {
     FULL1(0, 1, false, "full1", "fulldrawers1"),
     FULL2(1, 2, false, "full2", "fulldrawers2"),
     FULL4(2, 4, false, "full4", "fulldrawers4"),
@@ -20,7 +19,7 @@ public enum EnumBasicDrawer implements IDrawerGeometry, IStringSerializable
     private final String name;
     private final String unlocalizedName;
 
-    EnumBasicDrawer (int meta, int drawerCount, boolean halfDepth, String name, String unlocalizedName) {
+    EnumBasicDrawer(int meta, int drawerCount, boolean halfDepth, String name, String unlocalizedName) {
         this.meta = meta;
         this.name = name;
         this.drawerCount = drawerCount;
@@ -28,38 +27,38 @@ public enum EnumBasicDrawer implements IDrawerGeometry, IStringSerializable
         this.unlocalizedName = unlocalizedName;
     }
 
-    public int getMetadata () {
+    public int getMetadata() {
         return meta;
     }
 
     @Override
-    public int getDrawerCount () {
+    public int getDrawerCount() {
         return drawerCount;
     }
 
     @Override
-    public boolean isHalfDepth () {
+    public boolean isHalfDepth() {
         return halfDepth;
     }
 
-    public String getUnlocalizedName () {
+    public String getUnlocalizedName() {
         return unlocalizedName;
     }
 
-    public static EnumBasicDrawer byMetadata (int meta) {
+    public static EnumBasicDrawer byMetadata(int meta) {
         if (meta < 0 || meta >= META_LOOKUP.length)
             meta = 0;
         return META_LOOKUP[meta];
     }
 
     @Override
-    public String toString () {
+    public String toString() {
         return getName();
     }
 
     @Override
     @Nonnull
-    public String getName () {
+    public String getName() {
         return name;
     }
 

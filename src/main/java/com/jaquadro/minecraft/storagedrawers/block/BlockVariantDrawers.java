@@ -19,24 +19,22 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.property.ExtendedBlockState;
 import net.minecraftforge.common.property.IUnlistedProperty;
 
-import java.util.List;
+public class BlockVariantDrawers extends BlockStandardDrawers {
 
-public class BlockVariantDrawers extends BlockStandardDrawers
-{
     public static final PropertyEnum<BlockPlanks.EnumType> VARIANT = PropertyEnum.create("variant", BlockPlanks.EnumType.class);
 
-    public BlockVariantDrawers (String registryName, String blockName) {
+    public BlockVariantDrawers(String registryName, String blockName) {
         super(registryName, blockName);
     }
 
     @Override
-    protected void initDefaultState () {
+    protected void initDefaultState() {
         super.initDefaultState();
         setDefaultState(getDefaultState().withProperty(VARIANT, BlockPlanks.EnumType.OAK));
     }
 
     @Override
-    protected ItemStack getMainDrop (IBlockAccess world, BlockPos pos, IBlockState state) {
+    protected ItemStack getMainDrop(IBlockAccess world, BlockPos pos, IBlockState state) {
         ItemStack drop = super.getMainDrop(world, pos, state);
 
         TileEntityDrawers tile = getTileEntity(world, pos);
@@ -55,7 +53,7 @@ public class BlockVariantDrawers extends BlockStandardDrawers
     }
 
     @Override
-    public void getSubBlocks (CreativeTabs creativeTabs, NonNullList<ItemStack> list) {
+    public void getSubBlocks(CreativeTabs creativeTabs, NonNullList<ItemStack> list) {
         for (EnumBasicDrawer type : EnumBasicDrawer.values()) {
             for (BlockPlanks.EnumType material : BlockPlanks.EnumType.values()) {
                 ItemStack stack = new ItemStack(this, 1, type.getMetadata());
@@ -71,22 +69,22 @@ public class BlockVariantDrawers extends BlockStandardDrawers
     }
 
     @Override
-    protected BlockStateContainer createBlockState () {
-        return new ExtendedBlockState(this, new IProperty[] { BLOCK, VARIANT, FACING }, new IUnlistedProperty[] { STATE_MODEL });
+    protected BlockStateContainer createBlockState() {
+        return new ExtendedBlockState(this, new IProperty[]{BLOCK, VARIANT, FACING}, new IUnlistedProperty[]{STATE_MODEL});
     }
 
     @Override
-    public IBlockState getActualState (IBlockState state, IBlockAccess worldIn, BlockPos pos) {
+    public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos) {
         TileEntityDrawers tile = getTileEntity(worldIn, pos);
         if (tile == null)
             return state;
 
         return super.getActualState(state, worldIn, pos)
-            .withProperty(VARIANT, translateMaterial(tile.getMaterialOrDefault()));
+                .withProperty(VARIANT, translateMaterial(tile.getMaterialOrDefault()));
     }
 
     @Override
-    public boolean retrimBlock (World world, BlockPos pos, ItemStack prototype) {
+    public boolean retrimBlock(World world, BlockPos pos, ItemStack prototype) {
         if (retrimType() == null)
             return false;
 
@@ -115,7 +113,7 @@ public class BlockVariantDrawers extends BlockStandardDrawers
         return true;
     }
 
-    private BlockPlanks.EnumType translateMaterial (String material) {
+    private BlockPlanks.EnumType translateMaterial(String material) {
         for (BlockPlanks.EnumType type : BlockPlanks.EnumType.values()) {
             if (material.equals(type.getName()))
                 return type;

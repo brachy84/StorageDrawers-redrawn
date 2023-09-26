@@ -20,7 +20,8 @@ import com.jaquadro.minecraft.storagedrawers.client.model.component.DrawerSealed
 import com.jaquadro.minecraft.storagedrawers.client.model.dynamic.CommonDrawerRenderer;
 import com.jaquadro.minecraft.storagedrawers.core.ModBlocks;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.renderer.block.model.*;
+import net.minecraft.client.renderer.block.model.IBakedModel;
+import net.minecraft.client.renderer.block.model.ItemOverrideList;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
@@ -38,44 +39,44 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class CustomDrawerModel extends ChamModel
-{
-    public static class Register extends DefaultRegister
-    {
+public class CustomDrawerModel extends ChamModel {
+
+    public static class Register extends DefaultRegister {
+
         public static final ResourceLocation iconDefaultSide = new ResourceLocation(StorageDrawers.MOD_ID + ":blocks/drawers_raw_side");
 
-        public static final ResourceLocation[] iconDefaultFront = new ResourceLocation[] {
-            new ResourceLocation(StorageDrawers.MOD_ID + ":blocks/drawers_raw_front_1"),
-            new ResourceLocation(StorageDrawers.MOD_ID + ":blocks/drawers_raw_front_2"),
-            new ResourceLocation(StorageDrawers.MOD_ID + ":blocks/drawers_raw_front_4"),
+        public static final ResourceLocation[] iconDefaultFront = new ResourceLocation[]{
+                new ResourceLocation(StorageDrawers.MOD_ID + ":blocks/drawers_raw_front_1"),
+                new ResourceLocation(StorageDrawers.MOD_ID + ":blocks/drawers_raw_front_2"),
+                new ResourceLocation(StorageDrawers.MOD_ID + ":blocks/drawers_raw_front_4"),
         };
-        public static final ResourceLocation[] iconOverlayTrim = new ResourceLocation[] {
-            new ResourceLocation(StorageDrawers.MOD_ID + ":blocks/overlay/shading_trim_1"),
-            new ResourceLocation(StorageDrawers.MOD_ID + ":blocks/overlay/shading_trim_2"),
-            new ResourceLocation(StorageDrawers.MOD_ID + ":blocks/overlay/shading_trim_4"),
+        public static final ResourceLocation[] iconOverlayTrim = new ResourceLocation[]{
+                new ResourceLocation(StorageDrawers.MOD_ID + ":blocks/overlay/shading_trim_1"),
+                new ResourceLocation(StorageDrawers.MOD_ID + ":blocks/overlay/shading_trim_2"),
+                new ResourceLocation(StorageDrawers.MOD_ID + ":blocks/overlay/shading_trim_4"),
         };
-        public static final ResourceLocation[] iconOverlayBoldTrim = new ResourceLocation[] {
-            new ResourceLocation(StorageDrawers.MOD_ID + ":blocks/overlay/shading_boldtrim_1"),
-            new ResourceLocation(StorageDrawers.MOD_ID + ":blocks/overlay/shading_boldtrim_2"),
-            new ResourceLocation(StorageDrawers.MOD_ID + ":blocks/overlay/shading_boldtrim_4"),
+        public static final ResourceLocation[] iconOverlayBoldTrim = new ResourceLocation[]{
+                new ResourceLocation(StorageDrawers.MOD_ID + ":blocks/overlay/shading_boldtrim_1"),
+                new ResourceLocation(StorageDrawers.MOD_ID + ":blocks/overlay/shading_boldtrim_2"),
+                new ResourceLocation(StorageDrawers.MOD_ID + ":blocks/overlay/shading_boldtrim_4"),
         };
-        public static final ResourceLocation[] iconOverlayFace = new ResourceLocation[] {
-            new ResourceLocation(StorageDrawers.MOD_ID + ":blocks/overlay/shading_face_1"),
-            new ResourceLocation(StorageDrawers.MOD_ID + ":blocks/overlay/shading_face_2"),
-            new ResourceLocation(StorageDrawers.MOD_ID + ":blocks/overlay/shading_face_4"),
+        public static final ResourceLocation[] iconOverlayFace = new ResourceLocation[]{
+                new ResourceLocation(StorageDrawers.MOD_ID + ":blocks/overlay/shading_face_1"),
+                new ResourceLocation(StorageDrawers.MOD_ID + ":blocks/overlay/shading_face_2"),
+                new ResourceLocation(StorageDrawers.MOD_ID + ":blocks/overlay/shading_face_4"),
         };
         public static final ResourceLocation[] iconOverlayHandle = new ResourceLocation[]{
-            new ResourceLocation(StorageDrawers.MOD_ID + ":blocks/overlay/handle_1"),
-            new ResourceLocation(StorageDrawers.MOD_ID + ":blocks/overlay/handle_2"),
-            new ResourceLocation(StorageDrawers.MOD_ID + ":blocks/overlay/handle_4"),
+                new ResourceLocation(StorageDrawers.MOD_ID + ":blocks/overlay/handle_1"),
+                new ResourceLocation(StorageDrawers.MOD_ID + ":blocks/overlay/handle_2"),
+                new ResourceLocation(StorageDrawers.MOD_ID + ":blocks/overlay/handle_4"),
         };
 
-        public Register () {
+        public Register() {
             super(ModBlocks.customDrawers);
         }
 
         @Override
-        public List<IBlockState> getBlockStates () {
+        public List<IBlockState> getBlockStates() {
             List<IBlockState> states = new ArrayList<>();
 
             for (EnumBasicDrawer drawer : EnumBasicDrawer.values()) {
@@ -87,17 +88,17 @@ public class CustomDrawerModel extends ChamModel
         }
 
         @Override
-        public IBakedModel getModel (IBlockState state, IBakedModel existingModel) {
+        public IBakedModel getModel(IBlockState state, IBakedModel existingModel) {
             return new CachedBuilderModel(new Model());
         }
 
         @Override
-        public IBakedModel getModel (ItemStack stack, IBakedModel existingModel) {
+        public IBakedModel getModel(ItemStack stack, IBakedModel existingModel) {
             return new CachedBuilderModel(new Model());
         }
 
         @Override
-        public List<ResourceLocation> getTextureResources () {
+        public List<ResourceLocation> getTextureResources() {
             List<ResourceLocation> resource = new ArrayList<>();
             resource.add(iconDefaultSide);
             resource.addAll(Arrays.asList(iconDefaultFront));
@@ -109,11 +110,11 @@ public class CustomDrawerModel extends ChamModel
         }
     }
 
-    private static final int[] iconIndex = new int[] { 0, 0, 1, 0, 2 };
+    private static final int[] iconIndex = new int[]{0, 0, 1, 0, 2};
 
     private TextureAtlasSprite iconParticle;
 
-    public static IBakedModel fromBlock (IBlockState state) {
+    public static IBakedModel fromBlock(IBlockState state) {
         if (!(state instanceof IExtendedBlockState xstate))
             return new CustomDrawerModel(state, false);
 
@@ -133,7 +134,7 @@ public class CustomDrawerModel extends ChamModel
         return new CustomDrawerModel(state, effMatFront, effMatSide, effMatTrim, matFront, matSide, matTrim, false);
     }
 
-    public static IBakedModel fromItem (@Nonnull ItemStack stack) {
+    public static IBakedModel fromItem(@Nonnull ItemStack stack) {
         IBlockState state = ModBlocks.customDrawers.getStateFromMeta(stack.getMetadata());
         if (!stack.hasTagCompound())
             return new CustomDrawerModel(state, true);
@@ -161,24 +162,24 @@ public class CustomDrawerModel extends ChamModel
         return new DrawerSealedModel(model, state, true);
     }
 
-    private CustomDrawerModel (IBlockState state, boolean mergeLayers) {
+    private CustomDrawerModel(IBlockState state, boolean mergeLayers) {
         this(state, ItemStack.EMPTY, ItemStack.EMPTY, ItemStack.EMPTY,
-            ItemStack.EMPTY, ItemStack.EMPTY, ItemStack.EMPTY, mergeLayers);
+                ItemStack.EMPTY, ItemStack.EMPTY, ItemStack.EMPTY, mergeLayers);
     }
 
-    private CustomDrawerModel (IBlockState state, @Nonnull ItemStack effMatFront, @Nonnull ItemStack effMatSide, @Nonnull ItemStack effMatTrim,
-                               @Nonnull ItemStack matFront, @Nonnull ItemStack matSide, @Nonnull ItemStack matTrim, boolean mergeLayers) {
+    private CustomDrawerModel(IBlockState state, @Nonnull ItemStack effMatFront, @Nonnull ItemStack effMatSide, @Nonnull ItemStack effMatTrim,
+                              @Nonnull ItemStack matFront, @Nonnull ItemStack matSide, @Nonnull ItemStack matTrim, boolean mergeLayers) {
         super(state, mergeLayers, effMatFront, effMatSide, effMatTrim, matFront, matSide, matTrim);
     }
 
     @Override
-    protected void renderMippedLayer (ChamRender renderer, IBlockState state, Object... args) {
+    protected void renderMippedLayer(ChamRender renderer, IBlockState state, Object... args) {
         EnumBasicDrawer info = state.getValue(BlockStandardDrawers.BLOCK);
         int index = iconIndex[info.getDrawerCount()];
 
-        ItemStack itemFront = (ItemStack)args[0];
-        ItemStack itemSide = (ItemStack)args[1];
-        ItemStack itemTrim = (ItemStack)args[2];
+        ItemStack itemFront = (ItemStack) args[0];
+        ItemStack itemSide = (ItemStack) args[1];
+        ItemStack itemTrim = (ItemStack) args[2];
 
         TextureAtlasSprite iconFront = !itemFront.isEmpty() ? IconUtil.getIconFromStack(itemFront) : null;
         TextureAtlasSprite iconSide = !itemSide.isEmpty() ? IconUtil.getIconFromStack(itemSide) : null;
@@ -203,14 +204,14 @@ public class CustomDrawerModel extends ChamModel
     }
 
     @Override
-    protected void renderTransLayer (ChamRender renderer, IBlockState state, Object... args) {
+    protected void renderTransLayer(ChamRender renderer, IBlockState state, Object... args) {
         EnumBasicDrawer info = state.getValue(BlockStandardDrawers.BLOCK);
         int index = iconIndex[info.getDrawerCount()];
 
         TextureAtlasSprite iconOverlayFace = Chameleon.instance.iconRegistry.getIcon(Register.iconOverlayFace[index]);
         TextureAtlasSprite iconOverlayHandle = Chameleon.instance.iconRegistry.getIcon(Register.iconOverlayHandle[index]);
 
-        ItemStack itemTrim = (ItemStack)args[5];
+        ItemStack itemTrim = (ItemStack) args[5];
 
         TextureAtlasSprite iconTrim = !itemTrim.isEmpty() ? IconUtil.getIconFromStack(itemTrim) : null;
         TextureAtlasSprite iconOverlayTrim;
@@ -225,18 +226,18 @@ public class CustomDrawerModel extends ChamModel
     }
 
     @Override
-    public TextureAtlasSprite getParticleTexture () {
+    public TextureAtlasSprite getParticleTexture() {
         return iconParticle;
     }
 
-    public static class Model extends ProxyBuilderModel
-    {
-        public Model () {
+    public static class Model extends ProxyBuilderModel {
+
+        public Model() {
             super(Chameleon.instance.iconRegistry.getIcon(Register.iconDefaultSide));
         }
 
         @Override
-        protected IBakedModel buildModel (IBlockState state, IBakedModel parent) {
+        protected IBakedModel buildModel(IBlockState state, IBakedModel parent) {
             try {
                 IBakedModel mainModel = CustomDrawerModel.fromBlock(state);
                 if (!(state instanceof IExtendedBlockState xstate))
@@ -254,45 +255,42 @@ public class CustomDrawerModel extends ChamModel
                     DrawerDecoratorModel decModel = new DrawerDecoratorModel(mainModel, xstate, drawer, dir, stateModel);
                     decModel.addBaseRenderLayer(BlockRenderLayer.TRANSLUCENT);
                     return decModel;
-                }
-                catch (Throwable t) {
+                } catch (Throwable t) {
                     return mainModel;
                 }
-            }
-            catch (Throwable t) {
+            } catch (Throwable t) {
                 return parent;
             }
         }
 
         @Override
-        public ItemOverrideList getOverrides () {
+        public ItemOverrideList getOverrides() {
             return itemHandler;
         }
 
         @Override
-        public List<Object> getKey (IBlockState state) {
+        public List<Object> getKey(IBlockState state) {
             try {
                 List<Object> key = new ArrayList<Object>();
-                IExtendedBlockState xstate = (IExtendedBlockState)state;
+                IExtendedBlockState xstate = (IExtendedBlockState) state;
                 key.add(xstate.getValue(BlockDrawers.STATE_MODEL));
                 key.add(xstate.getValue(BlockDrawersCustom.MAT_MODEL));
 
                 return key;
-            }
-            catch (Throwable t) {
+            } catch (Throwable t) {
                 return super.getKey(state);
             }
         }
     }
 
-    private static class ItemHandler extends ItemOverrideList
-    {
-        public ItemHandler () {
-            super(ImmutableList.<ItemOverride>of());
+    private static class ItemHandler extends ItemOverrideList {
+
+        public ItemHandler() {
+            super(ImmutableList.of());
         }
 
         @Override
-        public IBakedModel handleItemState (IBakedModel originalModel, @Nonnull ItemStack stack, World world, EntityLivingBase entity) {
+        public IBakedModel handleItemState(IBakedModel originalModel, @Nonnull ItemStack stack, World world, EntityLivingBase entity) {
             return fromItem(stack);
         }
     }

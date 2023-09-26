@@ -14,7 +14,6 @@ import com.jaquadro.minecraft.storagedrawers.core.ModBlocks;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.block.model.IBakedModel;
-import net.minecraft.client.renderer.block.model.ItemOverride;
 import net.minecraft.client.renderer.block.model.ItemOverrideList;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
@@ -25,25 +24,26 @@ import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.common.util.Constants;
 
 import javax.annotation.Nonnull;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
-public final class CompDrawerModel
-{
-    public static class Register extends DefaultRegister
-    {
-        public Register () {
+public final class CompDrawerModel {
+
+    public static class Register extends DefaultRegister {
+
+        public Register() {
             super(ModBlocks.compDrawers);
         }
 
         @Override
-        public List<IBlockState> getBlockStates () {
+        public List<IBlockState> getBlockStates() {
             List<IBlockState> states = new ArrayList<>();
 
             for (EnumCompDrawer drawer : EnumCompDrawer.values()) {
                 for (EnumFacing dir : EnumFacing.HORIZONTALS) {
                     states.add(ModBlocks.compDrawers.getDefaultState()
-                        .withProperty(BlockCompDrawers.SLOTS, drawer)
-                        .withProperty(BlockCompDrawers.FACING, dir));
+                            .withProperty(BlockCompDrawers.SLOTS, drawer)
+                            .withProperty(BlockCompDrawers.FACING, dir));
                 }
             }
 
@@ -51,26 +51,26 @@ public final class CompDrawerModel
         }
 
         @Override
-        public IBakedModel getModel (IBlockState state, IBakedModel existingModel) {
+        public IBakedModel getModel(IBlockState state, IBakedModel existingModel) {
             return new Model(existingModel);
         }
 
         @Override
-        public IBakedModel getModel (ItemStack stack, IBakedModel existingModel) {
+        public IBakedModel getModel(ItemStack stack, IBakedModel existingModel) {
             return new Model(existingModel);
         }
     }
 
-    public static class Model extends ProxyBuilderModel
-    {
-        public Model (IBakedModel parent) {
+    public static class Model extends ProxyBuilderModel {
+
+        public Model(IBakedModel parent) {
             super(parent);
         }
 
         @Override
-        protected IBakedModel buildModel (IBlockState state, IBakedModel parent) {
+        protected IBakedModel buildModel(IBlockState state, IBakedModel parent) {
             try {
-                EnumCompDrawer drawer = (EnumCompDrawer)state.getValue(BlockCompDrawers.SLOTS);
+                EnumCompDrawer drawer = (EnumCompDrawer) state.getValue(BlockCompDrawers.SLOTS);
                 EnumFacing dir = state.getValue(BlockDrawers.FACING);
 
                 if (!(state instanceof IExtendedBlockState xstate))
@@ -82,26 +82,25 @@ public final class CompDrawerModel
                     return new PassLimitedModel(parent, BlockRenderLayer.CUTOUT_MIPPED);
 
                 return new DrawerDecoratorModel(parent, xstate, drawer, dir, stateModel);
-            }
-            catch (Throwable t) {
+            } catch (Throwable t) {
                 return new PassLimitedModel(parent, BlockRenderLayer.CUTOUT_MIPPED);
             }
         }
 
         @Override
-        public ItemOverrideList getOverrides () {
+        public ItemOverrideList getOverrides() {
             return itemHandler;
         }
     }
 
-    private static class ItemHandler extends ItemOverrideList
-    {
-        public ItemHandler () {
-            super(ImmutableList.<ItemOverride>of());
+    private static class ItemHandler extends ItemOverrideList {
+
+        public ItemHandler() {
+            super(ImmutableList.of());
         }
 
         @Override
-        public IBakedModel handleItemState (IBakedModel parent, @Nonnull ItemStack stack, World world, EntityLivingBase entity) {
+        public IBakedModel handleItemState(IBakedModel parent, @Nonnull ItemStack stack, World world, EntityLivingBase entity) {
             if (stack.isEmpty())
                 return parent;
 

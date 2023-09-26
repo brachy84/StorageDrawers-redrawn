@@ -2,7 +2,8 @@ package com.jaquadro.minecraft.storagedrawers.capabilities;
 
 import com.jaquadro.minecraft.storagedrawers.StorageDrawers;
 import com.jaquadro.minecraft.storagedrawers.api.capabilities.IItemRepository;
-import com.jaquadro.minecraft.storagedrawers.api.storage.*;
+import com.jaquadro.minecraft.storagedrawers.api.storage.IDrawer;
+import com.jaquadro.minecraft.storagedrawers.api.storage.IDrawerGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
@@ -10,25 +11,25 @@ import net.minecraftforge.items.IItemHandler;
 
 import javax.annotation.Nonnull;
 
-public class DrawerItemHandler implements IItemHandler
-{
+public class DrawerItemHandler implements IItemHandler {
+
     @CapabilityInject(IItemRepository.class)
     public static Capability<IItemRepository> ITEM_REPOSITORY_CAPABILITY = null;
 
-    private IDrawerGroup group;
+    private final IDrawerGroup group;
 
-    public DrawerItemHandler (IDrawerGroup group) {
+    public DrawerItemHandler(IDrawerGroup group) {
         this.group = group;
     }
 
     @Override
-    public int getSlots () {
+    public int getSlots() {
         return group.getDrawerCount() + 1;
     }
 
     @Override
     @Nonnull
-    public ItemStack getStackInSlot (int slot) {
+    public ItemStack getStackInSlot(int slot) {
         if (slotIsVirtual(slot))
             return ItemStack.EMPTY;
 
@@ -45,7 +46,7 @@ public class DrawerItemHandler implements IItemHandler
 
     @Override
     @Nonnull
-    public ItemStack insertItem (int slot, @Nonnull ItemStack stack, boolean simulate) {
+    public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
         if (slotIsVirtual(slot)) {
             if (StorageDrawers.config.cache.enableItemConversion)
                 return insertItemFullScan(stack, simulate);
@@ -71,7 +72,7 @@ public class DrawerItemHandler implements IItemHandler
     }
 
     @Nonnull
-    private ItemStack insertItemFullScan (@Nonnull ItemStack stack, boolean simulate) {
+    private ItemStack insertItemFullScan(@Nonnull ItemStack stack, boolean simulate) {
         IItemRepository itemRepo = group.getCapability(ITEM_REPOSITORY_CAPABILITY, null);
         if (itemRepo != null)
             return itemRepo.insertItem(stack, simulate);
@@ -86,7 +87,7 @@ public class DrawerItemHandler implements IItemHandler
     }
 
     @Nonnull
-    private ItemStack insertItemInternal (int slot, @Nonnull ItemStack stack, boolean simulate) {
+    private ItemStack insertItemInternal(int slot, @Nonnull ItemStack stack, boolean simulate) {
         IDrawer drawer = group.getDrawer(slot);
         if (!drawer.canItemBeStored(stack))
             return stack;
@@ -96,8 +97,8 @@ public class DrawerItemHandler implements IItemHandler
 
         boolean empty = drawer.isEmpty();
         int remainder = (simulate)
-            ? Math.max(stack.getCount() - (empty ? drawer.getAcceptingMaxCapacity(stack) : drawer.getAcceptingRemainingCapacity()), 0)
-            : drawer.adjustStoredItemCount(stack.getCount());
+                ? Math.max(stack.getCount() - (empty ? drawer.getAcceptingMaxCapacity(stack) : drawer.getAcceptingRemainingCapacity()), 0)
+                : drawer.adjustStoredItemCount(stack.getCount());
 
         if (remainder == stack.getCount())
             return stack;
@@ -109,7 +110,7 @@ public class DrawerItemHandler implements IItemHandler
 
     @Override
     @Nonnull
-    public ItemStack extractItem (int slot, int amount, boolean simulate) {
+    public ItemStack extractItem(int slot, int amount, boolean simulate) {
         if (slotIsVirtual(slot))
             return ItemStack.EMPTY;
 
@@ -123,14 +124,14 @@ public class DrawerItemHandler implements IItemHandler
 
         @Nonnull ItemStack prototype = drawer.getStoredItemPrototype();
         int remaining = (simulate)
-            ? Math.max(amount - drawer.getStoredItemCount(), 0)
-            : drawer.adjustStoredItemCount(-amount);
+                ? Math.max(amount - drawer.getStoredItemCount(), 0)
+                : drawer.adjustStoredItemCount(-amount);
 
         return stackResult(prototype, amount - remaining);
     }
 
     @Override
-    public int getSlotLimit (int slot) {
+    public int getSlotLimit(int slot) {
         if (slotIsVirtual(slot))
             return Integer.MAX_VALUE;
 
@@ -143,11 +144,11 @@ public class DrawerItemHandler implements IItemHandler
         return drawer.getMaxCapacity();
     }
 
-    private boolean slotIsVirtual (int slot) {
+    private boolean slotIsVirtual(int slot) {
         return slot == 0;
     }
 
-    private ItemStack stackResult (@Nonnull ItemStack stack, int amount) {
+    private ItemStack stackResult(@Nonnull ItemStack stack, int amount) {
         ItemStack result = stack.copy();
         result.setCount(amount);
         return result;

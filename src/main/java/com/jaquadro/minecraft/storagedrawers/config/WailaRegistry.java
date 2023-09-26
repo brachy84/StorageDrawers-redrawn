@@ -6,16 +6,16 @@ import com.jaquadro.minecraft.storagedrawers.api.registry.IWailaTooltipHandler;
 import java.util.ArrayList;
 import java.util.List;
 
-public class WailaRegistry implements IWailaRegistry
-{
-    private List<IWailaTooltipHandler> registry = new ArrayList<>();
+public class WailaRegistry implements IWailaRegistry {
+
+    private final List<IWailaTooltipHandler> registry = new ArrayList<>();
 
     @Override
-    public void registerTooltipHandler (IWailaTooltipHandler handler) {
+    public void registerTooltipHandler(IWailaTooltipHandler handler) {
         registry.add(handler);
     }
 
-    public List<IWailaTooltipHandler> getTooltipHandlers () {
+    public List<IWailaTooltipHandler> getTooltipHandlers() {
         return registry;
     }
 }

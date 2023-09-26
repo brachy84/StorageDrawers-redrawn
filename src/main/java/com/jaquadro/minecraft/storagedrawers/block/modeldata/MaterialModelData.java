@@ -7,8 +7,8 @@ import net.minecraft.item.ItemStack;
 
 import javax.annotation.Nonnull;
 
-public final class MaterialModelData extends ModelData
-{
+public final class MaterialModelData extends ModelData {
+
     @Nonnull
     private final ItemStack matFront;
     @Nonnull
@@ -22,7 +22,7 @@ public final class MaterialModelData extends ModelData
     @Nonnull
     private final ItemStack effectiveMatTrim;
 
-    public MaterialModelData (TileEntityDrawers tile) {
+    public MaterialModelData(TileEntityDrawers tile) {
         if (tile == null) {
             matFront = ItemStack.EMPTY;
             matSide = ItemStack.EMPTY;
@@ -30,8 +30,7 @@ public final class MaterialModelData extends ModelData
             effectiveMatFront = ItemStack.EMPTY;
             effectiveMatSide = ItemStack.EMPTY;
             effectiveMatTrim = ItemStack.EMPTY;
-        }
-        else {
+        } else {
             matFront = tile.material().getFront();
             matSide = tile.material().getSide();
             matTrim = tile.material().getTrim();
@@ -41,7 +40,7 @@ public final class MaterialModelData extends ModelData
         }
     }
 
-    public MaterialModelData (TileEntityTrim tile) {
+    public MaterialModelData(TileEntityTrim tile) {
         matFront = ItemStack.EMPTY;
         effectiveMatFront = ItemStack.EMPTY;
 
@@ -50,8 +49,7 @@ public final class MaterialModelData extends ModelData
             matTrim = ItemStack.EMPTY;
             effectiveMatSide = ItemStack.EMPTY;
             effectiveMatTrim = ItemStack.EMPTY;
-        }
-        else {
+        } else {
             matSide = tile.material().getSide();
             matTrim = tile.material().getTrim();
             effectiveMatSide = tile.material().getEffectiveSide();
@@ -60,12 +58,12 @@ public final class MaterialModelData extends ModelData
     }
 
     @Nonnull
-    public ItemStack getMaterialFront () {
+    public ItemStack getMaterialFront() {
         return matFront;
     }
 
     @Nonnull
-    public ItemStack getMaterialSide () {
+    public ItemStack getMaterialSide() {
         return matSide;
     }
 
@@ -75,12 +73,12 @@ public final class MaterialModelData extends ModelData
     }
 
     @Nonnull
-    public ItemStack getEffectiveMaterialFront () {
+    public ItemStack getEffectiveMaterialFront() {
         return effectiveMatFront;
     }
 
     @Nonnull
-    public ItemStack getEffectiveMaterialSide () {
+    public ItemStack getEffectiveMaterialSide() {
         return effectiveMatSide;
     }
 
@@ -90,43 +88,37 @@ public final class MaterialModelData extends ModelData
     }
 
     @Override
-    public boolean equals (Object obj) {
+    public boolean equals(Object obj) {
         if (obj == null || obj.getClass() != this.getClass())
             return false;
 
-        MaterialModelData other = (MaterialModelData)obj;
+        MaterialModelData other = (MaterialModelData) obj;
         if (!ItemStack.areItemsEqual(matFront, other.matFront))
             return false;
         if (!ItemStack.areItemsEqual(matSide, other.matSide))
             return false;
-        if (!ItemStack.areItemsEqual(matTrim, other.matTrim))
-            return false;
-
-        return true;
+        return ItemStack.areItemsEqual(matTrim, other.matTrim);
     }
 
     @Override
-    public int hashCode () {
+    public int hashCode() {
         int c = 0;
         if (matFront != null) {
             c = 37 * c + (matFront.getItem() != null ? matFront.getItem().hashCode() : 0);
             c = 37 * c + matFront.getItemDamage();
-        }
-        else
+        } else
             c = 37 * c;
 
         if (matSide != null) {
             c = 37 * c + (matSide.getItem() != null ? matSide.getItem().hashCode() : 0);
             c = 37 * c + matSide.getItemDamage();
-        }
-        else
+        } else
             c = 37 * c;
 
         if (matTrim != null) {
             c = 37 * c + (matTrim.getItem() != null ? matTrim.getItem().hashCode() : 0);
             c = 37 * c + matTrim.getItemDamage();
-        }
-        else
+        } else
             c = 37 * c;
 
         return c;

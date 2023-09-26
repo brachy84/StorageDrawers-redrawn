@@ -14,8 +14,8 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 
-public class CommonDrawerRenderer
-{
+public class CommonDrawerRenderer {
+
     private final ChamRender renderHelper;
     private final PanelBoxRenderer panelRenderer;
 
@@ -27,15 +27,15 @@ public class CommonDrawerRenderer
     private static double unit7 = 0.4375;
     private static double unit9 = 0.5625;
 
-    public CommonDrawerRenderer (ChamRender renderer) {
+    public CommonDrawerRenderer(ChamRender renderer) {
         this.renderHelper = renderer;
         this.panelRenderer = new PanelBoxRenderer(renderer);
     }
 
-    private void start (IBlockAccess world, IBlockState state, BlockPos pos, EnumFacing direction) {
+    private void start(IBlockAccess world, IBlockState state, BlockPos pos, EnumFacing direction) {
         BlockDrawers block = (BlockDrawers) state.getBlock();
         StatusModelData status = block.getStatusInfo(state);
-        blockInfo = (EnumBasicDrawer) state.getValue(BlockStandardDrawers.BLOCK);
+        blockInfo = state.getValue(BlockStandardDrawers.BLOCK);
 
         depth = blockInfo.isHalfDepth() ? .5 : 0;
         trimWidth = .0625;
@@ -55,12 +55,12 @@ public class CommonDrawerRenderer
         renderHelper.state.setUVRotation(ChamRender.YPOS, ChamRenderState.ROTATION_BY_FACE_FACE[ChamRender.ZNEG][direction.getIndex()]);
     }
 
-    private void end () {
+    private void end() {
         renderHelper.state.clearRotateTransform();
         renderHelper.state.clearUVRotation(ChamRender.YPOS);
     }
 
-    public void renderBasePass (IBlockAccess world, IBlockState state, BlockPos pos, EnumFacing direction, TextureAtlasSprite iconSide, TextureAtlasSprite iconTrim, TextureAtlasSprite iconFront) {
+    public void renderBasePass(IBlockAccess world, IBlockState state, BlockPos pos, EnumFacing direction, TextureAtlasSprite iconSide, TextureAtlasSprite iconTrim, TextureAtlasSprite iconFront) {
         start(world, state, pos, direction);
 
         panelRenderer.setTrimIcon(iconTrim);
@@ -70,8 +70,7 @@ public class CommonDrawerRenderer
             if (dir != ChamRender.FACE_ZNEG) {
                 renderHelper.targetFaceGroup(true);
                 panelRenderer.renderFacePanel(dir, world, state, pos, 0, 0, depth, 1, 1, 1);
-            }
-            else if (depth == 0)
+            } else if (depth == 0)
                 renderHelper.targetFaceGroup(true);
 
             panelRenderer.renderFaceTrim(dir, world, state, pos, 0, 0, depth, 1, 1, 1);
@@ -84,8 +83,7 @@ public class CommonDrawerRenderer
         if (blockInfo.getDrawerCount() == 1) {
             renderHelper.setRenderBounds(trimWidth, trimWidth, depth + trimDepth, 1 - trimWidth, 1 - trimWidth, 1);
             renderHelper.renderFace(ChamRender.FACE_ZNEG, world, state, pos, iconFront);
-        }
-        else if (blockInfo.getDrawerCount() == 2) {
+        } else if (blockInfo.getDrawerCount() == 2) {
             renderHelper.setRenderBounds(trimWidth, trimWidth, depth + trimDepth, 1 - trimWidth, unit7, 1);
             renderHelper.renderFace(ChamRender.FACE_ZNEG, world, state, pos, iconFront);
             renderHelper.setRenderBounds(trimWidth, unit9, depth + trimDepth, 1 - trimWidth, 1 - trimWidth, 1);
@@ -93,8 +91,7 @@ public class CommonDrawerRenderer
 
             renderHelper.setRenderBounds(trimWidth, unit7, depth + trimDepth, 1 - trimWidth, unit9, 1);
             renderHelper.renderFace(ChamRender.FACE_ZNEG, world, state, pos, iconTrim);
-        }
-        else if (blockInfo.getDrawerCount() == 4) {
+        } else if (blockInfo.getDrawerCount() == 4) {
             renderHelper.state.flipTexture = true;
             renderHelper.state.autoFlipTexture = true;
             renderHelper.setRenderBounds(trimWidth, trimWidth, depth + trimDepth, unit7, unit7, 1);
@@ -123,7 +120,7 @@ public class CommonDrawerRenderer
         end();
     }
 
-    public void renderOverlayPass (IBlockAccess world, IBlockState state, BlockPos pos, EnumFacing direction, TextureAtlasSprite trimShadow, TextureAtlasSprite handle, TextureAtlasSprite faceShadow) {
+    public void renderOverlayPass(IBlockAccess world, IBlockState state, BlockPos pos, EnumFacing direction, TextureAtlasSprite trimShadow, TextureAtlasSprite handle, TextureAtlasSprite faceShadow) {
         start(world, state, pos, direction);
 
         panelRenderer.setTrimIcon(trimShadow);
@@ -137,8 +134,7 @@ public class CommonDrawerRenderer
             renderHelper.setRenderBounds(trimWidth, trimWidth, depth + trimDepth, 1 - trimWidth, 1 - trimWidth, 1);
             renderHelper.renderFace(ChamRender.FACE_ZNEG, world, state, pos, handle);
             renderHelper.renderFace(ChamRender.FACE_ZNEG, world, state, pos, faceShadow);
-        }
-        else if (blockInfo.getDrawerCount() == 2) {
+        } else if (blockInfo.getDrawerCount() == 2) {
             renderHelper.setRenderBounds(trimWidth, trimWidth, depth + trimDepth, 1 - trimWidth, unit7, 1);
             renderHelper.renderFace(ChamRender.FACE_ZNEG, world, state, pos, handle);
             renderHelper.renderFace(ChamRender.FACE_ZNEG, world, state, pos, faceShadow);
@@ -149,8 +145,7 @@ public class CommonDrawerRenderer
 
             renderHelper.setRenderBounds(trimWidth, unit7, depth + trimDepth, 1 - trimWidth, unit9, 1);
             renderHelper.renderFace(ChamRender.FACE_ZNEG, world, state, pos, trimShadow);
-        }
-        else if (blockInfo.getDrawerCount() == 4) {
+        } else if (blockInfo.getDrawerCount() == 4) {
             renderHelper.setRenderBounds(trimWidth, trimWidth, depth + trimDepth, unit7, unit7, 1);
             renderHelper.renderFace(ChamRender.FACE_ZNEG, world, state, pos, handle);
             renderHelper.renderFace(ChamRender.FACE_ZNEG, world, state, pos, faceShadow);
@@ -177,8 +172,7 @@ public class CommonDrawerRenderer
             renderHelper.renderFace(ChamRender.FACE_ZNEG, world, state, pos, trimShadow);
             renderHelper.setRenderBounds(unit7, unit7, depth + trimDepth, unit9, unit9, 1);
             renderHelper.renderFace(ChamRender.FACE_ZNEG, world, state, pos, trimShadow);
-        }
-        else
+        } else
             renderHelper.renderEmptyPlane(pos);
 
         end();

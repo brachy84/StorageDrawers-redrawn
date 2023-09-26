@@ -6,9 +6,9 @@ import com.jaquadro.minecraft.chameleon.render.ChamRender;
 import com.jaquadro.minecraft.chameleon.render.ChamRenderManager;
 import com.jaquadro.minecraft.storagedrawers.StorageDrawers;
 import com.jaquadro.minecraft.storagedrawers.api.render.IRenderLabel;
+import com.jaquadro.minecraft.storagedrawers.api.storage.EnumBasicDrawer;
 import com.jaquadro.minecraft.storagedrawers.api.storage.IDrawer;
 import com.jaquadro.minecraft.storagedrawers.block.BlockDrawers;
-import com.jaquadro.minecraft.storagedrawers.api.storage.EnumBasicDrawer;
 import com.jaquadro.minecraft.storagedrawers.block.BlockStandardDrawers;
 import com.jaquadro.minecraft.storagedrawers.block.dynamic.StatusModelData;
 import com.jaquadro.minecraft.storagedrawers.block.tile.TileEntityDrawers;
@@ -35,15 +35,15 @@ import javax.annotation.Nonnull;
 import java.util.List;
 
 @SideOnly(Side.CLIENT)
-public class TileEntityDrawersRenderer extends TileEntitySpecialRenderer<TileEntityDrawers>
-{
-    private boolean[] renderAsBlock = new boolean[4];
-    private ItemStack[] renderStacks = new ItemStack[4];
+public class TileEntityDrawersRenderer extends TileEntitySpecialRenderer<TileEntityDrawers> {
+
+    private final boolean[] renderAsBlock = new boolean[4];
+    private final ItemStack[] renderStacks = new ItemStack[4];
 
     private RenderItem renderItem;
 
     @Override
-    public void render (TileEntityDrawers tile, double x, double y, double z, float partialTickTime, int destroyStage, float par7) {
+    public void render(TileEntityDrawers tile, double x, double y, double z, float partialTickTime, int destroyStage, float par7) {
         if (tile == null)
             return;
 
@@ -59,8 +59,7 @@ public class TileEntityDrawersRenderer extends TileEntitySpecialRenderer<TileEnt
                 EnumBasicDrawer info = state.getValue(BlockStandardDrawers.BLOCK);
                 depth = info.isHalfDepth() ? .5f : 1;
             }
-        }
-        else
+        } else
             return;
 
         GlStateManager.pushMatrix();
@@ -72,7 +71,7 @@ public class TileEntityDrawersRenderer extends TileEntitySpecialRenderer<TileEnt
         int ambLight = getWorld().getCombinedLight(tile.getPos().offset(side), 0);
         int lu = ambLight % 65536;
         int lv = ambLight / 65536;
-        OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, (float)lu / 1.0F, (float)lv / 1.0F);
+        OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, (float) lu, (float) lv);
 
         ChamRender renderer = ChamRenderManager.instance.getRenderer(Tessellator.getInstance().getBuffer());
 
@@ -99,7 +98,7 @@ public class TileEntityDrawersRenderer extends TileEntitySpecialRenderer<TileEnt
         ChamRenderManager.instance.releaseRenderer(renderer);
     }
 
-    private void renderFastItemSet (ChamRender renderer, TileEntityDrawers tile, IBlockState state, EnumFacing side, float depth, float partialTickTime) {
+    private void renderFastItemSet(ChamRender renderer, TileEntityDrawers tile, IBlockState state, EnumFacing side, float depth, float partialTickTime) {
         int drawerCount = tile.getDrawerCount();
 
         for (int i = 0; i < drawerCount; i++) {
@@ -139,18 +138,18 @@ public class TileEntityDrawersRenderer extends TileEntitySpecialRenderer<TileEnt
         }
     }
 
-    private void renderText (String text, TileEntityDrawers tile, IBlockState state, int slot, EnumFacing side, float depth, float alpha) {
+    private void renderText(String text, TileEntityDrawers tile, IBlockState state, int slot, EnumFacing side, float depth, float alpha) {
         if (text == null || text.isEmpty())
             return;
 
-        BlockDrawers block = (BlockDrawers)state.getBlock();
+        BlockDrawers block = (BlockDrawers) state.getBlock();
         StatusModelData statusInfo = block.getStatusInfo(state);
-        float frontDepth = (float)statusInfo.getFrontDepth() * .0625f;
+        float frontDepth = (float) statusInfo.getFrontDepth() * .0625f;
         int textWidth = getFontRenderer().getStringWidth(text);
 
         Area2D statusArea = statusInfo.getSlot(slot).getLabelArea();
-        float x = (float)(statusArea.getX() + statusArea.getWidth() / 2);
-        float y = 16f - (float)statusArea.getY() - (float)statusArea.getHeight();
+        float x = (float) (statusArea.getX() + statusArea.getWidth() / 2);
+        float y = 16f - (float) statusArea.getY() - (float) statusArea.getHeight();
 
         GlStateManager.pushMatrix();
         alignRendering(side);
@@ -162,7 +161,7 @@ public class TileEntityDrawersRenderer extends TileEntitySpecialRenderer<TileEnt
         GlStateManager.enableBlend();
         GlStateManager.doPolygonOffset(-1, -20);
 
-        getFontRenderer().drawString(text, -textWidth / 2, 0, (int)(255 * alpha) << 24 | 255 << 16 | 255 << 8 | 255);
+        getFontRenderer().drawString(text, -textWidth / 2, 0, (int) (255 * alpha) << 24 | 255 << 16 | 255 << 8 | 255);
 
         GlStateManager.disableBlend();
         GlStateManager.depthMask(true);
@@ -172,19 +171,19 @@ public class TileEntityDrawersRenderer extends TileEntitySpecialRenderer<TileEnt
         GlStateManager.popMatrix();
     }
 
-    private void renderFastItem (ChamRender renderer, @Nonnull ItemStack itemStack, TileEntityDrawers tile, IBlockState state, int slot, EnumFacing side, float depth, float partialTickTime) {
+    private void renderFastItem(ChamRender renderer, @Nonnull ItemStack itemStack, TileEntityDrawers tile, IBlockState state, int slot, EnumFacing side, float depth, float partialTickTime) {
         int drawerCount = tile.getDrawerCount();
         float size = (drawerCount == 1) ? .5f : .25f;
 
-        BlockDrawers block = (BlockDrawers)state.getBlock();
+        BlockDrawers block = (BlockDrawers) state.getBlock();
         StatusModelData statusInfo = block.getStatusInfo(state);
-        float frontDepth = (float)statusInfo.getFrontDepth() * .0625f;
+        float frontDepth = (float) statusInfo.getFrontDepth() * .0625f;
         Area2D slotArea = statusInfo.getSlot(slot).getSlotArea();
 
         GlStateManager.pushMatrix();
 
-        float xCenter = (float)slotArea.getX() + (float)slotArea.getWidth() / 2 - (8 * size);
-        float yCenter = 16 - (float)slotArea.getY() - (float)slotArea.getHeight() / 2 - (8 * size);
+        float xCenter = (float) slotArea.getX() + (float) slotArea.getWidth() / 2 - (8 * size);
+        float yCenter = 16 - (float) slotArea.getY() - (float) slotArea.getHeight() / 2 - (8 * size);
 
         alignRendering(side);
         moveRendering(size, xCenter, yCenter, 1f - depth + frontDepth - .005f);
@@ -206,8 +205,7 @@ public class TileEntityDrawersRenderer extends TileEntitySpecialRenderer<TileEnt
             GlStateManager.scale(2.6f, 2.6f, 1);
             GlStateManager.rotate(171.6f, 0.0F, 1.0F, 0.0F);
             GlStateManager.rotate(84.9f, 1.0F, 0.0F, 0.0F);
-        }
-        else {
+        } else {
             GlStateManager.scale(1.92f, 1.92f, 1);
             GlStateManager.rotate(169.2f, 0.0F, 1.0F, 0.0F);
             GlStateManager.rotate(79.0f, 1.0F, 0.0F, 0.0F);
@@ -243,11 +241,10 @@ public class TileEntityDrawersRenderer extends TileEntitySpecialRenderer<TileEnt
 
         try {
             renderItem.renderItemIntoGUI(itemStack, 0, 0);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             // Shrug
         }
-        
+
         GlStateManager.disableBlend(); // Clean up after RenderItem
         GlStateManager.enableAlpha();  // Restore world render state after RenderItem
 
@@ -256,11 +253,11 @@ public class TileEntityDrawersRenderer extends TileEntitySpecialRenderer<TileEnt
         GlStateManager.popMatrix();
     }
 
-    private boolean isItemBlockType (@Nonnull ItemStack itemStack) {
+    private boolean isItemBlockType(@Nonnull ItemStack itemStack) {
         return itemStack.getItem() instanceof ItemBlock && renderItem.shouldRenderItemIn3D(itemStack);
     }
 
-    private void alignRendering (EnumFacing side) {
+    private void alignRendering(EnumFacing side) {
         // Rotate to face the correct direction for the drawer's orientation.
 
         GlStateManager.translate(.5f, .5f, .5f);
@@ -268,7 +265,7 @@ public class TileEntityDrawersRenderer extends TileEntitySpecialRenderer<TileEnt
         GlStateManager.translate(-.5f, -.5f, -.5f);
     }
 
-    private void moveRendering (float size, float offsetX, float offsetY, float offsetZ) {
+    private void moveRendering(float size, float offsetX, float offsetY, float offsetZ) {
         // NOTE: RenderItem expects to be called in a context where Y increases toward the bottom of the screen
         // However, for in-world rendering the opposite is true. So we translate up by 1 along Y, and then flip
         // along Y. Since the item is drawn at the back of the drawer, we also translate by `1-offsetZ` to move
@@ -276,20 +273,20 @@ public class TileEntityDrawersRenderer extends TileEntitySpecialRenderer<TileEnt
 
         // The 0.00001 for the Z-scale both flattens the item and negates the 32.0 Z-scale done by RenderItem.
 
-        GlStateManager.translate(0, 1, 1-offsetZ);
+        GlStateManager.translate(0, 1, 1 - offsetZ);
         GlStateManager.scale(1 / 16f, -1 / 16f, 0.00001);
 
         GlStateManager.translate(offsetX, offsetY, 0.);
         GlStateManager.scale(size, size, 1);
     }
 
-    private static final float[] sideRotationY2D = { 0, 0, 2, 0, 3, 1 };
+    private static final float[] sideRotationY2D = {0, 0, 2, 0, 3, 1};
 
-    private float getRotationYForSide2D (EnumFacing side) {
+    private float getRotationYForSide2D(EnumFacing side) {
         return sideRotationY2D[side.ordinal()] * 90;
     }
 
-    private void renderUpgrades (ChamRender renderer, TileEntityDrawers tile, IBlockState state) {
+    private void renderUpgrades(ChamRender renderer, TileEntityDrawers tile, IBlockState state) {
         Minecraft.getMinecraft().getTextureManager().bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
 
         GlStateManager.enableAlpha();
@@ -298,11 +295,11 @@ public class TileEntityDrawersRenderer extends TileEntitySpecialRenderer<TileEnt
         renderTape(renderer, tile, state, tile.getDirection(), tile.isSealed());
     }
 
-    private void renderIndicator (ChamRender renderer, TileEntityDrawers tile, IBlockState blockState, int side, EnumUpgradeStatus level) {
+    private void renderIndicator(ChamRender renderer, TileEntityDrawers tile, IBlockState blockState, int side, EnumUpgradeStatus level) {
         if (level == null || side < 2 || side > 5)
             return;
 
-        BlockDrawers block = (BlockDrawers)blockState.getBlock();
+        BlockDrawers block = (BlockDrawers) blockState.getBlock();
         StatusModelData statusInfo = block.getStatusInfo(blockState);
         if (statusInfo == null)
             return;
@@ -328,7 +325,7 @@ public class TileEntityDrawersRenderer extends TileEntitySpecialRenderer<TileEnt
             GlStateManager.doPolygonOffset(-1, -1);
 
             renderer.setRenderBounds(statusArea.getX() * unit, statusArea.getY() * unit, 0,
-                (statusArea.getX() + statusArea.getWidth()) * unit, (statusArea.getY() + statusArea.getHeight()) * unit, depth - frontDepth);
+                    (statusArea.getX() + statusArea.getWidth()) * unit, (statusArea.getY() + statusArea.getHeight()) * unit, depth - frontDepth);
             renderer.state.setRotateTransform(ChamRender.ZPOS, side);
             renderer.renderFace(ChamRender.FACE_ZPOS, null, blockState, BlockPos.ORIGIN, iconOff, 1, 1, 1);
             renderer.state.clearRotateTransform();
@@ -337,12 +334,11 @@ public class TileEntityDrawersRenderer extends TileEntitySpecialRenderer<TileEnt
 
             if (level == EnumUpgradeStatus.LEVEL1 && !drawer.isEmpty() && drawer.getRemainingCapacity() == 0) {
                 renderer.setRenderBounds(statusArea.getX() * unit, statusArea.getY() * unit, 0,
-                    (statusArea.getX() + statusArea.getWidth()) * unit, (statusArea.getY() + statusArea.getHeight()) * unit, depth - frontDepth);
+                        (statusArea.getX() + statusArea.getWidth()) * unit, (statusArea.getY() + statusArea.getHeight()) * unit, depth - frontDepth);
                 renderer.state.setRotateTransform(ChamRender.ZPOS, side);
                 renderer.renderFace(ChamRender.FACE_ZPOS, null, blockState, BlockPos.ORIGIN, iconOn, 1, 1, 1);
                 renderer.state.clearRotateTransform();
-            }
-            else if (level == EnumUpgradeStatus.LEVEL2) {
+            } else if (level == EnumUpgradeStatus.LEVEL2) {
                 int stepX = statusInfo.getSlot(i).getActiveStepsX();
                 int stepY = statusInfo.getSlot(i).getActiveStepsY();
 
@@ -359,7 +355,7 @@ public class TileEntityDrawersRenderer extends TileEntitySpecialRenderer<TileEnt
                     indYCur = Math.min(indYCur, indYEnd);
 
                     renderer.setRenderBounds(indXStart * unit, indYStart * unit, 0,
-                        indXCur * unit, indYCur * unit, depth - frontDepth);
+                            indXCur * unit, indYCur * unit, depth - frontDepth);
                     renderer.state.setRotateTransform(ChamRender.ZPOS, side);
                     renderer.renderFace(ChamRender.FACE_ZPOS, null, blockState, BlockPos.ORIGIN, iconOn, 1, 1, 1);
                     renderer.state.clearRotateTransform();
@@ -370,11 +366,11 @@ public class TileEntityDrawersRenderer extends TileEntitySpecialRenderer<TileEnt
         }
     }
 
-    private void renderTape (ChamRender renderer, TileEntityDrawers tile, IBlockState blockState, int side, boolean taped) {
+    private void renderTape(ChamRender renderer, TileEntityDrawers tile, IBlockState blockState, int side, boolean taped) {
         if (!taped || side < 2 || side > 5)
             return;
 
-        BlockDrawers block = (BlockDrawers)blockState.getBlock();
+        BlockDrawers block = (BlockDrawers) blockState.getBlock();
 
         double depth = block.isHalfDepth(blockState) ? .5 : 1;
         TextureAtlasSprite iconTape = Chameleon.instance.iconRegistry.getIcon(DrawerSealedModel.iconTapeCover);
@@ -391,7 +387,7 @@ public class TileEntityDrawersRenderer extends TileEntitySpecialRenderer<TileEnt
     }
 
 
-    private double getIndEnd (BlockDrawers block, TileEntityDrawers tile, int slot, double x, double w, int step) {
+    private double getIndEnd(BlockDrawers block, TileEntityDrawers tile, int slot, double x, double w, int step) {
         IDrawer drawer = tile.getDrawer(slot);
         if (drawer == null)
             return x;
@@ -401,7 +397,7 @@ public class TileEntityDrawersRenderer extends TileEntitySpecialRenderer<TileEnt
         if (cap == 0 || count == 0)
             return x;
 
-        float fillAmt = (float)(step * count / cap) / step;
+        float fillAmt = (float) (step * count / cap) / step;
 
         return x + (w * fillAmt);
     }

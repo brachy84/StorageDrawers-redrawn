@@ -6,8 +6,8 @@ import net.minecraft.nbt.NBTTagCompound;
 
 import javax.annotation.Nonnull;
 
-public class MaterialData extends TileDataShim
-{
+public class MaterialData extends TileDataShim {
+
     @Nonnull
     private ItemStack materialSide;
     @Nonnull
@@ -15,56 +15,56 @@ public class MaterialData extends TileDataShim
     @Nonnull
     private ItemStack materialTrim;
 
-    public MaterialData () {
+    public MaterialData() {
         materialSide = ItemStack.EMPTY;
         materialFront = ItemStack.EMPTY;
         materialTrim = ItemStack.EMPTY;
     }
 
     @Nonnull
-    public ItemStack getSide () {
+    public ItemStack getSide() {
         return materialSide;
     }
 
     @Nonnull
-    public ItemStack getFront () {
+    public ItemStack getFront() {
         return materialFront;
     }
 
     @Nonnull
-    public ItemStack getTrim () {
+    public ItemStack getTrim() {
         return materialTrim;
     }
 
     @Nonnull
-    public ItemStack getEffectiveSide () {
+    public ItemStack getEffectiveSide() {
         return materialSide;
     }
 
     @Nonnull
-    public ItemStack getEffectiveFront () {
+    public ItemStack getEffectiveFront() {
         return !materialFront.isEmpty() ? materialFront : materialSide;
     }
 
     @Nonnull
-    public ItemStack getEffectiveTrim () {
+    public ItemStack getEffectiveTrim() {
         return !materialTrim.isEmpty() ? materialTrim : materialSide;
     }
 
-    public void setSide (@Nonnull ItemStack material) {
+    public void setSide(@Nonnull ItemStack material) {
         materialSide = material;
     }
 
-    public void setFront (@Nonnull ItemStack material) {
+    public void setFront(@Nonnull ItemStack material) {
         materialFront = material;
     }
 
-    public void setTrim (@Nonnull ItemStack material) {
+    public void setTrim(@Nonnull ItemStack material) {
         materialTrim = material;
     }
 
     @Override
-    public void readFromNBT (NBTTagCompound tag) {
+    public void readFromNBT(NBTTagCompound tag) {
         materialSide = ItemStack.EMPTY;
         if (tag.hasKey("MatS"))
             materialSide = new ItemStack(tag.getCompoundTag("MatS"));
@@ -79,7 +79,7 @@ public class MaterialData extends TileDataShim
     }
 
     @Override
-    public NBTTagCompound writeToNBT (NBTTagCompound tag) {
+    public NBTTagCompound writeToNBT(NBTTagCompound tag) {
         if (!materialSide.isEmpty()) {
             NBTTagCompound itag = new NBTTagCompound();
             materialSide.writeToNBT(itag);

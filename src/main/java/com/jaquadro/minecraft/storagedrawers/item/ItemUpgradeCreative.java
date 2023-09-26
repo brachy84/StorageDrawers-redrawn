@@ -12,26 +12,26 @@ import org.apache.commons.lang3.tuple.Pair;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ItemUpgradeCreative extends ItemUpgrade implements IItemMeshMapper
-{
-    public ItemUpgradeCreative (String registryName, String unlocalizedName) {
+public class ItemUpgradeCreative extends ItemUpgrade implements IItemMeshMapper {
+
+    public ItemUpgradeCreative(String registryName, String unlocalizedName) {
         super(registryName, unlocalizedName);
         setHasSubtypes(true);
     }
 
     @Override
-    public String getTranslationKey (ItemStack itemStack) {
+    public String getTranslationKey(ItemStack itemStack) {
         return super.getTranslationKey() + "." + EnumUpgradeCreative.byMetadata(itemStack.getMetadata()).getUnlocalizedName();
     }
 
     @Override
-    public int getMetadata (int damage) {
+    public int getMetadata(int damage) {
         return damage;
     }
 
     @Override
     @SideOnly(Side.CLIENT)
-    public void getSubItems (CreativeTabs creativeTabs, NonNullList<ItemStack> list) {
+    public void getSubItems(CreativeTabs creativeTabs, NonNullList<ItemStack> list) {
         if (isInCreativeTab(creativeTabs)) {
             for (EnumUpgradeCreative upgrade : EnumUpgradeCreative.values())
                 list.add(new ItemStack(this, 1, upgrade.getMetadata()));
@@ -39,7 +39,7 @@ public class ItemUpgradeCreative extends ItemUpgrade implements IItemMeshMapper
     }
 
     @Override
-    public List<Pair<ItemStack, ModelResourceLocation>> getMeshMappings () {
+    public List<Pair<ItemStack, ModelResourceLocation>> getMeshMappings() {
         List<Pair<ItemStack, ModelResourceLocation>> mappings = new ArrayList<>();
 
         for (EnumUpgradeCreative type : EnumUpgradeCreative.values()) {

@@ -10,14 +10,14 @@ import net.minecraft.item.ItemStack;
 
 import javax.annotation.Nonnull;
 
-public class SlotDrawer extends Slot
-{
-    private static IInventory emptyInventory = new InventoryBasic("[Null]", true, 0);
-    private ContainerDrawers container;
+public class SlotDrawer extends Slot {
+
+    private static final IInventory emptyInventory = new InventoryBasic("[Null]", true, 0);
+    private final ContainerDrawers container;
     private final IDrawerGroup group;
     private final IDrawer drawer;
 
-    public SlotDrawer (ContainerDrawers container, IDrawerGroup drawerGroup, int index, int xPosition, int yPosition) {
+    public SlotDrawer(ContainerDrawers container, IDrawerGroup drawerGroup, int index, int xPosition, int yPosition) {
         super(emptyInventory, index, xPosition, yPosition);
         this.container = container;
         this.group = drawerGroup;
@@ -25,43 +25,43 @@ public class SlotDrawer extends Slot
     }
 
     @Override
-    public boolean isItemValid (@Nonnull ItemStack stack) {
+    public boolean isItemValid(@Nonnull ItemStack stack) {
         return !stack.isEmpty() && drawer.canItemBeStored(stack);
     }
 
     @Override
     @Nonnull
-    public ItemStack getStack () {
+    public ItemStack getStack() {
         ItemStack stack = ItemStackHelper.encodeItemStack(drawer.getStoredItemPrototype(), drawer.getStoredItemCount());
         container.setLastAccessedItem(stack);
         return stack;
     }
 
     @Override
-    public void putStack (@Nonnull ItemStack stack) {
+    public void putStack(@Nonnull ItemStack stack) {
         stack = ItemStackHelper.decodeItemStack(stack);
         IDrawer target = drawer.setStoredItem(stack);
         target.setStoredItemCount(stack.getCount());
     }
 
     @Override
-    public void onSlotChange (@Nonnull ItemStack p_75220_1_, @Nonnull ItemStack p_75220_2_) {
+    public void onSlotChange(@Nonnull ItemStack p_75220_1_, @Nonnull ItemStack p_75220_2_) {
 
     }
 
     @Override
-    public int getItemStackLimit (@Nonnull ItemStack stack) {
+    public int getItemStackLimit(@Nonnull ItemStack stack) {
         return Math.min(stack.getMaxStackSize(), drawer.getRemainingCapacity());
     }
 
     @Override
-    public boolean canTakeStack (EntityPlayer playerIn) {
+    public boolean canTakeStack(EntityPlayer playerIn) {
         return false;
     }
 
     @Override
     @Nonnull
-    public ItemStack decrStackSize (int amount) {
+    public ItemStack decrStackSize(int amount) {
         int withdraw = Math.min(amount, drawer.getStoredItemCount());
         drawer.setStoredItemCount(withdraw);
 
@@ -70,12 +70,12 @@ public class SlotDrawer extends Slot
         return stack;
     }
 
-    public IDrawerGroup getDrawerGroup () {
+    public IDrawerGroup getDrawerGroup() {
         return group;
     }
 
     @Override
-    public boolean isSameInventory (Slot other) {
+    public boolean isSameInventory(Slot other) {
         return other instanceof SlotDrawer && ((SlotDrawer) other).getDrawerGroup() == group;
     }
 }

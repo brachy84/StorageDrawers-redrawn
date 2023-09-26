@@ -6,13 +6,13 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class CountFormatter
-{
-    public static String format (FontRenderer font, IDrawer drawer) {
+public class CountFormatter {
+
+    public static String format(FontRenderer font, IDrawer drawer) {
         return formatApprox(font, drawer);
     }
 
-    public static String formatStackNotation (IDrawer drawer) {
+    public static String formatStackNotation(IDrawer drawer) {
         if (drawer == null || drawer.isEmpty())
             return "";
 
@@ -30,14 +30,14 @@ public class CountFormatter
         return text;
     }
 
-    public static String formatExact (IDrawer drawer) {
+    public static String formatExact(IDrawer drawer) {
         if (drawer == null || drawer.isEmpty())
             return "";
 
         return String.valueOf(drawer.getStoredItemCount());
     }
 
-    public static String formatApprox (FontRenderer font, IDrawer drawer) {
+    public static String formatApprox(FontRenderer font, IDrawer drawer) {
         if (drawer == null || drawer.isEmpty())
             return "";
 

@@ -2,8 +2,7 @@ package com.jaquadro.minecraft.storagedrawers.item;
 
 import net.minecraft.util.IStringSerializable;
 
-public enum EnumUpgradeStatus implements IStringSerializable
-{
+public enum EnumUpgradeStatus implements IStringSerializable {
     LEVEL1(0, 1, "level1", "level1"),
     LEVEL2(1, 2, "level2", "level2");
 
@@ -15,44 +14,44 @@ public enum EnumUpgradeStatus implements IStringSerializable
     private final String name;
     private final String unlocalizedName;
 
-    EnumUpgradeStatus (int meta, int level, String name, String unlocalizedName) {
+    EnumUpgradeStatus(int meta, int level, String name, String unlocalizedName) {
         this.meta = meta;
         this.name = name;
         this.level = level;
         this.unlocalizedName = unlocalizedName;
     }
 
-    public int getMetadata () {
+    public int getMetadata() {
         return meta;
     }
 
-    public int getLevel () {
+    public int getLevel() {
         return level;
     }
 
-    public String getUnlocalizedName () {
+    public String getUnlocalizedName() {
         return unlocalizedName;
     }
 
-    public static EnumUpgradeStatus byMetadata (int meta) {
+    public static EnumUpgradeStatus byMetadata(int meta) {
         if (meta < 0 || meta >= META_LOOKUP.length)
             meta = 0;
         return META_LOOKUP[meta];
     }
 
-    public static EnumUpgradeStatus byLevel (int level) {
+    public static EnumUpgradeStatus byLevel(int level) {
         if (level < 0 || level >= LEVEL_LOOKUP.length)
             level = 0;
         return LEVEL_LOOKUP[level];
     }
 
     @Override
-    public String toString () {
+    public String toString() {
         return unlocalizedName;
     }
 
     @Override
-    public String getName () {
+    public String getName() {
         return name;
     }
 

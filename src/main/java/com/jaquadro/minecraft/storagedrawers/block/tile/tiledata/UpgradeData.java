@@ -16,8 +16,8 @@ import net.minecraftforge.common.util.Constants;
 import javax.annotation.Nonnull;
 import java.util.Arrays;
 
-public class UpgradeData extends TileDataShim
-{
+public class UpgradeData extends TileDataShim {
+
     private final ItemStack[] upgrades;
     private int storageMultiplier;
     private EnumUpgradeStatus statusType;
@@ -32,29 +32,29 @@ public class UpgradeData extends TileDataShim
 
     private IDrawerAttributesModifiable attrs;
 
-    public UpgradeData (int slotCount) {
+    public UpgradeData(int slotCount) {
         upgrades = new ItemStack[slotCount];
         Arrays.fill(upgrades, ItemStack.EMPTY);
 
         syncStorageMultiplier();
     }
 
-    public void setDrawerAttributes (IDrawerAttributesModifiable attrs) {
+    public void setDrawerAttributes(IDrawerAttributesModifiable attrs) {
         this.attrs = attrs;
         syncUpgrades();
     }
 
-    public int getSlotCount () {
+    public int getSlotCount() {
         return upgrades.length;
     }
 
     @Nonnull
-    public ItemStack getUpgrade (int slot) {
+    public ItemStack getUpgrade(int slot) {
         slot = MathHelper.clamp(slot, 0, upgrades.length - 1);
         return upgrades[slot];
     }
 
-    public boolean addUpgrade (@Nonnull ItemStack upgrade) {
+    public boolean addUpgrade(@Nonnull ItemStack upgrade) {
         int slot = getNextUpgradeSlot();
         if (slot == -1)
             return false;
@@ -63,7 +63,7 @@ public class UpgradeData extends TileDataShim
         return true;
     }
 
-    public boolean setUpgrade (int slot, @Nonnull ItemStack upgrade) {
+    public boolean setUpgrade(int slot, @Nonnull ItemStack upgrade) {
         slot = MathHelper.clamp(slot, 0, upgrades.length - 1);
 
         if (!upgrade.isEmpty()) {
@@ -92,7 +92,7 @@ public class UpgradeData extends TileDataShim
         return true;
     }
 
-    public boolean canAddUpgrade (@Nonnull ItemStack upgrade) {
+    public boolean canAddUpgrade(@Nonnull ItemStack upgrade) {
         if (upgrade.isEmpty())
             return false;
         if (!(upgrade.getItem() instanceof ItemUpgrade candidate))
@@ -115,7 +115,7 @@ public class UpgradeData extends TileDataShim
         return true;
     }
 
-    public boolean canRemoveUpgrade (int slot) {
+    public boolean canRemoveUpgrade(int slot) {
         slot = MathHelper.clamp(slot, 0, upgrades.length - 1);
         return !upgrades[slot].isEmpty();
     }
@@ -123,43 +123,44 @@ public class UpgradeData extends TileDataShim
 
     /**
      * A util method, to see if the upgrades can be swapped
+     *
      * @param slot The slot where the upgrade is being removed
-     * @param add The ItemStack of the upgrade being added
+     * @param add  The ItemStack of the upgrade being added
      * @return Whether the upgrades can be swapped
      */
-    public boolean canSwapUpgrade (int slot, @Nonnull ItemStack add) {
+    public boolean canSwapUpgrade(int slot, @Nonnull ItemStack add) {
         return canAddUpgrade(add) && canRemoveUpgrade(slot);
     }
 
-    public int getStorageMultiplier () {
+    public int getStorageMultiplier() {
         return storageMultiplier;
     }
 
-    public EnumUpgradeStatus getStatusType () {
+    public EnumUpgradeStatus getStatusType() {
         return statusType;
     }
 
-    public EnumUpgradeRedstone getRedstoneType () {
+    public EnumUpgradeRedstone getRedstoneType() {
         return redstoneType;
     }
 
-    public boolean hasOneStackUpgrade () {
+    public boolean hasOneStackUpgrade() {
         return hasOneStack;
     }
 
-    public boolean hasUnlimitedUpgrade () {
+    public boolean hasUnlimitedUpgrade() {
         return hasUnlimited;
     }
 
-    public boolean hasVendingUpgrade () {
+    public boolean hasVendingUpgrade() {
         return hasVending;
     }
 
-    public boolean hasConversionUpgrade () {
+    public boolean hasConversionUpgrade() {
         return hasConversion;
     }
 
-    private int getNextUpgradeSlot () {
+    private int getNextUpgradeSlot() {
         for (int i = 0; i < upgrades.length; i++) {
             if (upgrades[i].isEmpty())
                 return i;
@@ -168,7 +169,7 @@ public class UpgradeData extends TileDataShim
         return -1;
     }
 
-    private void syncUpgrades () {
+    private void syncUpgrades() {
         if (this.attrs == null)
             return;
 
@@ -205,7 +206,7 @@ public class UpgradeData extends TileDataShim
         attrs.setIsUnlimitedVending(hasVending);
     }
 
-    private void syncStorageMultiplier () {
+    private void syncStorageMultiplier() {
         ConfigManager config = StorageDrawers.config;
         storageMultiplier = 0;
 
@@ -220,7 +221,7 @@ public class UpgradeData extends TileDataShim
             storageMultiplier = config.getStorageUpgradeMultiplier(1);
     }
 
-    private void syncStatusLevel () {
+    private void syncStatusLevel() {
         statusType = null;
 
         for (ItemStack stack : upgrades) {
@@ -231,7 +232,7 @@ public class UpgradeData extends TileDataShim
         }
     }
 
-    private void syncRedstoneLevel () {
+    private void syncRedstoneLevel() {
         redstoneType = null;
 
         for (ItemStack stack : upgrades) {
@@ -243,7 +244,7 @@ public class UpgradeData extends TileDataShim
     }
 
     @Override
-    public void readFromNBT (NBTTagCompound tag) {
+    public void readFromNBT(NBTTagCompound tag) {
         Arrays.fill(upgrades, ItemStack.EMPTY);
 
         if (!tag.hasKey("Upgrades"))
@@ -261,12 +262,12 @@ public class UpgradeData extends TileDataShim
     }
 
     @Override
-    public NBTTagCompound writeToNBT (NBTTagCompound tag) {
+    public NBTTagCompound writeToNBT(NBTTagCompound tag) {
         NBTTagList tagList = new NBTTagList();
         for (int i = 0; i < upgrades.length; i++) {
             if (!upgrades[i].isEmpty()) {
                 NBTTagCompound upgradeTag = upgrades[i].writeToNBT(new NBTTagCompound());
-                upgradeTag.setByte("Slot", (byte)i);
+                upgradeTag.setByte("Slot", (byte) i);
 
                 tagList.appendTag(upgradeTag);
             }
@@ -276,5 +277,6 @@ public class UpgradeData extends TileDataShim
         return tag;
     }
 
-    protected void onUpgradeChanged (ItemStack oldUpgrade, ItemStack newUpgrade) { }
+    protected void onUpgradeChanged(ItemStack oldUpgrade, ItemStack newUpgrade) {
+    }
 }

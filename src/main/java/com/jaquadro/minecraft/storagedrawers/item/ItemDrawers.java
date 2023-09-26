@@ -27,20 +27,20 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
 
-public class ItemDrawers extends ItemBlock
-{
-    public ItemDrawers (Block block) {
+public class ItemDrawers extends ItemBlock {
+
+    public ItemDrawers(Block block) {
         super(block);
         setMaxDamage(0);
     }
 
     @Override
-    public int getMetadata (int damage) {
+    public int getMetadata(int damage) {
         return damage;
     }
 
     @Override
-    public boolean placeBlockAt (@Nonnull ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, IBlockState newState) {
+    public boolean placeBlockAt(@Nonnull ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, IBlockState newState) {
         if (!super.placeBlockAt(stack, player, world, pos, side, hitX, hitY, hitZ, newState))
             return false;
 
@@ -70,13 +70,13 @@ public class ItemDrawers extends ItemBlock
     }
 
     @Override
-    public int getItemBurnTime (ItemStack itemStack) {
+    public int getItemBurnTime(ItemStack itemStack) {
         return 0;
     }
 
     @Override
     @SideOnly(Side.CLIENT)
-    public void addInformation (@Nonnull ItemStack itemStack, @Nullable World world, List<String> list, ITooltipFlag advanced) {
+    public void addInformation(@Nonnull ItemStack itemStack, @Nullable World world, List<String> list, ITooltipFlag advanced) {
         if (itemStack.hasTagCompound() && itemStack.getTagCompound().hasKey("material")) {
             String key = itemStack.getTagCompound().getString("material");
             list.add(I18n.format("storagedrawers.material", I18n.format("storagedrawers.material." + key)));
@@ -88,7 +88,7 @@ public class ItemDrawers extends ItemBlock
             list.add(ChatFormatting.YELLOW + I18n.format("storagedrawers.drawers.sealed"));
     }
 
-    private int getCapacityForBlock (@Nonnull ItemStack itemStack) {
+    private int getCapacityForBlock(@Nonnull ItemStack itemStack) {
         ConfigManager config = StorageDrawers.config;
         Block block = Block.getBlockFromItem(itemStack.getItem());
 
@@ -102,8 +102,7 @@ public class ItemDrawers extends ItemBlock
                 case HALF4 -> config.getBlockBaseStorage("halfdrawers4");
                 default -> 0;
             };
-        }
-        else if (block == ModBlocks.compDrawers) {
+        } else if (block == ModBlocks.compDrawers) {
             return config.getBlockBaseStorage("compDrawers");
         }
 

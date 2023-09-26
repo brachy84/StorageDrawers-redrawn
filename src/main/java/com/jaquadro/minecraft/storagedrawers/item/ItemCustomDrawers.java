@@ -17,34 +17,34 @@ import net.minecraft.world.World;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public class ItemCustomDrawers extends ItemDrawers implements IFrameable
-{
-    private Function nameFunction;
+public class ItemCustomDrawers extends ItemDrawers implements IFrameable {
 
-    public ItemCustomDrawers (Block block) {
+    private final Function nameFunction;
+
+    public ItemCustomDrawers(Block block) {
         this(block, new Function() {
             @Nullable
             @Override
-            public Object apply (Object input) {
-                ItemStack stack = (ItemStack)input;
+            public Object apply(Object input) {
+                ItemStack stack = (ItemStack) input;
                 return EnumBasicDrawer.byMetadata(stack.getMetadata()).getUnlocalizedName();
             }
         });
     }
 
-    protected ItemCustomDrawers (Block block, Function function) {
+    protected ItemCustomDrawers(Block block, Function function) {
         super(block);
         setHasSubtypes(true);
         nameFunction = function;
     }
 
     @Override
-    public String getTranslationKey (@Nonnull ItemStack stack) {
+    public String getTranslationKey(@Nonnull ItemStack stack) {
         return super.getTranslationKey() + "." + nameFunction.apply(stack);
     }
 
     @Override
-    public boolean placeBlockAt (@Nonnull ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, IBlockState newState) {
+    public boolean placeBlockAt(@Nonnull ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, IBlockState newState) {
         if (!super.placeBlockAt(stack, player, world, pos, side, hitX, hitY, hitZ, newState))
             return false;
 
@@ -62,7 +62,7 @@ public class ItemCustomDrawers extends ItemDrawers implements IFrameable
     }
 
     @Nonnull
-    public static ItemStack makeItemStack (IBlockState blockState, int count, @Nonnull ItemStack matSide, @Nonnull ItemStack matTrim, @Nonnull ItemStack matFront) {
+    public static ItemStack makeItemStack(IBlockState blockState, int count, @Nonnull ItemStack matSide, @Nonnull ItemStack matTrim, @Nonnull ItemStack matFront) {
         Block block = blockState.getBlock();
         Item item = Item.getItemFromBlock(block);
         if (!(item instanceof ItemCustomDrawers))
@@ -79,16 +79,16 @@ public class ItemCustomDrawers extends ItemDrawers implements IFrameable
     }
 
     /**
-     * @param matSide The ItemStack to use has the side material
-     * @param matTrim The ItemStack to use has the side material
-     * @param matFront The ItemStack to use has the side material
+     * @param matSide    The ItemStack to use has the side material
+     * @param matTrim    The ItemStack to use has the side material
+     * @param matFront   The ItemStack to use has the side material
      * @param compoundIn The NBTTagCompound to set the tags in. If no existing compound is needed, simply insert a new one.
-     * @param override This will override any existing data in the provided tag, related to matSide, matTrim and matFront.
-     *                 If this is false, if any of the given ItemStacks are empty, then the decoration specified by that ItemStack
-     *                 will not be changed. Otherwise, if it is true, than that decoration will be set to none.
+     * @param override   This will override any existing data in the provided tag, related to matSide, matTrim and matFront.
+     *                   If this is false, if any of the given ItemStacks are empty, then the decoration specified by that ItemStack
+     *                   will not be changed. Otherwise, if it is true, than that decoration will be set to none.
      */
 
-    public static NBTTagCompound setCompoundMaterials (ItemStack matSide, ItemStack matTrim, ItemStack matFront, NBTTagCompound compoundIn, boolean override) {
+    public static NBTTagCompound setCompoundMaterials(ItemStack matSide, ItemStack matTrim, ItemStack matFront, NBTTagCompound compoundIn, boolean override) {
         if (override) {
             compoundIn.removeTag("MatS");
             compoundIn.removeTag("MatT");
@@ -106,7 +106,7 @@ public class ItemCustomDrawers extends ItemDrawers implements IFrameable
         return compoundIn;
     }
 
-    private static NBTTagCompound getMaterialTag (@Nonnull ItemStack mat) {
+    private static NBTTagCompound getMaterialTag(@Nonnull ItemStack mat) {
         // These two lines are no longer needed when called via `IFrameable.decorate`,
         // but may still be needed via `makeItemStack` call
         mat = mat.copy();

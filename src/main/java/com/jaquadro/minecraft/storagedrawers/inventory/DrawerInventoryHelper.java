@@ -9,11 +9,11 @@ import net.minecraft.world.World;
 
 import java.util.Random;
 
-public class DrawerInventoryHelper
-{
+public class DrawerInventoryHelper {
+
     private static final Random RANDOM = new Random();
 
-    public static void dropInventoryItems (World world, BlockPos pos, IDrawerGroup group) {
+    public static void dropInventoryItems(World world, BlockPos pos, IDrawerGroup group) {
         for (int i = 0; i < group.getDrawerCount(); i++) {
             IDrawer drawer = group.getDrawer(i);
             if (!drawer.isEnabled())
@@ -35,8 +35,7 @@ public class DrawerInventoryHelper
         }
     }
 
-    private static void spawnItemStack (World world, double x, double y, double z, ItemStack stack)
-    {
+    private static void spawnItemStack(World world, double x, double y, double z, ItemStack stack) {
         float xOff = RANDOM.nextFloat() * 0.8F + 0.1F;
         float yOff = RANDOM.nextFloat() * 0.8F + 0.1F;
         float zOff = RANDOM.nextFloat() * 0.8F + 0.1F;
@@ -45,9 +44,9 @@ public class DrawerInventoryHelper
             EntityItem entityitem = new EntityItem(world, x + xOff, y + yOff, z + zOff, stack.splitStack(RANDOM.nextInt(21) + 10));
 
             float velocity = 0.05F;
-            entityitem.motionX = RANDOM.nextGaussian() * (double)velocity;
-            entityitem.motionY = RANDOM.nextGaussian() * (double)velocity + 0.20000000298023224D;
-            entityitem.motionZ = RANDOM.nextGaussian() * (double)velocity;
+            entityitem.motionX = RANDOM.nextGaussian() * (double) velocity;
+            entityitem.motionY = RANDOM.nextGaussian() * (double) velocity + 0.20000000298023224D;
+            entityitem.motionZ = RANDOM.nextGaussian() * (double) velocity;
 
             world.spawnEntity(entityitem);
         }

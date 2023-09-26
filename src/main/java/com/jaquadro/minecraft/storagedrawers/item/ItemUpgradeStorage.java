@@ -18,27 +18,27 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ItemUpgradeStorage extends ItemUpgrade implements IItemMeshMapper
-{
-    public ItemUpgradeStorage (String registryName, String unlocalizedName) {
+public class ItemUpgradeStorage extends ItemUpgrade implements IItemMeshMapper {
+
+    public ItemUpgradeStorage(String registryName, String unlocalizedName) {
         super(registryName, unlocalizedName);
         setHasSubtypes(true);
         setAllowMultiple(true);
     }
 
     @Override
-    public String getTranslationKey (@Nonnull ItemStack itemStack) {
+    public String getTranslationKey(@Nonnull ItemStack itemStack) {
         return super.getTranslationKey() + "." + EnumUpgradeStorage.byMetadata(itemStack.getMetadata()).getUnlocalizedName();
     }
 
     @Override
-    public int getMetadata (int damage) {
+    public int getMetadata(int damage) {
         return damage;
     }
 
     @Override
     @SideOnly(Side.CLIENT)
-    public void addInformation (@Nonnull ItemStack itemStack, @Nullable World world, List<String> list, ITooltipFlag advanced) {
+    public void addInformation(@Nonnull ItemStack itemStack, @Nullable World world, List<String> list, ITooltipFlag advanced) {
         EnumUpgradeStorage upgrade = EnumUpgradeStorage.byMetadata(itemStack.getMetadata());
         if (upgrade != null) {
             int mult = StorageDrawers.config.getStorageUpgradeMultiplier(upgrade.getLevel());
@@ -48,7 +48,7 @@ public class ItemUpgradeStorage extends ItemUpgrade implements IItemMeshMapper
 
     @Override
     @SideOnly(Side.CLIENT)
-    public void getSubItems (CreativeTabs creativeTabs, NonNullList<ItemStack> list) {
+    public void getSubItems(CreativeTabs creativeTabs, NonNullList<ItemStack> list) {
         if (isInCreativeTab(creativeTabs)) {
             for (EnumUpgradeStorage upgrade : EnumUpgradeStorage.values())
                 list.add(new ItemStack(this, 1, upgrade.getMetadata()));
@@ -56,7 +56,7 @@ public class ItemUpgradeStorage extends ItemUpgrade implements IItemMeshMapper
     }
 
     @Override
-    public List<Pair<ItemStack, ModelResourceLocation>> getMeshMappings () {
+    public List<Pair<ItemStack, ModelResourceLocation>> getMeshMappings() {
         List<Pair<ItemStack, ModelResourceLocation>> mappings = new ArrayList<>();
 
         for (EnumUpgradeStorage type : EnumUpgradeStorage.values()) {
