@@ -1,16 +1,24 @@
 [
-{
-	"modid": "storagedrawers",
-	"name": "Storage Drawers",
-	"description": "Multi-drawer storage blocks for quick storage and retrieval.",
-	"version": "${version}",
-	"credits": "By jaquadro",
-	"logoFile": "",
-	"url": "http://www.jaquadro.com/",
-	"authorList": [ "jaquadro" ],
-	"logoFile": "assets/storagedrawers/textures/logo.png",
-	"requiredMods": [ "forge", "chameleon" ],
-	"dependencies": [ "chameleon" ],
-	"useDependencyInformation": true
-}
+  {
+    "modid": "storagedrawers",
+    "name": "Storage Drawers",
+    "description": "Multi-drawer storage blocks for quick storage and retrieval.",
+    "version": "${version}",
+    "credits": "jaquadro for making storage drawers and IntegerLimit for maintaining it in 1.12",
+    "logoFile": "",
+    "url": "",
+    "authorList": [
+      "jaquadro",
+      "brachy84"
+    ],
+    "logoFile": "assets/storagedrawers/textures/logo.png",
+    "requiredMods": [
+      "forge",
+      "chameleon"
+    ],
+    "dependencies": [
+      "chameleon"
+    ],
+    "useDependencyInformation": true
+  }
 ]
