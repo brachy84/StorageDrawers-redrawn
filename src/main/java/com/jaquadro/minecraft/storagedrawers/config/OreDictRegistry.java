@@ -2,165 +2,55 @@ package com.jaquadro.minecraft.storagedrawers.config;
 
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import it.unimi.dsi.fastutil.ints.IntSet;
+import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
 public class OreDictRegistry {
 
-    private final Set<String> blacklist = new ObjectOpenHashSet<>();
-    private final Set<String> whitelist = new ObjectOpenHashSet<>();
-    private final List<String> blacklistPrefix = new ArrayList<>();
-
-    private final Set<String> blacklistCache = new ObjectOpenHashSet<>();
-    private final Set<String> graylistCache = new ObjectOpenHashSet<>();
+    private final Set<String> whiteListPrefixes = new ObjectOpenHashSet<>();
+    private final Set<String> blackListMaterials = new ObjectOpenHashSet<>();
+    private final Object2BooleanOpenHashMap<String> cache = new Object2BooleanOpenHashMap<>();
 
     public OreDictRegistry() {
-        addBlacklist("logWood");
-        addBlacklist("plankWood");
-        addBlacklist("slabWood");
-        addBlacklist("stairWood");
-        addBlacklist("stickWood");
-        addBlacklist("treeSapling");
-        addBlacklist("treeLeaves");
-        addBlacklist("leavesTree");
-        addBlacklist("blockGlass");
-        addBlacklist("paneGlass");
-        addBlacklist("record");
-        addBlacklist("stone");
-        addBlacklist("cobblestone");
-        addBlacklist("glowstone");
-        addBlacklist("glass");
-        addBlacklist("obsidian");
-        addBlacklist("cobblestone");
-        addBlacklist("sand");
-        addBlacklist("sandstone");
-
-        addBlacklist("accioMaterial");
-        addBlacklist("crucioMaterial");
-        addBlacklist("imperioMaterial");
-        addBlacklist("zivicioMaterial");
-        addBlacklist("resourceTaint");
-        addBlacklist("slimeball");
-
-        addBlacklist("blockMetal");
-        addBlacklist("ingotMetal");
-        addBlacklist("nuggetMetal");
-
-        addBlacklistPrefix("list");
-        addBlacklistPrefix("dye");
-        addBlacklistPrefix("paneGlass");
-
-        String[] oreTypes = {"ore", "block", "ingot", "nugget"};
-        String[] oreMaterials = {"Iron", "Gold", "Diamond", "Emerald", "Aluminum", "Aluminium", "Tin", "Copper", "Lead",
-                "Silver", "Platinum", "Nickel", "Osmium", "Invar", "Bronze", "Electrum", "Enderium"};
-
-        for (String ore : oreMaterials) {
-            for (String type : oreTypes)
-                addWhitelist(type + ore);
-        }
-
-        for (String item : SDConfig.registries.oreBlacklist) {
-            removeWhitelist(item);
-            addBlacklist(item);
-        }
-
-        for (String item : SDConfig.registries.oreWhitelist) {
-            removeBlacklist(item);
-            addWhitelist(item);
-        }
+        blackListMaterials(""); // effectively blacklists sticks
+        whiteListOrePrefixes(SDConfig.registries.orePrefixWhitelist);
+        blackListMaterials(SDConfig.registries.materialBlacklist);
     }
 
-    public boolean addBlacklist(String entry) {
-        if (entry == null)
-            return false;
-
-        blacklistCache.add(entry);
-        graylistCache.remove(entry);
-
-        return blacklist.add(entry);
+    public void whiteListOrePrefixes(String... prefixes) {
+        Collections.addAll(this.whiteListPrefixes, prefixes);
     }
 
-    public boolean addBlacklistPrefix(String entry) {
-        if (entry == null)
-            return false;
-
-        if (blacklistPrefix.contains(entry))
-            return false;
-
-        graylistCache.clear();
-
-        return blacklistPrefix.add(entry);
-    }
-
-    public boolean addWhitelist(String entry) {
-        if (entry == null)
-            return false;
-
-        return whitelist.add(entry);
-    }
-
-    public boolean removeBlacklist(String entry) {
-        blacklistCache.remove(entry);
-
-        return blacklist.remove(entry);
-    }
-
-    public boolean removeBlacklistPrefix(String entry) {
-        return blacklistPrefix.remove(entry);
-    }
-
-    public boolean removeWhitelist(String entry) {
-        return whitelist.remove(entry);
-    }
-
-    public boolean isEntryBlacklisted(String entry) {
-        if (blacklistCache.contains(entry))
-            return true;
-
-        for (String aBlacklistPrefix : blacklistPrefix) {
-            if (entry.startsWith(aBlacklistPrefix)) {
-                blacklistCache.add(entry);
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    public boolean isEntryWhitelisted(String entry) {
-        return whitelist.contains(entry);
+    public void blackListMaterials(String... materials) {
+        Collections.addAll(this.blackListMaterials, materials);
     }
 
     public boolean isEntryValid(String entry) {
-        if (graylistCache.contains(entry))
-            return true;
-
-        if (!whitelist.contains(entry)) {
-            if (isEntryBlacklisted(entry))
-                return false;
-
-            if (!isValidForEquiv(entry)) {
-                blacklistCache.add(entry);
-                return false;
+        if (this.cache.containsKey(entry)) {
+            return this.cache.getBoolean(entry);
+        }
+        boolean result = false;
+        for (String prefix : this.whiteListPrefixes) {
+            if (entry.startsWith(prefix)) {
+                result = true;
+                String material = entry.substring(prefix.length() - 1);
+                if (this.blackListMaterials.contains(material)) {
+                    result = false;
+                }
+                break;
             }
         }
-
-        graylistCache.add(entry);
-
-        return true;
-    }
-
-    private String getModId(Item item) {
-        if (item == null)
-            return null;
-
-        return item.getRegistryName().getNamespace();
+        if (result && !isValidForEquiv(entry)) {
+            result = false;
+        }
+        this.cache.put(entry, result);
+        return result;
     }
 
     private boolean isValidForEquiv(String oreName) {
@@ -175,8 +65,7 @@ public class OreDictRegistry {
             if (anOreList.getItemDamage() == OreDictionary.WILDCARD_VALUE)
                 return false;
 
-            String modId = getModId(anOreList.getItem());
-            modIds.add(modId);
+            modIds.add(anOreList.getItem().getRegistryName().getNamespace());
         }
 
         // Fail entries that have multiple instances of an item registered, differing by metadata or other

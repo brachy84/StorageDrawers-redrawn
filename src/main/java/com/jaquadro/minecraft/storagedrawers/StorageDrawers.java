@@ -98,14 +98,8 @@ public class StorageDrawers {
             for (String rule : SDConfig.registries.compRules)
                 StorageDrawers.compRegistry.register(rule);
             if (StorageDrawers.oreDictRegistry != null) {
-                for (String item : SDConfig.registries.oreBlacklist) {
-                    StorageDrawers.oreDictRegistry.removeWhitelist(item);
-                    StorageDrawers.oreDictRegistry.addBlacklist(item);
-                }
-                for (String item : SDConfig.registries.oreWhitelist) {
-                    StorageDrawers.oreDictRegistry.removeBlacklist(item);
-                    StorageDrawers.oreDictRegistry.addWhitelist(item);
-                }
+                oreDictRegistry.whiteListOrePrefixes(SDConfig.registries.orePrefixWhitelist);
+                oreDictRegistry.blackListMaterials(SDConfig.registries.materialBlacklist);
             }
         }
         if (event.isWorldRunning() && preShiftValue != SDConfig.general.invertShift) {

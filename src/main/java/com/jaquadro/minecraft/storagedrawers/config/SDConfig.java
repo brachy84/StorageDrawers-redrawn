@@ -144,11 +144,19 @@ public class SDConfig {
         @Config.Comment("Items should be in form domain:item or domain:item:meta. [default: [minecraft:clay, minecraft:clay_ball, 4]]")
         public String[] compRules = new String[]{"minecraft:clay, minecraft:clay_ball, 4"};
         @Config.LangKey(LP + "oreWhitelist")
-        @Config.Comment("List of ore dictionary names to blacklist for substitution. [default: ]")
+        @Config.Comment("This is deprecated. Use the orePrefixWhitelist!")
+        @Deprecated
         public String[] oreWhitelist = new String[0];
         @Config.LangKey(LP + "oreBlacklist")
-        @Config.Comment("List of ore dictionary names to whitelist for substitution. [default: ]")
+        @Config.Comment("This is deprecated. Use the materialBlacklist!")
+        @Deprecated
         public String[] oreBlacklist = new String[0];
+        @Config.LangKey(LP + "orePrefixWhitelist")
+        @Config.Comment("Whitelists ore prefixes for conversion f.e. 'ingot' or 'gear'. Default = [\"ingot\", \"nugget\", \"block\", \"dust\", \"plate\", \"gear\", \"stick\"]")
+        public String[] orePrefixWhitelist = {"ingot", "nugget", "block", "dust", "plate", "gear", "stick"};
+        @Config.LangKey(LP + "materialBlacklist")
+        @Config.Comment("Blacklists materials for conversion f.e. 'Copper' or 'Neutronium'. Default = []")
+        public String[] materialBlacklist = {};
         @Config.LangKey(LP + "registerExtraCompactingRules")
         public boolean registerExtraCompactingRules = true;
     }

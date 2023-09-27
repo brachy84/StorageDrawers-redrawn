@@ -225,5 +225,7 @@ storagedrawers.config.registries.tooltip=Configure compacting rules and ore dict
 
 storagedrawers.config.registries.compRules=Compacting Rules
 storagedrawers.config.registries.registerExtraCompRules=Register Extra Compacting Rules
-storagedrawers.config.registries.oreWhitelist=Ore Dictionary Whitelist
-storagedrawers.config.registries.oreBlacklist=Ore Dictionary Blacklist
+storagedrawers.config.registries.oreWhitelist=DEPRECATED
+storagedrawers.config.registries.oreBlacklist=DEPRECATED
+storagedrawers.config.registries.orePrefixWhitelist=Ore Prefix Whitelist
+storagedrawers.config.registries.materialBlacklist=Material Blacklist
