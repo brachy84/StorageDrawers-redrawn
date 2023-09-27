@@ -6,13 +6,13 @@ import com.jaquadro.minecraft.storagedrawers.api.storage.IDrawerGroup;
 import com.jaquadro.minecraft.storagedrawers.block.tile.tiledata.FractionalDrawerGroup;
 import com.jaquadro.minecraft.storagedrawers.config.SDConfig;
 import com.jaquadro.minecraft.storagedrawers.network.CountUpdateMessage;
+import com.jaquadro.minecraft.storagedrawers.network.NetworkHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -78,11 +78,8 @@ public class TileEntityDrawersComp extends TileEntityDrawers {
         @Override
         protected void onAmountChanged() {
             if (getWorld() != null && !getWorld().isRemote) {
-                IMessage message = new CountUpdateMessage(getPos(), 0, getPooledCount());
                 NetworkRegistry.TargetPoint targetPoint = new NetworkRegistry.TargetPoint(getWorld().provider.getDimension(), getPos().getX(), getPos().getY(), getPos().getZ(), 500);
-
-                StorageDrawers.network.sendToAllAround(message, targetPoint);
-
+                NetworkHandler.sendToAllAround(new CountUpdateMessage(getPos(), 0, getPooledCount()), targetPoint);
                 markDirty();
             }
         }

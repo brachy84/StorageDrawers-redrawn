@@ -20,6 +20,7 @@ import com.jaquadro.minecraft.storagedrawers.core.ModItems;
 import com.jaquadro.minecraft.storagedrawers.item.EnumUpgradeRedstone;
 import com.jaquadro.minecraft.storagedrawers.item.EnumUpgradeStorage;
 import com.jaquadro.minecraft.storagedrawers.network.CountUpdateMessage;
+import com.jaquadro.minecraft.storagedrawers.network.NetworkHandler;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
@@ -590,7 +591,7 @@ public abstract class TileEntityDrawers extends ChamTileEntity implements ISeala
 
         TargetPoint point = new TargetPoint(getWorld().provider.getDimension(),
                 getPos().getX(), getPos().getY(), getPos().getZ(), 500);
-        StorageDrawers.network.sendToAllAround(new CountUpdateMessage(getPos(), slot, count), point);
+        NetworkHandler.sendToAllAround(new CountUpdateMessage(getPos(), slot, count), point);
     }
 
     @SideOnly(Side.CLIENT)

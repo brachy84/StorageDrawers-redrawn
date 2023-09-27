@@ -9,14 +9,12 @@ import com.jaquadro.minecraft.storagedrawers.core.CommandDebug;
 import com.jaquadro.minecraft.storagedrawers.core.CommonProxy;
 import com.jaquadro.minecraft.storagedrawers.core.handlers.GuiHandler;
 import com.jaquadro.minecraft.storagedrawers.integration.LocalIntegrationRegistry;
-import com.jaquadro.minecraft.storagedrawers.network.BoolConfigUpdateMessage;
-import com.jaquadro.minecraft.storagedrawers.network.CountUpdateMessage;
 import com.jaquadro.minecraft.storagedrawers.security.SecurityRegistry;
+import net.minecraft.client.Minecraft;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Config;
-import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
@@ -26,8 +24,6 @@ import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedOutEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
-import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
-import net.minecraftforge.fml.relauncher.Side;
 import org.apache.logging.log4j.Logger;
 
 // This will stop erroring once you run the build task once. Or, if you really hate the error message and don't want to build, run `./gradlew injectTags`.
@@ -43,7 +39,6 @@ public class StorageDrawers {
     public static final Api api = new Api();
 
     public static Logger log;
-    public static SimpleNetworkWrapper network;
     public static CompTierRegistry compRegistry;
     public static OreDictRegistry oreDictRegistry;
 
@@ -64,15 +59,6 @@ public class StorageDrawers {
         CapabilityDrawerGroup.register();
         CapabilityItemRepository.register();
         CapabilityDrawerAttributes.register();
-
-        network = NetworkRegistry.INSTANCE.newSimpleChannel(MOD_ID);
-        network.registerMessage(BoolConfigUpdateMessage.Handler.class, BoolConfigUpdateMessage.class, 0, Side.SERVER);
-
-        if (FMLCommonHandler.instance().getSide() == Side.CLIENT) {
-            network.registerMessage(CountUpdateMessage.Handler.class, CountUpdateMessage.class, 1, Side.CLIENT);
-        } else {
-            network.registerMessage(CountUpdateMessage.HandlerStub.class, CountUpdateMessage.class, 1, Side.CLIENT);
-        }
 
         compRegistry = new CompTierRegistry();
         oreDictRegistry = new OreDictRegistry();
@@ -122,13 +108,14 @@ public class StorageDrawers {
             }
         }
         if (event.isWorldRunning() && preShiftValue != SDConfig.general.invertShift) {
-            StorageDrawers.network.sendToServer(new BoolConfigUpdateMessage(FMLClientHandler.instance().getClientPlayerEntity().getUniqueID().toString(), "invertShift", SDConfig.general.invertShift));
-            StorageDrawers.network.sendToServer(new BoolConfigUpdateMessage(FMLClientHandler.instance().getClientPlayerEntity().getUniqueID().toString(), "invertClick", SDConfig.general.invertClick));
+            PlayerConfig.setConfig(Minecraft.getMinecraft().player, SDConfig.general.invertShift, SDConfig.general.invertClick);
         }
     }
 
     @SubscribeEvent
     public void onPlayerDisconnect(PlayerLoggedOutEvent event) {
-        SDConfig.serverPlayerConfigSettings.remove(event.player.getUniqueID());
+        if (event.player instanceof EntityPlayerMP) {
+            PlayerConfig.onPlayerDisconnect((EntityPlayerMP) event.player);
+        }
     }
 }

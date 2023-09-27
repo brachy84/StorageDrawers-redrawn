@@ -9,7 +9,7 @@ import com.jaquadro.minecraft.storagedrawers.block.dynamic.StatusModelData;
 import com.jaquadro.minecraft.storagedrawers.block.modeldata.DrawerStateModelData;
 import com.jaquadro.minecraft.storagedrawers.block.tile.TileEntityDrawers;
 import com.jaquadro.minecraft.storagedrawers.capabilities.CapabilityDrawerAttributes;
-import com.jaquadro.minecraft.storagedrawers.config.PlayerConfigSetting;
+import com.jaquadro.minecraft.storagedrawers.config.PlayerConfig;
 import com.jaquadro.minecraft.storagedrawers.config.SDConfig;
 import com.jaquadro.minecraft.storagedrawers.core.ModCreativeTabs;
 import com.jaquadro.minecraft.storagedrawers.core.ModItems;
@@ -51,7 +51,6 @@ import org.jetbrains.annotations.NotNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 
 public abstract class BlockDrawers extends BlockContainer implements INetworked {
@@ -228,16 +227,7 @@ public abstract class BlockDrawers extends BlockContainer implements INetworked 
     }
 
     private boolean isInvertedHand(EntityPlayer player) {
-        Map<String, PlayerConfigSetting<?>> configSettings = SDConfig.serverPlayerConfigSettings.get(player.getUniqueID());
-        boolean invertHand = SDConfig.general.invertClick;
-        if (configSettings != null) {
-            PlayerConfigSetting<Boolean> setting = (PlayerConfigSetting<Boolean>) configSettings.get("invertClick");
-            if (setting != null) {
-                invertHand = setting.value;
-            }
-        }
-
-        return invertHand;
+        return PlayerConfig.getPlayerConfig(player).isInvertClick();
     }
 
     @Override
@@ -407,14 +397,7 @@ public abstract class BlockDrawers extends BlockContainer implements INetworked 
         IDrawer drawer = tileDrawers.getDrawer(slot);
 
         ItemStack item;
-        Map<String, PlayerConfigSetting<?>> configSettings = SDConfig.serverPlayerConfigSettings.get(playerIn.getUniqueID());
-        boolean invertShift = false;
-        if (configSettings != null) {
-            PlayerConfigSetting<Boolean> setting = (PlayerConfigSetting<Boolean>) configSettings.get("invertShift");
-            if (setting != null) {
-                invertShift = setting.value;
-            }
-        }
+        boolean invertShift = PlayerConfig.getPlayerConfig(playerIn).isInvertShift();
         if (playerIn.isSneaking() != invertShift)
             item = tileDrawers.takeItemsFromSlot(slot, drawer.getStoredItemStackSize());
         else

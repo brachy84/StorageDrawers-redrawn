@@ -1,17 +1,10 @@
 package com.jaquadro.minecraft.storagedrawers.config;
 
 import com.jaquadro.minecraft.storagedrawers.StorageDrawers;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraftforge.common.config.Config;
-
-import java.util.Map;
-import java.util.UUID;
 
 @Config(modid = StorageDrawers.MOD_ID, category = "")
 public class SDConfig {
-
-    @Config.Ignore
-    public static final Map<UUID, Map<String, PlayerConfigSetting<?>>> serverPlayerConfigSettings = new Object2ObjectOpenHashMap<>();
 
     private static final String LANG_PREFIX = "storagedrawers.config.";
 
