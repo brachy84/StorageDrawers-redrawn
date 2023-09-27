@@ -1,6 +1,5 @@
 package com.jaquadro.minecraft.storagedrawers.item;
 
-import com.google.common.base.Function;
 import com.jaquadro.minecraft.chameleon.resources.IItemMeshResolver;
 import com.jaquadro.minecraft.chameleon.resources.IItemVariantProvider;
 import com.jaquadro.minecraft.storagedrawers.StorageDrawers;
@@ -14,43 +13,31 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 
 public class ItemBasicDrawers extends ItemDrawers implements IItemMeshResolver, IItemVariantProvider {
 
     @SideOnly(Side.CLIENT)
     private MeshDefinition meshResolver;
 
-    private final Function nameFunction;
+    private final Function<ItemStack, String> nameFunction;
 
     public ItemBasicDrawers(Block block) {
-        this(block, new Function() {
-            @Nullable
-            @Override
-            public Object apply(Object input) {
-                ItemStack stack = (ItemStack) input;
-                return EnumBasicDrawer.byMetadata(stack.getMetadata()).getUnlocalizedName();
-            }
-        });
+        this(block, stack -> EnumBasicDrawer.byMetadata(stack.getMetadata()).getUnlocalizedName());
     }
 
-    protected ItemBasicDrawers(Block block, Function function) {
+    protected ItemBasicDrawers(Block block, Function<ItemStack, String> function) {
         super(block);
         setHasSubtypes(true);
         nameFunction = function;
     }
 
     @Override
-    public int getMetadata(int damage) {
-        return damage;
-    }
-
-    @Override
-    public String getTranslationKey(@Nonnull ItemStack stack) {
+    public @NotNull String getTranslationKey(@NotNull ItemStack stack) {
         return super.getTranslationKey() + "." + nameFunction.apply(stack);
     }
 
@@ -78,7 +65,7 @@ public class ItemBasicDrawers extends ItemDrawers implements IItemMeshResolver, 
     private class MeshDefinition implements ItemMeshDefinition {
 
         @Override
-        public ModelResourceLocation getModelLocation(@Nonnull ItemStack stack) {
+        public ModelResourceLocation getModelLocation(@NotNull ItemStack stack) {
             if (stack.isEmpty())
                 return null;
 

@@ -11,42 +11,14 @@ import java.lang.reflect.Field;
 
 public class ItemStackHelper {
 
-    private static boolean initialized;
-    private static Field itemField;
-    private static Field itemDamageField;
-    private static Field stackTagCompoundField;
-    private static Field capabilitiesField;
-
-    public static Item getTrueItem(@Nonnull ItemStack stack) {
-        if (!initialized)
-            return stack.getItem();
-
-        try {
-            return (Item) itemField.get(stack);
-        } catch (IllegalAccessException e) {
-            return stack.getItem();
-        }
-    }
-
     @Nonnull
     public static ItemStack getItemPrototype(@Nonnull ItemStack stack) {
-        if (!initialized)
-            return stack.copy();
-
-        try {
-            CapabilityDispatcher capabilities = (CapabilityDispatcher) capabilitiesField.get(stack);
-            Item item = (Item) itemField.get(stack);
-            int itemDamage = itemDamageField.getInt(stack);
-            NBTTagCompound stackTagCompound = (NBTTagCompound) stackTagCompoundField.get(stack);
-
-            ItemStack proto = new ItemStack(item, 1, itemDamage, capabilities != null ? capabilities.serializeNBT() : null);
-            if (stackTagCompound != null)
-                proto.setTagCompound(stackTagCompound);
-
-            return proto;
-        } catch (IllegalAccessException e) {
-            return stack.copy();
+        if (stack.isEmpty()) {
+            return ItemStack.EMPTY;
         }
+        ItemStack proto = stack.copy();
+        proto.setCount(1);
+        return proto;
     }
 
     @Nonnull
@@ -120,23 +92,5 @@ public class ItemStackHelper {
             return false;
 
         return tag.hasKey("__storagedrawers_count");
-    }
-
-    static {
-        try {
-            itemField = ReflectionHelper.findField(ItemStack.class, "item", "field_151002_e");
-            itemDamageField = ReflectionHelper.findField(ItemStack.class, "itemDamage", "field_77991_e");
-            stackTagCompoundField = ReflectionHelper.findField(ItemStack.class, "stackTagCompound", "field_77990_d");
-            capabilitiesField = ReflectionHelper.findField(ItemStack.class, "capabilities");
-
-            itemField.setAccessible(true);
-            itemDamageField.setAccessible(true);
-            stackTagCompoundField.setAccessible(true);
-            capabilitiesField.setAccessible(true);
-
-            initialized = true;
-        } catch (ReflectionHelper.UnableToFindFieldException e) {
-            initialized = false;
-        }
     }
 }
