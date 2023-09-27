@@ -12,6 +12,7 @@ import com.jaquadro.minecraft.storagedrawers.integration.LocalIntegrationRegistr
 import com.jaquadro.minecraft.storagedrawers.security.SecurityRegistry;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.util.math.Vec3i;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Config;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
@@ -117,5 +118,9 @@ public class StorageDrawers {
         if (event.player instanceof EntityPlayerMP) {
             PlayerConfig.onPlayerDisconnect((EntityPlayerMP) event.player);
         }
+    }
+
+    public static boolean arePosEqual(Vec3i a, Vec3i b) {
+        return a.getX() == b.getX() && a.getY() == b.getY() && a.getZ() == b.getZ();
     }
 }

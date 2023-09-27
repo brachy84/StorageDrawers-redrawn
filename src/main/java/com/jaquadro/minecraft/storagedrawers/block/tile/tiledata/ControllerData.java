@@ -1,6 +1,7 @@
 package com.jaquadro.minecraft.storagedrawers.block.tile.tiledata;
 
 import com.jaquadro.minecraft.chameleon.block.tiledata.TileDataShim;
+import com.jaquadro.minecraft.storagedrawers.StorageDrawers;
 import com.jaquadro.minecraft.storagedrawers.block.tile.TileEntityController;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -9,6 +10,7 @@ import net.minecraftforge.common.util.Constants;
 
 public class ControllerData extends TileDataShim {
 
+    private TileEntityController controller;
     private BlockPos controllerCoord;
 
     @Override
@@ -38,17 +40,26 @@ public class ControllerData extends TileDataShim {
     }
 
     public TileEntityController getController(TileEntity host) {
-        if (controllerCoord == null)
-            return null;
-
-        TileEntity te = host.getWorld().getTileEntity(controllerCoord);
-        if (!(te instanceof TileEntityController)) {
-            controllerCoord = null;
-            host.markDirty();
+        if (this.controllerCoord == null) {
+            this.controller = null;
             return null;
         }
-
-        return (TileEntityController) te;
+        if (this.controller != null &&
+                (this.controller.isInvalid() ||
+                        this.controller.getWorld() != host.getWorld() ||
+                        !StorageDrawers.arePosEqual(this.controllerCoord, this.controller.getPos()))) {
+            this.controller = null;
+        }
+        if (this.controller == null) {
+            TileEntity te = host.getWorld().getTileEntity(controllerCoord);
+            if (te instanceof TileEntityController teController) {
+                this.controller = teController;
+            } else {
+                this.controllerCoord = null;
+                host.markDirty();
+            }
+        }
+        return this.controller;
     }
 
     public boolean bindCoord(BlockPos pos) {
